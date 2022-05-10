@@ -32,17 +32,14 @@ namespace PixelArtProgram
         string tempname;
         int NextVersion = 0;
         Bitmap bitmapBachground;
+        Bitmap bitmapBachground2;
         List<System.Drawing.Color> Using_colors = new List<System.Drawing.Color>();
         System.Drawing.Color actualColor = System.Drawing.Color.FromArgb(255, 255, 255, 255);
         public MainWindow()
         {
             InitializeComponent();
             system_ready = true;
-            for (int i = 0; i < 9; i++)
-            {
-                Using_colors.Add( System.Drawing.Color.FromArgb(255,255,255,255));
-            }
-            TranslateToList();
+
         }
 
         private void SaveImage(object sender, RoutedEventArgs e)
@@ -54,9 +51,14 @@ namespace PixelArtProgram
                     SaveFileDialog saveFileDialog = new SaveFileDialog();
                     saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.png)|*.png|All files (*.*)|*.*";
                     if (saveFileDialog.ShowDialog() == true)
-                        try
-                        {
-                            bitmapMain.Save(saveFileDialog.FileName, ImageFormat.Png);
+                     try
+                     {
+                    {
+                        Bitmap saveBitmap = new Bitmap(bitmapMain);
+                        bitmapMain.Dispose();
+                        saveBitmap.Save(saveFileDialog.FileName, ImageFormat.Png);
+                        bitmapMain = new Bitmap(saveBitmap);
+                    }
                         }
                         catch { MessageBox.Show("Błąd w zapisywaniu pliku"); }
 
@@ -79,13 +81,13 @@ namespace PixelArtProgram
                 if (int.TryParse(Creating.Get_Width.Text, out Width) && int.TryParse(Creating.Get_Height.Text, out Height))
                 {
                     bitmapMain = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    //bitmapMain.MakeTransparent();
-                    /*bitmapBachground = new Bitmap(Width, Height);
-                    using (Graphics gfx = Graphics.FromImage(bitmapBachground))
+                    bitmapMain.MakeTransparent();
+                    bitmapBachground2 = new Bitmap(Width, Height);
+                    using (Graphics gfx = Graphics.FromImage(bitmapBachground2))
                     using (SolidBrush brush = new SolidBrush(System.Drawing.Color.FromArgb(0, 0, 0)))
                     {
                         gfx.FillRectangle(brush, 0, 0, Width, Height);
-                    }*/
+                    }
                     CreateBackGround(Width, Height);
                     UpdateScreen();
                 }
@@ -103,6 +105,7 @@ namespace PixelArtProgram
             if (openFileDialog.ShowDialog()==true)
             {
                 bitmapMain = new Bitmap(openFileDialog.FileName);
+                CreateBackGround(bitmapMain.Width,bitmapMain.Height);
                 UpdateScreen();
             }
             
@@ -112,6 +115,7 @@ namespace PixelArtProgram
         {
             Screen.Source = ConvertToImage(bitmapMain);
             Screen_Background.Source = ConvertToImage(bitmapBachground);
+            //Screen_Background2.Source = ConvertToImage(bitmapBachground2);
         }
 
 
@@ -127,39 +131,13 @@ namespace PixelArtProgram
             return image;
         }
 
-        private void Switch_Color(object sender, TextChangedEventArgs e)
-        {
-            if (system_ready)
-            {
-                int red_value, blue_value, green_value;
-                if (int.TryParse(Red_color.Text, out red_value) && int.TryParse(Green_color.Text, out green_value) && int.TryParse(Blue_color.Text, out blue_value)&& 
-                    Between(red_value) && Between(blue_value) && Between(green_value))
-                {
-                    Error_Label.Content = "Brak Błędów";
-                    actualColor = System.Drawing.Color.FromArgb(255, red_value, green_value, blue_value);
-                    Show_Color.Fill = new SolidColorBrush( System.Windows.Media.Color.FromArgb(255, (byte)red_value, (byte)green_value, (byte)blue_value));
-                    Slider_red.Value = red_value;
-                    Slider_Green.Value = green_value;
-                    Slider_Blue.Value = blue_value;
-                    
-                }
-                else Error_Label.Content = "Błąd Kolorów";
-            }
-        }
+
         public bool Between(int a, int min = 0, int max = 255)
         {
             return a <= max && a >= min;
         }
 
-        private void Slide_Color(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (system_ready)
-            {
-                Red_color.Text = Slider_red.Value.ToString();
-                Green_color.Text = Slider_Green.Value.ToString();
-                Blue_color.Text = Slider_Blue.Value.ToString();
-            }
-        }
+
 
 
 
@@ -184,14 +162,7 @@ namespace PixelArtProgram
                 int pixely = (int)(bitmapy * scaley);
                 System.Drawing.Color backupcolor;
                 backupcolor = bitmapMain.GetPixel(pixelx, pixely);
-                //system_ready = false;
-
-                Red_color.Text = backupcolor.R.ToString();
-                Green_color.Text = backupcolor.G.ToString();
-                Blue_color.Text = backupcolor.B.ToString();
-
-
-                //system_ready = true;
+                Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
             }
             else
             {
@@ -209,7 +180,7 @@ namespace PixelArtProgram
                 int pixelx = (int)(bitmapx * scalex);
                 int pixely = (int)(bitmapy * scaley);
 
-                bitmapMain.SetPixel(pixelx, pixely, actualColor);
+                bitmapMain.SetPixel(pixelx, pixely, TranstalteColor(BrushColor(Show_Color.Fill)));
                 UpdateScreen();
             }
 
@@ -244,7 +215,7 @@ namespace PixelArtProgram
                     int pixelx = (int)(bitmapx * scalex);
                     int pixely = (int)(bitmapy * scaley);
 
-                    bitmapMain.SetPixel(pixelx, pixely, actualColor);
+                    bitmapMain.SetPixel(pixelx, pixely, TranstalteColor(BrushColor(Show_Color.Fill)));
                     UpdateScreen();
                 }
                 if(remove)
@@ -320,92 +291,11 @@ namespace PixelArtProgram
             }
             else
             {
-                if(Keyboard.IsKeyDown(Key.D1))
-                {
-                    ChangeColors(0);
-                }
-                if (Keyboard.IsKeyDown(Key.D2))
-                {
-                    ChangeColors(1);
-                }
-                if (Keyboard.IsKeyDown(Key.D3))
-                {
-                    ChangeColors(2);
-                }
-                if (Keyboard.IsKeyDown(Key.D4))
-                {
-                    ChangeColors(3);
-                }
-                if (Keyboard.IsKeyDown(Key.D5))
-                {
-                    ChangeColors(4);
-                }
-                if (Keyboard.IsKeyDown(Key.D6))
-                {
-                    ChangeColors(5);
-                }
-                if (Keyboard.IsKeyDown(Key.D7))
-                {
-                    ChangeColors(6);
-                }
-                if (Keyboard.IsKeyDown(Key.D8))
-                {
-                    ChangeColors(7);
-                }
-                if (Keyboard.IsKeyDown(Key.D9))
-                {
-                    ChangeColors(8);
-                }
-            }
-        }
-
-        private void ChangeColors(int i)
-        {
-            Red_color.Text = Using_colors[i].R.ToString();
-            Green_color.Text = Using_colors[i].G.ToString();
-            Blue_color.Text = Using_colors[i].B.ToString();
-        }
-
-        private void TranslateToList()
-        {
-            Colors.Items.Clear();
-            foreach(System.Drawing.Color color in Using_colors)
-            {
-                System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
-                rectangle.Height = 16;
-                rectangle.Width = 16;
-                rectangle.Stroke = System.Windows.Media.Brushes.Black;
-                rectangle.StrokeThickness = 1;
-                rectangle.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, color.R, color.G, color.B));
-                Colors.Items.Add(rectangle);
+               
             }
         }
 
 
-
-
-
-        private void Set_Color(object sender, SelectionChangedEventArgs e)
-        {
-            if (Colors.SelectedIndex >= 0)
-            {
-                Red_color.Text = Using_colors[Colors.SelectedIndex].R.ToString();
-                Green_color.Text = Using_colors[Colors.SelectedIndex].G.ToString();
-                Blue_color.Text = Using_colors[Colors.SelectedIndex].B.ToString();
-            }
-        }
-
-        private void Change_color(object sender, RoutedEventArgs e)
-        {
-            ChangeColor change = new ChangeColor();
-            if(change.ShowDialog()==true && Colors.SelectedIndex >= 0)
-            {
-                Using_colors[Colors.SelectedIndex] = System.Drawing.Color.FromArgb(255, int.Parse(change.Red_color.Text), int.Parse(change.Green_color.Text), int.Parse(change.Blue_color.Text));
-                TranslateToList();
-            }
-
-        }
-        
         private void CreateBackGround(int width, int height)
         {
             bitmapBachground = new Bitmap(width * 2, height * 2);
@@ -417,6 +307,81 @@ namespace PixelArtProgram
                     bitmapBachground.SetPixel(x,y, (x + y) % 2 == 1 ? System.Drawing.Color.FromArgb(255, 0, 0, 0) : System.Drawing.Color.FromArgb(255, 50, 50, 50));
                 }
             }
+        }
+
+        private void Change_Color(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Shapes.Rectangle rectangle = sender as System.Windows.Shapes.Rectangle;
+            if(rectangle!=null)
+            {
+                ChangeColor change = new ChangeColor();
+                if (change.ShowDialog() == true)
+                    {
+                        rectangle.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, (byte)int.Parse(change.Red_color.Text), (byte)int.Parse(change.Green_color.Text), (byte)int.Parse(change.Blue_color.Text)));
+                        
+                    }
+            }
+        }
+
+        private void Set_Color(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Shapes.Rectangle rectangle = sender as System.Windows.Shapes.Rectangle;
+            if (rectangle != null)
+            {
+                Show_Color.Fill = rectangle.Fill;
+            }
+        }
+
+        private void AddLayer(object sender, RoutedEventArgs e)
+        {
+            Label label = new Label();
+            label.Content = "layertest";
+            Layers.Items.Add(label);
+        }
+
+        private void RemoveLayer(object sender, RoutedEventArgs e)
+        {
+            if(Layers.SelectedIndex>=0)
+            {
+                Layers.Items.RemoveAt(Layers.SelectedIndex);
+            }
+        }
+
+        private void UpLayer(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DownLayer(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private System.Drawing.Color TranstalteColor(System.Windows.Media.Color color)
+        {
+            return System.Drawing.Color.FromArgb(255, color.R, color.G, color.B);
+        }
+
+        private System.Windows.Media.Color TranstalteColor(System.Drawing.Color color)
+        {
+            return System.Windows.Media.Color.FromArgb(255, color.R, color.G, color.B);
+        }
+        private System.Windows.Media.Color BrushColor(System.Windows.Media.Brush brush)
+        {
+            SolidColorBrush bruh = (SolidColorBrush)brush;
+            return bruh.Color;
+        }
+
+
+        Button lastButton;
+        private void Change_Tool(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            button.IsEnabled = false;
+            if(lastButton!=null)
+            {
+                lastButton.IsEnabled = true;
+            }
+            lastButton = button;
         }
     }
 

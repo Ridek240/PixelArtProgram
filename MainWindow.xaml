@@ -14,74 +14,118 @@
             <RowDefinition Height="18*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <ToolBar>
-                <DockPanel Width="auto">
-                    <Button Width="auto" Click="CreateNew">Nowy</Button>
-                    <Button Width="auto" Click="OpenImage">Otwórz</Button>
-                    <Button Width="auto" Click="SaveImage">Zapisz</Button>
-                </DockPanel>
-            </ToolBar>
+            <Menu>
+                <MenuItem Header="Plik">
+                    <MenuItem Header="Zapisz" Click="SaveImage"/>
+                    <MenuItem Header="Nowy" Click="CreateNew"/>
+                    <MenuItem Header="Otwórz" Click="OpenImage"/>
+                </MenuItem>
+            </Menu>
+
 
         </Grid>
         <Grid Grid.Row="1" ShowGridLines="True" >
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Rectangle Fill="Gray" />
-            <Image x:Name="Screen_Background"  Grid.Column="0"  RenderOptions.BitmapScalingMode="NearestNeighbor" />
-            <Image x:Name="Screen"  Grid.Column="0" MouseMove="Draw" MouseLeftButtonDown="StartDraw" MouseLeftButtonUp="StopDraw"  
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Button Width="20" Height="20" Grid.Column="0" Grid.Row="0" Click="Change_Tool" Content="A"/>
+                <Button Width="20" Height="20" Grid.Column="0" Grid.Row="1" Click="Change_Tool" Content="B"/>
+                <Button Width="20" Height="20" Grid.Column="0" Grid.Row="2" Click="Change_Tool" Content="C"/>
+                <Button Width="20" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" Content="D"/>
+                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" Content="E"/>
+                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="1" Click="Change_Tool" Content="F"/>
+                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="2" Click="Change_Tool" Content="G"/>
+                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" Content="H"/>
+            </Grid>
+            
+            <Rectangle Fill="Gray" Grid.Column="1" />
+            <Image x:Name="Screen_Background"  Grid.Column="1"  RenderOptions.BitmapScalingMode="NearestNeighbor" />
+            <Image x:Name="Screen"  Grid.Column="1" MouseMove="Draw" MouseLeftButtonDown="StartDraw" MouseLeftButtonUp="StopDraw"  
                    MouseRightButtonDown="StartRemove" MouseRightButtonUp="StopRemove" RenderOptions.BitmapScalingMode="NearestNeighbor"  />
             
             
             
             
             
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="2">
                 <Grid.RowDefinitions >
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
+
+                
+                
+                <Rectangle Name="Show_Color" Grid.Row="0" Width="20" Height="20" Stroke="Black" Fill="White"  StrokeThickness="1" HorizontalAlignment="Left"/>
+
+                <Grid Grid.Row="1" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="R" Grid.Column="0"/>
-                    <TextBox x:Name="Red_color" Grid.Column="1" Text="255" TextChanged="Switch_Color"/>
-                </Grid>
-                <Slider Name="Slider_red" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" ValueChanged="Slide_Color"/>
-                <Grid Grid.Row="3">
-                    <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="G" Grid.Column="0"/>
-                    <TextBox x:Name="Green_color" Grid.Column="1" Text="255" TextChanged="Switch_Color"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Rectangle Name="Color_panel_1_1" Grid.Row="0" Grid.Column="0" Width="20" Height="20" Stroke="Black" Fill="White" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_1_2" Grid.Row="1" Grid.Column="0" Width="20" Height="20" Stroke="Black" Fill="Red" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_1_3" Grid.Row="2" Grid.Column="0" Width="20" Height="20" Stroke="Black" Fill="Blue" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_1_4" Grid.Row="3" Grid.Column="0" Width="20" Height="20" Stroke="Black" Fill="Green" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_1_5" Grid.Row="4" Grid.Column="0" Width="20" Height="20" Stroke="Black" Fill="Brown" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_1_6" Grid.Row="5" Grid.Column="0" Width="20" Height="20" Stroke="Black" Fill="Black" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                                                                                                                                                                                  
+                    <Rectangle Name="Color_panel_2_1" Grid.Row="0" Grid.Column="1" Width="20" Height="20" Stroke="Black" Fill="Gray" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_2_2" Grid.Row="1" Grid.Column="1" Width="20" Height="20" Stroke="Black" Fill="Yellow" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_2_3" Grid.Row="2" Grid.Column="1" Width="20" Height="20" Stroke="Black" Fill="Lime" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_2_4" Grid.Row="3" Grid.Column="1" Width="20" Height="20" Stroke="Black" Fill="Turquoise" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_2_5" Grid.Row="4" Grid.Column="1" Width="20" Height="20" Stroke="Black" Fill="Pink" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
+                    <Rectangle Name="Color_panel_2_6" Grid.Row="5" Grid.Column="1" Width="20" Height="20" Stroke="Black" Fill="DeepPink" StrokeThickness="1" HorizontalAlignment="Left" MouseRightButtonDown="Change_Color" MouseLeftButtonDown="Set_Color"/>
                 </Grid>
-                <Slider Name="Slider_Green" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" ValueChanged="Slide_Color"/>
-                <Grid Grid.Row="5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="B" Grid.Column="0"/>
-                    <TextBox x:Name="Blue_color" Grid.Column="1" Text="255" TextChanged="Switch_Color"/>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions >
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Warstwy     " Grid.Row="0"/>
+                <ListBox Name="Layers" Grid.Row="1"></ListBox>
+
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>    
+                        <Button Content="+" Grid.Column="0" Click="AddLayer"/>
+                        <Button Content="-" Grid.Column="1" Click="RemoveLayer"/>
+                        <Button Content="/\" Grid.Column="2" Click="UpLayer" />
+                        <Button Content="\/" Grid.Column="3" Click="DownLayer" />
+                    </Grid>
                 </Grid>
-                <Slider Name="Slider_Blue" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" ValueChanged="Slide_Color"/>
-                <Label Content="Brak Błędów" Name="Error_Label" Grid.Row="7"/>
-                <Rectangle Name="Show_Color" Grid.Row="8" Width="16" Height="16" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Left"/>
-                <ListBox Name="Colors" Grid.Row="9" SelectionChanged="Set_Color" ></ListBox>
-                <Button Content="Zmień" Grid.Row="10" Click="Change_color"/>
             </Grid>
         </Grid>
     </Grid>
