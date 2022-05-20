@@ -52,18 +52,20 @@
                 <Button Width="20" Height="20" Grid.Column="1" Grid.Row="2" Click="Change_Tool" Content="G"/>
                 <Button Width="20" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" Content="H"/>
             </Grid>
+            
+                <Rectangle Fill="Gray" Grid.Column="1"/>
 
-            <Grid Grid.Column="1" Name="LayerGrid" MouseMove="Draw" MouseLeftButtonDown="StartDraw" MouseLeftButtonUp="StopDraw"  
-                   MouseRightButtonDown="StartRemove" MouseRightButtonUp="StopRemove">
-                <Rectangle Fill="Gray" Grid.Column="1" />
+            <Grid Name="LayerGrid" Grid.Column="1" MouseMove="Draw" MouseLeftButtonDown="StartDraw" MouseLeftButtonUp="StopDraw" MouseRightButtonDown="StartRemove" MouseRightButtonUp="StopRemove">
+           
+                <Image x:Name="Screen"   RenderOptions.BitmapScalingMode="NearestNeighbor" /> 
                 <Image x:Name="Screen_Background"  RenderOptions.BitmapScalingMode="NearestNeighbor" />
-                <Image x:Name="Screen"   RenderOptions.BitmapScalingMode="NearestNeighbor"  />
             </Grid>
+            
 
 
 
 
-        <Grid Grid.Column="2">
+            <Grid Grid.Column="2">
                 <Grid.RowDefinitions >
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
