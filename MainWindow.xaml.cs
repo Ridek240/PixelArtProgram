@@ -38,7 +38,7 @@ namespace PixelArtProgram
         int activeLayer=-1;
 
         public List<Controll.Image> layersImage = new List<Controll.Image>();
-        public List<Bitmap> layersBitmap = new List<Bitmap>();
+        public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
         public MainWindow()
         {
             InitializeComponent();
@@ -47,20 +47,30 @@ namespace PixelArtProgram
 
         private void SaveImage(object sender, RoutedEventArgs e)
         {
-            if (ActiveBitmap != null)
+            if (layersBitmap.Count() > 0)
             {
                 if (MessageBox.Show("Czy na pewno chcesz Zapisać?", "Usuń Element", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.png)|*.png|All files (*.*)|*.*";
+                    saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.zyd)|*.zyd|All files (*.*)|*.*";
                     if (saveFileDialog.ShowDialog() == true)
                      try
                      {
                     {
-                        Bitmap saveBitmap = new Bitmap(ActiveBitmap);
-                        ActiveBitmap.Dispose();
-                        saveBitmap.Save(saveFileDialog.FileName, ImageFormat.Png);
-                        ActiveBitmap = new Bitmap(saveBitmap);
+                                if (!Directory.Exists(saveFileDialog.FileName))
+                                {
+                                    Directory.CreateDirectory(saveFileDialog.FileName);
+                                }
+                                int i = 0;
+                        //Bitmap saveBitmap = new Bitmap(ActiveBitmap);
+                        //ActiveBitmap.Dispose();
+                        foreach(BitmapLayer bitmap in layersBitmap)
+                                {
+
+                                bitmap.bitmap.Save(saveFileDialog.FileName + "/" + bitmap.name + "." + i.ToString(), ImageFormat.Png);
+                                    i++; 
+                                }
+                        //ActiveBitmap = new Bitmap(saveBitmap);
                     }
                         }
                         catch { MessageBox.Show("Błąd w zapisywaniu pliku"); }
@@ -84,13 +94,6 @@ namespace PixelArtProgram
                 if (int.TryParse(Creating.Get_Width.Text, out Width) && int.TryParse(Creating.Get_Height.Text, out Height))
                 {
                     EmptyLayer = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    //EmptyLayer.MakeTransparent();
-                    //bitmapBachground2 = new Bitmap(Width, Height);
-                    //using (Graphics gfx = Graphics.FromImage(bitmapBachground2))
-                    //using (SolidBrush brush = new SolidBrush(System.Drawing.Color.FromArgb(0, 0, 0)))
-                    //{
-                    //    gfx.FillRectangle(brush, 0, 0, Width, Height);
-                    //}
                     HeightGlobal = Height; WidthGlobal = Width;
                     CreateBackGround(Width, Height);
                     UpdateScreen();
@@ -102,7 +105,12 @@ namespace PixelArtProgram
 
         private void OpenImage(object sender, RoutedEventArgs e)
         {
-            if (ActiveBitmap != null) SaveImage(sender, e);
+            if (layersBitmap.Count() >= 0)
+            {
+                SaveImage(sender, e);
+                layersBitmap.Clear();
+                layersImage.Clear();
+            }
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Dead Files (*.png)|*.png|All files (*.*)|*.*";
@@ -121,7 +129,7 @@ namespace PixelArtProgram
             Screen_Background.Source = ConvertToImage(bitmapBachground);
             if (activeLayer >= 0)
             {
-                layersImage[activeLayer].Source = ConvertToImage(layersBitmap[activeLayer]);
+                layersImage[activeLayer].Source = ConvertToImage(layersBitmap[activeLayer].bitmap);
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
             //Screen_Background2.Source = ConvertToImage(bitmapBachground2);
@@ -161,8 +169,8 @@ namespace PixelArtProgram
                         {
                             double pozx = (int)e.GetPosition(Screen).X;
                             double pozy = (int)e.GetPosition(Screen).Y;
-                            int bitmapx = layersBitmap[activeLayer].Width;
-                            int bitmapy = layersBitmap[activeLayer].Height;
+                            int bitmapx = layersBitmap[activeLayer].bitmap.Width;
+                            int bitmapy = layersBitmap[activeLayer].bitmap.Height;
                             double size = LayerGrid.ActualWidth > LayerGrid.ActualHeight ? LayerGrid.ActualHeight : LayerGrid.ActualWidth;
                             double ratioscale = bitmapx > bitmapy ? bitmapy : bitmapx;
                             double realratio = size / ratioscale;
@@ -178,7 +186,7 @@ namespace PixelArtProgram
                             int pixelx = (int)(bitmapx * scalex);
                             int pixely = (int)(bitmapy * scaley);
                             System.Drawing.Color backupcolor;
-                            backupcolor = layersBitmap[activeLayer].GetPixel(pixelx, pixely);
+                            backupcolor = layersBitmap[activeLayer].bitmap.GetPixel(pixelx, pixely);
                             Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
                         }
                         else
@@ -197,8 +205,8 @@ namespace PixelArtProgram
 
             double pozx = (int)e.GetPosition(Screen).X;
             double pozy = (int)e.GetPosition(Screen).Y;
-            int bitmapx = layersBitmap[activeLayer].Width;
-            int bitmapy = layersBitmap[activeLayer].Height;
+            int bitmapx = layersBitmap[activeLayer].bitmap.Width;
+            int bitmapy = layersBitmap[activeLayer].bitmap.Height;
             double size = LayerGrid.ActualWidth > LayerGrid.ActualHeight ? LayerGrid.ActualHeight : LayerGrid.ActualWidth;
             double ratioscale = bitmapx > bitmapy ? bitmapy : bitmapx;
             double realratio = size / ratioscale;
@@ -215,7 +223,7 @@ namespace PixelArtProgram
             int pixely = (int)(bitmapy * scaley);
 
 
-            layersBitmap[activeLayer].SetPixel(pixelx, pixely, color);
+            layersBitmap[activeLayer].bitmap.SetPixel(pixelx, pixely, color);
             UpdateScreen();
         }
 
@@ -327,7 +335,7 @@ namespace PixelArtProgram
                 Controll.Label label = new Controll.Label();
                 label.Content = name.Input.Text;
                 Layers.Items.Add(label);
-                layersBitmap.Add(new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb));
+                layersBitmap.Add(new BitmapLayer(name.Input.Text,new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb)));
                 Controll.Image image = new Controll.Image();
                 image.MouseLeftButtonDown += StartDraw;
                 image.MouseLeftButtonUp += StopDraw;
@@ -403,6 +411,16 @@ namespace PixelArtProgram
 
     }
 
+    public class BitmapLayer
+    {
+        public string name;
+        public Bitmap bitmap;
+        public BitmapLayer(string name, Bitmap bitmap)
+        {
+            this.name = name;
+            this.bitmap = bitmap;
+        }
+    }
 
 
 }
