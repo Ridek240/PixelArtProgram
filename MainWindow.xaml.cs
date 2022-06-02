@@ -36,7 +36,7 @@ namespace PixelArtProgram
         int WidthGlobal;
         int HeightGlobal;
         int activeLayer=-1;
-
+        int Tools_ID = 1;
         public List<Controll.Image> layersImage = new List<Controll.Image>();
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
         public MainWindow()
@@ -165,34 +165,29 @@ namespace PixelArtProgram
                 if (layersBitmap.Count > 0)
                     if (layersBitmap[activeLayer] != null)
                     {
+                        Point point = Get_Mouse_Position(e);
                         if (Keyboard.IsKeyDown(Key.LeftShift))
                         {
-                            double pozx = (int)e.GetPosition(Screen).X;
-                            double pozy = (int)e.GetPosition(Screen).Y;
-                            int bitmapx = layersBitmap[activeLayer].bitmap.Width;
-                            int bitmapy = layersBitmap[activeLayer].bitmap.Height;
-                            double size = LayerGrid.ActualWidth > LayerGrid.ActualHeight ? LayerGrid.ActualHeight : LayerGrid.ActualWidth;
-                            double ratioscale = bitmapx > bitmapy ? bitmapy : bitmapx;
-                            double realratio = size / ratioscale;
-                            double Realx = realratio * bitmapx;
-                            double Realy = realratio * bitmapx;
 
-                            UpdateScreen(); //To jakimś cudem naprawia error z lagiem przy starcie programu
-                            if (pozx < 0 || pozy < 0)
-                                return;
-                            double scalex = pozx / Realx;
-                            double scaley = pozy / Realy;
-
-                            int pixelx = (int)(bitmapx * scalex);
-                            int pixely = (int)(bitmapy * scaley);
                             System.Drawing.Color backupcolor;
-                            backupcolor = layersBitmap[activeLayer].bitmap.GetPixel(pixelx, pixely);
+                            backupcolor = layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y);
                             Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
                         }
-                        else
+                        else if(Tools_ID==0)
                         {
                             draw = true;
-                            Change_Color(e, TranstalteColor(BrushColor(Show_Color.Fill)));
+                            layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, TranstalteColor(BrushColor(Show_Color.Fill)));
+                        }
+                        else if(Tools_ID==1)
+                        {
+                            //System.Drawing.Color pixelC = BitmapSrc.GetPixel(pixelx, pixely);
+                            //System.Drawing.Point pixelP = new System.Drawing.Point(pixelx, pixely);
+
+                            //BitmapResult = new Bitmap(BitmapSrc);
+                            if (false) return;
+                            //layersBitmap[activeLayer].bitmap = Blackout(layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y), layersBitmap[activeLayer].bitmap, 0);
+                            else
+                                layersBitmap[activeLayer].bitmap = Fill(new System.Drawing.Point(point.x, point.y), layersBitmap[activeLayer].bitmap, TranstalteColor(BrushColor(Show_Color.Fill)) , 0 );
                         }
                     }
 
@@ -200,7 +195,7 @@ namespace PixelArtProgram
 
         }
 
-        private void Change_Color(MouseEventArgs e, System.Drawing.Color color)
+        private Point Get_Mouse_Position(MouseEventArgs e)
         {
 
             double pozx = (int)e.GetPosition(Screen).X;
@@ -215,16 +210,15 @@ namespace PixelArtProgram
 
             UpdateScreen(); //To jakimś cudem naprawia error z lagiem przy starcie programu
             if (pozx < 0 || pozy < 0)
-                return;
+                return null;
             double scalex = pozx / Realx;
             double scaley = pozy / Realy;
 
             int pixelx = (int)(bitmapx * scalex);
             int pixely = (int)(bitmapy * scaley);
 
+            return new Point(pixelx,pixely);
 
-            layersBitmap[activeLayer].bitmap.SetPixel(pixelx, pixely, color);
-            UpdateScreen();
         }
 
         private void StopDraw(object sender, MouseButtonEventArgs e)
@@ -239,13 +233,14 @@ namespace PixelArtProgram
                 if(layersBitmap.Count>0)
             if (layersBitmap[activeLayer] != null)
             {
+                        Point point = Get_Mouse_Position(e);
                 if (draw)
                 {
-                        Change_Color(e, TranstalteColor(BrushColor(Show_Color.Fill)));
-                }
+                        layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, TranstalteColor(BrushColor(Show_Color.Fill)));
+                        }
                 if(remove)
                 {
-                        Change_Color(e, System.Drawing.Color.FromArgb(0, 0, 0, 0));
+                            layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, System.Drawing.Color.FromArgb(0, 0, 0, 0));
                 }
             }
 
@@ -254,7 +249,8 @@ namespace PixelArtProgram
         private void StartRemove(object sender, MouseButtonEventArgs e)
         {
             remove = true;
-            Change_Color(e, System.Drawing.Color.FromArgb(0, 0, 0, 0));
+            Point point = Get_Mouse_Position(e);
+            layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, System.Drawing.Color.FromArgb(0, 0, 0, 0));
         }
 
         private void StopRemove(object sender, MouseButtonEventArgs e)
@@ -406,8 +402,69 @@ namespace PixelArtProgram
                 lastButton.IsEnabled = true;
             }
             lastButton = button;
+            if(button.Name=="Pencil")
+            {
+                Tools_ID = 0;
+            }
+            if(button.Name=="Fill_Tool")
+            {
+                Tools_ID = 1;
+            }
         }
 
+
+
+        private Bitmap Fill(System.Drawing.Point position, Bitmap bitmap, System.Drawing.Color ColorPixel, int range,  int maxIteration = 0)
+        {
+            //System.Drawing.Color blackpixel = System.Drawing.Color.FromArgb(0, 0, 0);
+            System.Drawing.Color pixelCompateTo = bitmap.GetPixel(position.X, position.Y);
+
+            Queue<System.Drawing.Point> pixels = new Queue<System.Drawing.Point>();
+            pixels.Enqueue(position);
+
+            bool[,] visited = new bool[bitmap.Width, bitmap.Height];
+            Bitmap bitmapResult = new Bitmap(bitmap);
+
+            int iteration = 0;
+            while (pixels.Count > 0)
+            {
+                if (maxIteration > 0 && iteration++ >= maxIteration) break;
+                System.Drawing.Point pixel = pixels.Dequeue();
+                if (pixel.X < 0 || pixel.X >= bitmap.Width ||
+                    pixel.Y < 0 || pixel.Y >= bitmap.Height ||
+                    visited[pixel.X, pixel.Y]) continue;
+                visited[pixel.X, pixel.Y] = true;
+
+                if (GetTolerance(bitmap.GetPixel(pixel.X, pixel.Y), pixelCompateTo, range))
+                {
+                    bitmapResult.SetPixel(pixel.X, pixel.Y, ColorPixel);
+                    foreach (System.Drawing.Point neighbour in neighbours)
+                    {
+                        System.Drawing.Point nPixel = new System.Drawing.Point(
+                            pixel.X + neighbour.X,
+                            pixel.Y + neighbour.Y);
+                        pixels.Enqueue(nPixel);
+                    }
+                }
+            }
+
+            return bitmapResult;
+        }
+        private bool GetTolerance(System.Drawing.Color atpixel, System.Drawing.Color pixel, int range)
+        {
+            return atpixel.R >= pixel.R - range
+                && atpixel.R <= pixel.R + range & atpixel.G >= pixel.G - range
+                && atpixel.G <= pixel.G + range & atpixel.B >= pixel.B - range
+                && atpixel.B <= pixel.B + range;
+        }
+
+        private static System.Drawing.Point[] neighbours =
+{
+            new System.Drawing.Point(-1, 0),
+            new System.Drawing.Point(1, 0),
+            new System.Drawing.Point(0, 1),
+            new System.Drawing.Point(0, -1)
+        };
 
     }
 
@@ -421,6 +478,18 @@ namespace PixelArtProgram
             this.bitmap = bitmap;
         }
     }
+    public class Point
+    {
+        public int x;
+        public int y;
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    //wyodrębnić
+
 
 
 }

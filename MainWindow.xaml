@@ -43,8 +43,8 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <Button Width="20" Height="20" Grid.Column="0" Grid.Row="0" Click="Change_Tool" Content="A"/>
-                <Button Width="20" Height="20" Grid.Column="0" Grid.Row="1" Click="Change_Tool" Content="B"/>
+                <Button Width="20" x:Name="Pencil" Height="20" Grid.Column="0" Grid.Row="0" Click="Change_Tool" Content="A"/>
+                <Button Width="20" x:Name="Fill_Tool" Height="20" Grid.Column="0" Grid.Row="1" Click="Change_Tool" Content="B"/>
                 <Button Width="20" Height="20" Grid.Column="0" Grid.Row="2" Click="Change_Tool" Content="C"/>
                 <Button Width="20" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" Content="D"/>
                 <Button Width="20" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" Content="E"/>
