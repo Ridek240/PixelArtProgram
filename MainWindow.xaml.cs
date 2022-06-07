@@ -36,7 +36,7 @@ namespace PixelArtProgram
         int WidthGlobal;
         int HeightGlobal;
         int activeLayer=-1;
-        int Tools_ID = 1;
+        int Tools_ID = 0;
         public List<Controll.Image> layersImage = new List<Controll.Image>();
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
         public MainWindow()
@@ -180,14 +180,11 @@ namespace PixelArtProgram
                         }
                         else if(Tools_ID==1)
                         {
-                            //System.Drawing.Color pixelC = BitmapSrc.GetPixel(pixelx, pixely);
-                            //System.Drawing.Point pixelP = new System.Drawing.Point(pixelx, pixely);
-
-                            //BitmapResult = new Bitmap(BitmapSrc);
-                            if (false) return;
-                            //layersBitmap[activeLayer].bitmap = Blackout(layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y), layersBitmap[activeLayer].bitmap, 0);
-                            else
-                                layersBitmap[activeLayer].bitmap = Fill(new System.Drawing.Point(point.x, point.y), layersBitmap[activeLayer].bitmap, TranstalteColor(BrushColor(Show_Color.Fill)) , 0 );
+                            layersBitmap[activeLayer].bitmap = Fill(new System.Drawing.Point(point.x, point.y), layersBitmap[activeLayer].bitmap, TranstalteColor(BrushColor(Show_Color.Fill)) , 0 );
+                        }
+                        else if(Tools_ID==2)
+                        {
+                            layersBitmap[activeLayer].bitmap = FillAll(layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y), layersBitmap[activeLayer].bitmap, 0, TranstalteColor(BrushColor(Show_Color.Fill)));
                         }
                     }
 
@@ -200,8 +197,8 @@ namespace PixelArtProgram
 
             double pozx = (int)e.GetPosition(Screen).X;
             double pozy = (int)e.GetPosition(Screen).Y;
-            int bitmapx = layersBitmap[activeLayer].bitmap.Width;
-            int bitmapy = layersBitmap[activeLayer].bitmap.Height;
+            int bitmapx = WidthGlobal;
+            int bitmapy = HeightGlobal;
             double size = LayerGrid.ActualWidth > LayerGrid.ActualHeight ? LayerGrid.ActualHeight : LayerGrid.ActualWidth;
             double ratioscale = bitmapx > bitmapy ? bitmapy : bitmapx;
             double realratio = size / ratioscale;
@@ -293,7 +290,7 @@ namespace PixelArtProgram
             {
                 for (int y = 0; y < bitmapBachground.Height; y++)
                 {
-                    bitmapBachground.SetPixel(x,y, (x + y) % 2 == 1 ? System.Drawing.Color.FromArgb(255, 0, 0, 0) : System.Drawing.Color.FromArgb(255, 50, 50, 50));
+                    bitmapBachground.SetPixel(x,y, (x + y) % 2 == 1 ? System.Drawing.Color.FromArgb(255, 100, 100, 100) : System.Drawing.Color.FromArgb(255, 50, 50, 50));
                 }
             }
         }
@@ -354,7 +351,7 @@ namespace PixelArtProgram
                 int temp = Layers.SelectedIndex;
                 Layers.SelectedIndex = -1;
                 layersBitmap.RemoveAt(temp);
-
+                activeLayer = -1;
                 LayerGrid.Children.Remove(layersImage[temp]);
                 layersImage.RemoveAt(temp);
                 Layers.Items.RemoveAt(temp);
@@ -410,13 +407,17 @@ namespace PixelArtProgram
             {
                 Tools_ID = 1;
             }
+            if(button.Name=="FillAll_Tool")
+            {
+                Tools_ID = 2;
+            }
         }
 
 
 
         private Bitmap Fill(System.Drawing.Point position, Bitmap bitmap, System.Drawing.Color ColorPixel, int range,  int maxIteration = 0)
         {
-            //System.Drawing.Color blackpixel = System.Drawing.Color.FromArgb(0, 0, 0);
+            
             System.Drawing.Color pixelCompateTo = bitmap.GetPixel(position.X, position.Y);
 
             Queue<System.Drawing.Point> pixels = new Queue<System.Drawing.Point>();
@@ -450,6 +451,25 @@ namespace PixelArtProgram
 
             return bitmapResult;
         }
+
+
+        private Bitmap FillAll(System.Drawing.Color pixel, Bitmap bitmap, int range, System.Drawing.Color Color)
+        {
+            Bitmap bitmapResult = new Bitmap(bitmap);
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    System.Drawing.Color atpixel = bitmap.GetPixel(x, y);
+                    if (GetTolerance(atpixel, pixel, range))
+                    {
+                        bitmapResult.SetPixel(x, y, Color);
+                    }
+                }
+            }
+            return bitmapResult;
+        }
+
         private bool GetTolerance(System.Drawing.Color atpixel, System.Drawing.Color pixel, int range)
         {
             return atpixel.R >= pixel.R - range
@@ -467,6 +487,9 @@ namespace PixelArtProgram
         };
 
     }
+
+
+
 
     public class BitmapLayer
     {

@@ -7,7 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Grafic\Fill.png" />
+    <None Remove="Grafic\fillAll.png" />
+    <None Remove="Grafic\pencil.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Grafic\Fill.png" />
+    <Resource Include="Grafic\fillAll.png" />
+    <Resource Include="Grafic\pencil.png" />
   </ItemGroup>
 
 </Project>
