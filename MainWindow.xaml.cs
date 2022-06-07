@@ -39,6 +39,9 @@ namespace PixelArtProgram
         int Tools_ID = 1;
         public List<Controll.Image> layersImage = new List<Controll.Image>();
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
+
+        public DrawingBoard DB;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -54,33 +57,31 @@ namespace PixelArtProgram
                     SaveFileDialog saveFileDialog = new SaveFileDialog();
                     saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.zyd)|*.zyd|All files (*.*)|*.*";
                     if (saveFileDialog.ShowDialog() == true)
-                     try
-                     {
                     {
+                        try
+                        {
+                            {
                                 if (!Directory.Exists(saveFileDialog.FileName))
                                 {
                                     Directory.CreateDirectory(saveFileDialog.FileName);
                                 }
                                 int i = 0;
-                        //Bitmap saveBitmap = new Bitmap(ActiveBitmap);
-                        //ActiveBitmap.Dispose();
-                        foreach(BitmapLayer bitmap in layersBitmap)
+                                //Bitmap saveBitmap = new Bitmap(ActiveBitmap);
+                                //ActiveBitmap.Dispose();
+                                foreach(BitmapLayer bitmap in layersBitmap)
                                 {
-
-                                bitmap.bitmap.Save(saveFileDialog.FileName + "/" + bitmap.name + "." + i.ToString(), ImageFormat.Png);
-                                    i++; 
+                                    bitmap.bitmap.Save(saveFileDialog.FileName + "/" + bitmap.name + "." + i.ToString(), ImageFormat.Png);
+                                    i++;
                                 }
-                        //ActiveBitmap = new Bitmap(saveBitmap);
-                    }
+                                //ActiveBitmap = new Bitmap(saveBitmap);
+                            }
                         }
-                        catch { MessageBox.Show("Błąd w zapisywaniu pliku"); }
-
-
-
-
+                        catch { _ = MessageBox.Show("Błąd w zapisywaniu pliku"); }
+                    }
                 }
             }
-            else MessageBox.Show("Plik nie istnieje");
+            else 
+                MessageBox.Show("Plik nie istnieje");
             
         }
 
@@ -94,7 +95,9 @@ namespace PixelArtProgram
                 if (int.TryParse(Creating.Get_Width.Text, out Width) && int.TryParse(Creating.Get_Height.Text, out Height))
                 {
                     EmptyLayer = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    HeightGlobal = Height; WidthGlobal = Width;
+                    HeightGlobal = Height; 
+                    WidthGlobal = Width;
+                    DB = new DrawingBoard(Width, Height);
                     CreateBackGround(Width, Height);
                     UpdateScreen();
                 }
@@ -127,9 +130,12 @@ namespace PixelArtProgram
         {
             //Screen.Source = ConvertToImage(ActiveBitmap);
             Screen_Background.Source = ConvertToImage(bitmapBachground);
-            if (activeLayer >= 0)
+            //if (activeLayer >= 0)
+            if (DB.CanDraw())
             {
-                layersImage[activeLayer].Source = ConvertToImage(layersBitmap[activeLayer].bitmap);
+                //layersImage[activeLayer].Source = ConvertToImage(layersBitmap[activeLayer].bitmap);
+                layersImage[DB.ActiveLayer].Source = ConvertToImage(DB.GetActiveBitmapLayer().bitmap);
+                
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
             //Screen_Background2.Source = ConvertToImage(bitmapBachground2);
@@ -154,45 +160,46 @@ namespace PixelArtProgram
             return a <= max && a >= min;
         }
 
-
-
-
-
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
+            //if (activeLayer < 0) return;
+            //if (layersBitmap.Count <= 0) return;
+            //if (layersBitmap[activeLayer] == null) return;
+
+            Point point = Get_Mouse_Position(e);
+            if (point == null) return;
+
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                // Color Picker
+                System.Drawing.Color backupcolor;
+                //backupcolor = layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y);
+                backupcolor = layersBitmap[DB.ActiveLayer].bitmap.GetPixel(point.x, point.y);
+                Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
+            }
+            else if(Tools_ID==0)
+            {
+                // Pencil
+                draw = true;
+                DB.StartDrawing(point, new Pencil(TranstalteColor(BrushColor(Show_Color.Fill))));
+                //layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, System.Drawing.Color.FromArgb(128, 128, 128, 125));
+            }
+            else if(Tools_ID==1)
+            {
+                // This is a bucket
+
+                //System.Drawing.Color pixelC = BitmapSrc.GetPixel(pixelx, pixely);
+                //System.Drawing.Point pixelP = new System.Drawing.Point(pixelx, pixely);
+
+                //BitmapResult = new Bitmap(BitmapSrc);
+                //if (false) return;
+                //layersBitmap[activeLayer].bitmap = Blackout(layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y), layersBitmap[activeLayer].bitmap, 0);
+                //else
+                //layersBitmap[activeLayer].bitmap = Fill(new System.Drawing.Point(point.x, point.y), layersBitmap[activeLayer].bitmap, TranstalteColor(BrushColor(Show_Color.Fill)) , 0 );
+                //layersBitmap[DB.ActiveLayer].bitmap = Fill(new System.Drawing.Point(point.x, point.y), layersBitmap[DB.ActiveLayer].bitmap, TranstalteColor(BrushColor(Show_Color.Fill)) , 0 );
+                DB.StartDrawing(point, new Bucket(TranstalteColor(BrushColor(Show_Color.Fill))));
+            }
             
-            if (activeLayer >= 0)
-                if (layersBitmap.Count > 0)
-                    if (layersBitmap[activeLayer] != null)
-                    {
-                        Point point = Get_Mouse_Position(e);
-                        if (Keyboard.IsKeyDown(Key.LeftShift))
-                        {
-
-                            System.Drawing.Color backupcolor;
-                            backupcolor = layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y);
-                            Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
-                        }
-                        else if(Tools_ID==0)
-                        {
-                            draw = true;
-                            layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, TranstalteColor(BrushColor(Show_Color.Fill)));
-                        }
-                        else if(Tools_ID==1)
-                        {
-                            //System.Drawing.Color pixelC = BitmapSrc.GetPixel(pixelx, pixely);
-                            //System.Drawing.Point pixelP = new System.Drawing.Point(pixelx, pixely);
-
-                            //BitmapResult = new Bitmap(BitmapSrc);
-                            if (false) return;
-                            //layersBitmap[activeLayer].bitmap = Blackout(layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y), layersBitmap[activeLayer].bitmap, 0);
-                            else
-                                layersBitmap[activeLayer].bitmap = Fill(new System.Drawing.Point(point.x, point.y), layersBitmap[activeLayer].bitmap, TranstalteColor(BrushColor(Show_Color.Fill)) , 0 );
-                        }
-                    }
-
-            
-
         }
 
         private Point Get_Mouse_Position(MouseEventArgs e)
@@ -200,8 +207,10 @@ namespace PixelArtProgram
 
             double pozx = (int)e.GetPosition(Screen).X;
             double pozy = (int)e.GetPosition(Screen).Y;
-            int bitmapx = layersBitmap[activeLayer].bitmap.Width;
-            int bitmapy = layersBitmap[activeLayer].bitmap.Height;
+            //int bitmapx = layersBitmap[activeLayer].bitmap.Width;
+            //int bitmapy = layersBitmap[activeLayer].bitmap.Height;
+            int bitmapx = WidthGlobal;
+            int bitmapy = HeightGlobal;
             double size = LayerGrid.ActualWidth > LayerGrid.ActualHeight ? LayerGrid.ActualHeight : LayerGrid.ActualWidth;
             double ratioscale = bitmapx > bitmapy ? bitmapy : bitmapx;
             double realratio = size / ratioscale;
@@ -228,29 +237,30 @@ namespace PixelArtProgram
 
         private void Draw(object sender, MouseEventArgs e)
         {
-            
-            if(activeLayer>=0)
-                if(layersBitmap.Count>0)
-            if (layersBitmap[activeLayer] != null)
-            {
-                        Point point = Get_Mouse_Position(e);
-                if (draw)
-                {
-                        layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, TranstalteColor(BrushColor(Show_Color.Fill)));
-                        }
-                if(remove)
-                {
-                            layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, System.Drawing.Color.FromArgb(0, 0, 0, 0));
-                }
-            }
+            //if (activeLayer < 0) return;
+            //if (layersBitmap.Count <= 0) return;
+            //if (layersBitmap[activeLayer] == null) return;
 
+            Point point = Get_Mouse_Position(e);
+            if (point == null) return;
+            if (draw)
+            {
+                //layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, TranstalteColor(BrushColor(Show_Color.Fill)));
+                DB.Draw(point);
+            }
+            if(remove)
+            {
+                //layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, System.Drawing.Color.FromArgb(0, 0, 0, 0));
+                DB.Draw(point);
+            }
         }
 
         private void StartRemove(object sender, MouseButtonEventArgs e)
         {
             remove = true;
             Point point = Get_Mouse_Position(e);
-            layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, System.Drawing.Color.FromArgb(0, 0, 0, 0));
+            //layersBitmap[activeLayer].bitmap.SetPixel(point.x, point.y, System.Drawing.Color.FromArgb(0, 0, 0, 0));
+            DB.StartDrawing(point, new Eraser());
         }
 
         private void StopRemove(object sender, MouseButtonEventArgs e)
@@ -274,8 +284,6 @@ namespace PixelArtProgram
                     }
                     ActiveBitmap.Save(tempname+NextVersion+".png", ImageFormat.Png);
                     NextVersion++;
-
-
                 }
             }
             else
@@ -305,10 +313,14 @@ namespace PixelArtProgram
             {
                 ChangeColor change = new ChangeColor();
                 if (change.ShowDialog() == true)
-                    {
-                        rectangle.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, (byte)int.Parse(change.Red_color.Text), (byte)int.Parse(change.Green_color.Text), (byte)int.Parse(change.Blue_color.Text)));
-                        
-                    }
+                {
+                    rectangle.Fill = new SolidColorBrush(
+                        System.Windows.Media.Color.FromArgb(
+                            255, 
+                            (byte)int.Parse(change.Red_color.Text), 
+                            (byte)int.Parse(change.Green_color.Text), 
+                            (byte)int.Parse(change.Blue_color.Text)));
+                }
             }
         }
 
@@ -323,15 +335,16 @@ namespace PixelArtProgram
 
         private void AddLayer(object sender, RoutedEventArgs e)
         {
-
-
             Naming name = new Naming();
             if (name.ShowDialog() == true)
             {
                 Controll.Label label = new Controll.Label();
                 label.Content = name.Input.Text;
                 Layers.Items.Add(label);
-                layersBitmap.Add(new BitmapLayer(name.Input.Text,new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb)));
+
+                DB.AddLayer(name.Input.Text);
+                //layersBitmap.Add(new BitmapLayer(name.Input.Text,new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb)));
+                
                 Controll.Image image = new Controll.Image();
                 image.MouseLeftButtonDown += StartDraw;
                 image.MouseLeftButtonUp += StopDraw;
@@ -341,10 +354,9 @@ namespace PixelArtProgram
                 RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
                 layersImage.Add(image);
                 LayerGrid.Children.Add(image);
-                activeLayer = layersBitmap.Count - 1;
+                //activeLayer = layersBitmap.Count - 1;
+                activeLayer = DB.ActiveLayer;
             }
-          
-             
         }
 
         private void RemoveLayer(object sender, RoutedEventArgs e)
@@ -353,7 +365,8 @@ namespace PixelArtProgram
             {
                 int temp = Layers.SelectedIndex;
                 Layers.SelectedIndex = -1;
-                layersBitmap.RemoveAt(temp);
+                //layersBitmap.RemoveAt(temp);
+                DB.RemoveLayer(temp);
 
                 LayerGrid.Children.Remove(layersImage[temp]);
                 layersImage.RemoveAt(temp);
@@ -364,7 +377,8 @@ namespace PixelArtProgram
         {
             if (Layers.SelectedIndex >= 0)
             {
-                activeLayer = Layers.SelectedIndex;
+                //activeLayer = Layers.SelectedIndex;
+                DB.ActiveLayer = Layers.SelectedIndex;
             }
         }
         private void UpLayer(object sender, RoutedEventArgs e)
@@ -412,8 +426,6 @@ namespace PixelArtProgram
             }
         }
 
-
-
         private Bitmap Fill(System.Drawing.Point position, Bitmap bitmap, System.Drawing.Color ColorPixel, int range,  int maxIteration = 0)
         {
             //System.Drawing.Color blackpixel = System.Drawing.Color.FromArgb(0, 0, 0);
@@ -429,10 +441,13 @@ namespace PixelArtProgram
             while (pixels.Count > 0)
             {
                 if (maxIteration > 0 && iteration++ >= maxIteration) break;
+
                 System.Drawing.Point pixel = pixels.Dequeue();
+
                 if (pixel.X < 0 || pixel.X >= bitmap.Width ||
                     pixel.Y < 0 || pixel.Y >= bitmap.Height ||
                     visited[pixel.X, pixel.Y]) continue;
+
                 visited[pixel.X, pixel.Y] = true;
 
                 if (GetTolerance(bitmap.GetPixel(pixel.X, pixel.Y), pixelCompateTo, range))
@@ -459,7 +474,7 @@ namespace PixelArtProgram
         }
 
         private static System.Drawing.Point[] neighbours =
-{
+        {
             new System.Drawing.Point(-1, 0),
             new System.Drawing.Point(1, 0),
             new System.Drawing.Point(0, 1),
@@ -478,6 +493,7 @@ namespace PixelArtProgram
             this.bitmap = bitmap;
         }
     }
+
     public class Point
     {
         public int x;
