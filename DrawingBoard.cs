@@ -42,6 +42,7 @@ namespace PixelArtProgram
             BitmapLayer bitmapLayer = new BitmapLayer(name, new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb));
             layersBitmap.Add(bitmapLayer);
             activeLayer = layersBitmap.Count - 1;
+            
         }
 
         // Drawing

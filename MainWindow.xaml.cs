@@ -35,8 +35,7 @@ namespace PixelArtProgram
 
         int WidthGlobal;
         int HeightGlobal;
-        int activeLayer=-1;
-        int Tools_ID = 1;
+        int Tools_ID = 0;
         public List<Controll.Image> layersImage = new List<Controll.Image>();
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
 
@@ -174,7 +173,7 @@ namespace PixelArtProgram
                 // Color Picker
                 System.Drawing.Color backupcolor;
                 //backupcolor = layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y);
-                backupcolor = layersBitmap[DB.ActiveLayer].bitmap.GetPixel(point.x, point.y);
+                backupcolor = DB.GetPixel(point);
                 Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
             }
             else if(Tools_ID==0)
@@ -207,8 +206,7 @@ namespace PixelArtProgram
 
             double pozx = (int)e.GetPosition(Screen).X;
             double pozy = (int)e.GetPosition(Screen).Y;
-            //int bitmapx = layersBitmap[activeLayer].bitmap.Width;
-            //int bitmapy = layersBitmap[activeLayer].bitmap.Height;
+
             int bitmapx = WidthGlobal;
             int bitmapy = HeightGlobal;
             double size = LayerGrid.ActualWidth > LayerGrid.ActualHeight ? LayerGrid.ActualHeight : LayerGrid.ActualWidth;
@@ -355,7 +353,7 @@ namespace PixelArtProgram
                 layersImage.Add(image);
                 LayerGrid.Children.Add(image);
                 //activeLayer = layersBitmap.Count - 1;
-                activeLayer = DB.ActiveLayer;
+                //activeLayer = DB.ActiveLayer;
             }
         }
 
