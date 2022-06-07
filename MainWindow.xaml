@@ -19,6 +19,8 @@
                     <MenuItem Header="Zapisz" Click="SaveImage"/>
                     <MenuItem Header="Nowy" Click="CreateNew"/>
                     <MenuItem Header="Otwórz" Click="OpenImage"/>
+                    <MenuItem Header="Wyekstraktuj Warstwę" Click="ExtractLayer"/>
+                    <MenuItem Header="Wyekstraktuj Wszystko" Click="ExtractAll"/>
                 </MenuItem>
             </Menu>
 

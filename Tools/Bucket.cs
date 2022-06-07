@@ -5,12 +5,10 @@ namespace PixelArtProgram
 {
     public class Bucket : DrawingTool
     {
-        public System.Drawing.Color Color;
-        public Bucket(System.Drawing.Color color)
-        {
-            Color = color;
-        }
-        public void Draw(DrawingBoard drawingBoard, Point mousePosition)
+        
+        public Bucket(System.Drawing.Color color) : base(color) { }
+
+        public override void Draw(DrawingBoard drawingBoard, Point mousePosition)
         {
             drawingBoard.GetActiveBitmapLayer().bitmap = Fill(
                 new System.Drawing.Point(mousePosition.x, mousePosition.y),
@@ -18,7 +16,7 @@ namespace PixelArtProgram
                 Color, 0);
         }
 
-        private Bitmap Fill(System.Drawing.Point position, Bitmap bitmap, System.Drawing.Color ColorPixel, int range, int maxIteration = 0)
+        protected Bitmap Fill(System.Drawing.Point position, Bitmap bitmap, Color ColorPixel, int range, int maxIteration = 0)
         {
             //System.Drawing.Color blackpixel = System.Drawing.Color.FromArgb(0, 0, 0);
             System.Drawing.Color pixelCompateTo = bitmap.GetPixel(position.X, position.Y);
@@ -58,7 +56,7 @@ namespace PixelArtProgram
             return bitmapResult;
         }
 
-        private bool GetTolerance(System.Drawing.Color atpixel, System.Drawing.Color pixel, int range)
+        protected bool GetTolerance(Color atpixel, Color pixel, int range)
         {
             return atpixel.R >= pixel.R - range
                 && atpixel.R <= pixel.R + range & atpixel.G >= pixel.G - range
