@@ -16,6 +16,9 @@ namespace PixelArtProgram
         private int activeLayer = -1;
         public int ActiveLayer { get => activeLayer; set => activeLayer = value; }
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
+
+        public Stack<Action> OldActions = new Stack<Action>();
+        public Stack<Action> NewActions = new Stack<Action>();
         
         public DrawingBoard() { }
         public DrawingBoard(int width, int height)
@@ -24,7 +27,7 @@ namespace PixelArtProgram
             Height = height;
         }
 
-        public System.Drawing.Color GetPixel(Point point)
+        public Color GetPixel(Point point)
         {
             return layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y);
         }
@@ -45,7 +48,8 @@ namespace PixelArtProgram
 
         // Drawing
         private DrawingTool currentDrawingTool;
-
+        private Action currentAction;
+        private Bitmap oldBitmap;
 
         public bool CanDraw()
         {
@@ -65,14 +69,48 @@ namespace PixelArtProgram
         public void StartDrawing(Point mousePosition, DrawingTool newDrawingTool)
         {
             currentDrawingTool = newDrawingTool;
-            Draw(mousePosition);
+            oldBitmap = new Bitmap(GetActiveBitmapLayer().bitmap);
+            //Draw(mousePosition);
+        }
+
+        public void StopDrawing()
+        {
+            currentAction = new DrawAction
+            {
+                DB = this,
+                BitmapNew = new Bitmap(GetActiveBitmapLayer().bitmap),
+                BitmapOld = oldBitmap,
+                layerIndex = activeLayer
+            };
+
+            OldActions.Push(currentAction);
+            NewActions = new Stack<Action>();
+        }
+
+        public void Undo()
+        {
+            if (OldActions.Count <= 0) return;
+            Action action = OldActions.Pop();
+            action.Undo();
+            NewActions.Push(action);
+        }
+
+        public void Redo()
+        {
+            if (NewActions.Count <= 0) return;
+            Action action = NewActions.Pop();
+            action.Redo();
+            OldActions.Push(action);
         }
 
         public BitmapLayer GetActiveBitmapLayer()
         {
             return layersBitmap[activeLayer];
         }
-
+        public BitmapLayer GetBitmapLayer(int layerIndex)
+        {
+            return layersBitmap[layerIndex];
+        }
 
         public void SaveFile()
         {
@@ -129,15 +167,10 @@ namespace PixelArtProgram
             }
 
             SaveImage(target);
-
-
         }
 
         private void SaveImage(Bitmap bitmap)
         {
-
-
-
             Sized sized = new Sized();
             sized.Title = "Eksport";
             if (sized.ShowDialog() == true)
@@ -187,6 +220,31 @@ namespace PixelArtProgram
         }
     }
 
+    public abstract class Action
+    {
+        public DrawingBoard DB;
+
+        public abstract void Undo();
+
+        public abstract void Redo();
+    }
+
+    public class DrawAction : Action
+    {
+        public Bitmap BitmapOld;
+        public Bitmap BitmapNew;
+        public int layerIndex;
+
+        public override void Undo()
+        {
+            DB.GetBitmapLayer(layerIndex).bitmap = BitmapOld;
+        }
+
+        public override void Redo()
+        {
+            DB.GetBitmapLayer(layerIndex).bitmap = BitmapNew;
+        }
+    }
 
     public class BitmapLayer
     {
