@@ -25,7 +25,6 @@ namespace PixelArtProgram
     /// </summary>
     public partial class MainWindow : Window
     {
-
         bool draw = false;
         bool remove = false;
         Bitmap ActiveBitmap;
@@ -185,23 +184,21 @@ namespace PixelArtProgram
 
         private void StopDraw(object sender, MouseButtonEventArgs e)
         {
+            if (!draw) return;
             draw = false;
+            DB.StopDrawing();
         }
 
         private void Draw(object sender, MouseEventArgs e)
         {
-
-
             Point point = Get_Mouse_Position(e);
             if (point == null) return;
             if (draw)
             {
-                
                 DB.Draw(point);
             }
-            if(remove)
+            if (remove)
             {
-                
                 DB.Draw(point);
             }
         }
@@ -220,9 +217,9 @@ namespace PixelArtProgram
 
         private void ShortCuts(object sender, KeyEventArgs e)
         {
-            if(Keyboard.IsKeyDown(Key.LeftCtrl))
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
-                if(Keyboard.IsKeyDown(Key.S))
+                if (Keyboard.IsKeyDown(Key.S))
                 {
                     SaveFileDialog saveFileDialog = new SaveFileDialog();
                     //saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.png)|*.png|All files (*.*)|*.*";
@@ -234,6 +231,16 @@ namespace PixelArtProgram
                     }
                     ActiveBitmap.Save(tempname+NextVersion+".png", ImageFormat.Png);
                     NextVersion++;
+                }
+                if (Keyboard.IsKeyDown(Key.Z))
+                {
+                    DB.Undo();
+                    UpdateScreen();
+                }
+                if (Keyboard.IsKeyDown(Key.Y))
+                {
+                    DB.Redo();
+                    UpdateScreen();
                 }
             }
             else
