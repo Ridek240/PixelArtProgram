@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PixelArtProgram"
         mc:Ignorable="d"
-        Title="Sized"  Height="150" Width="150">
+        Title="Name"  Height="150" Width="150">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>

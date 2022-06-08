@@ -123,7 +123,7 @@ namespace PixelArtProgram
         {
             return a <= max && a >= min;
         }
-
+        
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
 
@@ -152,6 +152,10 @@ namespace PixelArtProgram
             {
                 // This is also a bucket but it fill everything 
                 DB.StartDrawing(point, new FillBucket(TranstalteColor(BrushColor(Show_Color.Fill))));
+            }
+            else if(Tools_ID==3)
+            {
+                //This is rectangle tool
             }
             
         }
@@ -185,7 +189,14 @@ namespace PixelArtProgram
 
         private void StopDraw(object sender, MouseButtonEventArgs e)
         {
-            draw = false;
+            if (Tools_ID == 0)
+            {
+                draw = false;
+            }
+            if(Tools_ID==3)
+            {
+
+            }
         }
 
         private void Draw(object sender, MouseEventArgs e)

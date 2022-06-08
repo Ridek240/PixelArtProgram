@@ -117,16 +117,14 @@ namespace PixelArtProgram
         {
 
 
-            int height = GetActiveBitmapLayer().bitmap.Height;
-            int width = GetActiveBitmapLayer().bitmap.Width;
 
-            Bitmap target = new Bitmap(width,height);
+            Bitmap target = new Bitmap(Width,Height);
 
             using (var grafics = Graphics.FromImage(target))
             {
                 foreach (BitmapLayer layer in layersBitmap)
                 {
-                    grafics.DrawImage(layer.bitmap, new Rectangle(0, 0, width, height));
+                    grafics.DrawImage(layer.bitmap, new Rectangle(0, 0, Width, Height));
                 }
             }
 
@@ -141,7 +139,7 @@ namespace PixelArtProgram
 
 
             Sized sized = new Sized();
-
+            sized.Title = "Eksport";
             if (sized.ShowDialog() == true)
             {
 
@@ -156,12 +154,12 @@ namespace PixelArtProgram
 
 
 
-                Bitmap Sized = new Bitmap(bitmap.Width * size, bitmap.Height * size);
+                Bitmap Sized = new Bitmap(Width * size, Height * size);
 
 
-                for (int i = 0; i < bitmap.Width; i++)
+                for (int i = 0; i < Width; i++)
                 {
-                    for (int j = 0; j < bitmap.Height; j++)
+                    for (int j = 0; j < Height; j++)
                     {
                         for (int i1 = 0; i1 < size; i1++)
                         {
