@@ -103,6 +103,13 @@ namespace PixelArtProgram
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
         }
+        private void UpdateAllLayers()
+        {
+            for(int i = 0; i<DB.GetBitmapLayer().Count();i++)
+            {
+                layersImage[i].Source = ConvertToImage(DB.GetBitmapLayer()[i].bitmap);
+            }
+        }
 
 
         public BitmapImage ConvertToImage(Bitmap src)
@@ -344,12 +351,46 @@ namespace PixelArtProgram
         }
         private void UpLayer(object sender, RoutedEventArgs e)
         {
-            
+            if (Layers.SelectedIndex >= 0)
+            {
+
+
+                DB.LayerUp(Layers.SelectedIndex);
+                Layers.Items.Clear();
+                foreach (BitmapLayer layer in DB.GetBitmapLayer())
+                {
+                    Controll.Label label = new Controll.Label();
+                    label.Content = layer.name;
+                    Layers.Items.Add(label);
+
+                }
+                Layers.SelectedIndex = DB.ActiveLayer;
+                UpdateAllLayers();
+
+            }
         }
 
         private void DownLayer(object sender, RoutedEventArgs e)
         {
+            if (Layers.SelectedIndex >= 0)
+            {
 
+
+                if (DB.LayerDown(Layers.SelectedIndex))
+                {
+                    Layers.Items.Clear();
+                    foreach (BitmapLayer layer in DB.GetBitmapLayer())
+                    {
+                        Controll.Label label = new Controll.Label();
+                        label.Content = layer.name;
+                        Layers.Items.Add(label);
+
+                    }
+                    Layers.SelectedIndex = DB.ActiveLayer;
+                    UpdateAllLayers();
+                }
+
+            }
         }
         private System.Drawing.Color TranstalteColor(System.Windows.Media.Color color)
         {

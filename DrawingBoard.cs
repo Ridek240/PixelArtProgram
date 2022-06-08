@@ -73,6 +73,10 @@ namespace PixelArtProgram
             //Draw(mousePosition);
         }
 
+        public List<BitmapLayer> GetBitmapLayer()
+        {
+            return layersBitmap;
+        }
         public void StopDrawing()
         {
             currentAction = new DrawAction
@@ -111,6 +115,33 @@ namespace PixelArtProgram
         {
             return layersBitmap[layerIndex];
         }
+
+        public bool LayerUp(int Layers)
+        {
+            if (Layers >= 1)
+            {
+                BitmapLayer layer = layersBitmap[Layers];
+                layersBitmap.Remove(layer);
+                layersBitmap.Insert(Layers - 1, layer);
+                activeLayer = Layers - 1;
+                return true;
+                
+            }
+            return false;
+        }
+        public bool LayerDown(int Layers)
+        {
+            if (Layers < layersBitmap.Count - 1)
+            {
+                BitmapLayer layer = layersBitmap[Layers];
+                layersBitmap.Remove(layer);
+                layersBitmap.Insert(Layers + 1, layer);
+                activeLayer = Layers + 1;
+                return true;
+            }
+            return false;
+        }
+
 
         public void SaveFile()
         {
