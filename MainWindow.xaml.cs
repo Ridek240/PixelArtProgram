@@ -66,7 +66,9 @@ namespace PixelArtProgram
                     WidthGlobal = Width;
                     DB = new DrawingBoard(Width, Height);
                     CreateBackGround(Width, Height);
+                    UpdateLayersImage();
                     UpdateScreen();
+                    UpdateAllLayers();
                 }
                 else MessageBox.Show("Wartosci są nieprawidłowe");
 
@@ -93,19 +95,41 @@ namespace PixelArtProgram
             
            
         }
+
+        public void UpdateLayersImage()
+        {
+            for (int i = 0; i < layersImage.Count; i++)
+            {
+                RemoveImageLayer(0);
+            }
+            for (int i = 0; i < DB.layersBitmap.Count; i++)
+            {
+                AddLayerImage();
+            }
+        }
+
         private void UpdateScreen()
         {
             Screen_Background.Source = ConvertToImage(bitmapBachground);
             if (DB.CanDraw())
             {
-                layersImage[DB.ActiveLayer].Source = ConvertToImage(DB.GetActiveBitmapLayer().bitmap);
+                layersImage[DB.ActiveLayer].Source = ConvertToImage(DB.GetActiveBitmapLayers().bitmap);
                 
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
         }
         private void UpdateAllLayers()
         {
-            for(int i = 0; i<DB.GetBitmapLayer().Count();i++)
+            Layers.Items.Clear();
+            foreach (BitmapLayer layer in DB.GetBitmapLayer())
+            {
+                Controll.Label label = new Controll.Label();
+                label.Content = layer.name;
+                Layers.Items.Add(label);
+
+            }
+            Layers.SelectedIndex = DB.ActiveLayer;
+            for (int i = 0; i<DB.GetBitmapLayer().Count();i++)
             {
                 layersImage[i].Source = ConvertToImage(DB.GetBitmapLayer()[i].bitmap);
             }
@@ -132,7 +156,8 @@ namespace PixelArtProgram
         
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
-
+            if (draw) return;
+            if (!DB.CanDraw()) return;
             Point point = Get_Mouse_Position(e);
             if (point == null) return;
 
@@ -163,12 +188,10 @@ namespace PixelArtProgram
             {
                 //This is rectangle tool
             }
-            
         }
 
         private Point Get_Mouse_Position(MouseEventArgs e)
         {
-
             double pozx = (int)e.GetPosition(Screen).X;
             double pozy = (int)e.GetPosition(Screen).Y;
 
@@ -246,11 +269,15 @@ namespace PixelArtProgram
                 if (Keyboard.IsKeyDown(Key.Z))
                 {
                     DB.Undo();
+                    UpdateLayersImage();
+                    UpdateAllLayers();
                     UpdateScreen();
                 }
                 if (Keyboard.IsKeyDown(Key.Y))
                 {
                     DB.Redo();
+                    UpdateLayersImage();
+                    UpdateAllLayers();
                     UpdateScreen();
                 }
             }
@@ -311,36 +338,52 @@ namespace PixelArtProgram
                 Layers.Items.Add(label);
 
                 DB.AddLayer(name.Input.Text);
-                //layersBitmap.Add(new BitmapLayer(name.Input.Text,new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb)));
-                
-                Controll.Image image = new Controll.Image();
-                image.MouseLeftButtonDown += StartDraw;
-                image.MouseLeftButtonUp += StopDraw;
-                image.MouseMove += Draw;
-                image.MouseRightButtonDown += StartRemove;
-                image.MouseRightButtonUp += StopRemove;
-                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
-                layersImage.Add(image);
-                LayerGrid.Children.Add(image);
-                //activeLayer = layersBitmap.Count - 1;
-                //activeLayer = DB.ActiveLayer;
+                AddLayerImage();
             }
+        }
+
+        public void AddLayerImage()
+        {
+            Controll.Image image = new Controll.Image();
+            image.MouseLeftButtonDown += StartDraw;
+            image.MouseLeftButtonUp += StopDraw;
+            image.MouseMove += Draw;
+            image.MouseRightButtonDown += StartRemove;
+            image.MouseRightButtonUp += StopRemove;
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+            layersImage.Add(image);
+            LayerGrid.Children.Add(image);
         }
 
         private void RemoveLayer(object sender, RoutedEventArgs e)
         {
-            if(Layers.SelectedIndex>=0)
+            if (Layers.SelectedIndex >= 0)
             {
                 int temp = Layers.SelectedIndex;
                 Layers.SelectedIndex = -1;
                 //layersBitmap.RemoveAt(temp);
-                DB.RemoveLayer(temp);
-
-                LayerGrid.Children.Remove(layersImage[temp]);
-                layersImage.RemoveAt(temp);
-                Layers.Items.RemoveAt(temp);
+                RemoveLayer(temp);
             }
         }
+
+        private void RemoveLayer(int index)
+        {
+            DB.RemoveLayer(index);
+            RemoveImageLayer(index);
+        }
+
+        private void RemoveImageLayer(int index)
+        {
+            if (layersImage.Count <= 0 ||
+                Layers.Items.Count <= 0 ||
+                index >= layersImage.Count ||
+                index >= Layers.Items.Count) return;
+
+            LayerGrid.Children.Remove(layersImage[index]);
+            layersImage.RemoveAt(index);
+            Layers.Items.RemoveAt(index);
+        }
+
         private void ChangeLayer(object sender, Controll.SelectionChangedEventArgs e)
         {
             if (Layers.SelectedIndex >= 0)
@@ -353,20 +396,9 @@ namespace PixelArtProgram
         {
             if (Layers.SelectedIndex >= 0)
             {
-
-
                 DB.LayerUp(Layers.SelectedIndex);
-                Layers.Items.Clear();
-                foreach (BitmapLayer layer in DB.GetBitmapLayer())
-                {
-                    Controll.Label label = new Controll.Label();
-                    label.Content = layer.name;
-                    Layers.Items.Add(label);
-
-                }
-                Layers.SelectedIndex = DB.ActiveLayer;
                 UpdateAllLayers();
-
+                UpdateScreen();
             }
         }
 
@@ -374,8 +406,6 @@ namespace PixelArtProgram
         {
             if (Layers.SelectedIndex >= 0)
             {
-
-
                 if (DB.LayerDown(Layers.SelectedIndex))
                 {
                     Layers.Items.Clear();
@@ -388,6 +418,7 @@ namespace PixelArtProgram
                     }
                     Layers.SelectedIndex = DB.ActiveLayer;
                     UpdateAllLayers();
+                    UpdateScreen();
                 }
 
             }

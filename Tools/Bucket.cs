@@ -10,9 +10,9 @@ namespace PixelArtProgram
 
         public override void Draw(DrawingBoard drawingBoard, Point mousePosition)
         {
-            drawingBoard.GetActiveBitmapLayer().bitmap = Fill(
+            drawingBoard.GetActiveBitmapLayers().bitmap = Fill(
                 new System.Drawing.Point(mousePosition.x, mousePosition.y),
-                drawingBoard.GetActiveBitmapLayer().bitmap, 
+                drawingBoard.GetActiveBitmapLayers().bitmap, 
                 Color, 0);
         }
 

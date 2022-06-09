@@ -19,7 +19,7 @@ namespace PixelArtProgram
 
         public Stack<Action> OldActions = new Stack<Action>();
         public Stack<Action> NewActions = new Stack<Action>();
-        
+
         public DrawingBoard() { }
         public DrawingBoard(int width, int height)
         {
@@ -32,18 +32,45 @@ namespace PixelArtProgram
             return layersBitmap[activeLayer].bitmap.GetPixel(point.x, point.y);
         }
 
-        public void RemoveLayer(int id)
+        public void RemoveLayer(int id, bool recorded = true)
         {
+            if (id >= layersBitmap.Count) return;
+            if (recorded)
+            {
+                CreateAction(new RemoveLayerAction
+                {
+                    DB = this,
+                    layerIndex = id,
+                    BitmapLayer = layersBitmap[id]
+                });
+            }
+
             layersBitmap.RemoveAt(id);
             activeLayer -= activeLayer >= layersBitmap.Count ? 1 : 0;
         }
 
-        public void AddLayer(string name)
+        public void AddLayer(string name, bool recorded = true) => AddLayer(name, layersBitmap.Count, recorded);
+
+        public void AddLayer(string name, int layerIndex, bool recorded = true)
         {
             BitmapLayer bitmapLayer = new BitmapLayer(name, new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb));
-            layersBitmap.Add(bitmapLayer);
+            AddLayer(bitmapLayer, layerIndex, recorded);
+        }
+
+        public void AddLayer(BitmapLayer bitmapLayer, int layerIndex, bool recorded = true)
+        {
+            if (recorded)
+            {
+                CreateAction(new AddLayerAction
+                {
+                    DB = this,
+                    layerIndex = layerIndex,
+                    BitmapLayer = bitmapLayer
+                });
+            }
+
+            layersBitmap.Insert(layerIndex, bitmapLayer);
             activeLayer = layersBitmap.Count - 1;
-            
         }
 
         // Drawing
@@ -69,8 +96,8 @@ namespace PixelArtProgram
         public void StartDrawing(Point mousePosition, DrawingTool newDrawingTool)
         {
             currentDrawingTool = newDrawingTool;
-            oldBitmap = new Bitmap(GetActiveBitmapLayer().bitmap);
-            //Draw(mousePosition);
+            oldBitmap = new Bitmap(GetActiveBitmapLayers().bitmap);
+            Draw(mousePosition);
         }
 
         public List<BitmapLayer> GetBitmapLayer()
@@ -82,12 +109,17 @@ namespace PixelArtProgram
             currentAction = new DrawAction
             {
                 DB = this,
-                BitmapNew = new Bitmap(GetActiveBitmapLayer().bitmap),
+                BitmapNew = new Bitmap(GetActiveBitmapLayers().bitmap),
                 BitmapOld = oldBitmap,
                 layerIndex = activeLayer
             };
 
-            OldActions.Push(currentAction);
+            CreateAction(currentAction);
+        }
+
+        public void CreateAction(Action action)
+        {
+            OldActions.Push(action);
             NewActions = new Stack<Action>();
         }
 
@@ -107,7 +139,7 @@ namespace PixelArtProgram
             OldActions.Push(action);
         }
 
-        public BitmapLayer GetActiveBitmapLayer()
+        public BitmapLayer GetActiveBitmapLayers()
         {
             return layersBitmap[activeLayer];
         }
@@ -116,23 +148,41 @@ namespace PixelArtProgram
             return layersBitmap[layerIndex];
         }
 
-        public bool LayerUp(int Layers)
+        public bool LayerUp(int Layers, bool recorded = true)
         {
             if (Layers >= 1)
             {
+                if (recorded)
+                {
+                    CreateAction(new MoveLayerAction
+                    {
+                        DB = this,
+                        LayerIndex = Layers,
+                        MovedUp = true
+                    });
+                }
                 BitmapLayer layer = layersBitmap[Layers];
                 layersBitmap.Remove(layer);
                 layersBitmap.Insert(Layers - 1, layer);
                 activeLayer = Layers - 1;
                 return true;
-                
             }
             return false;
         }
-        public bool LayerDown(int Layers)
+
+        public bool LayerDown(int Layers, bool recorded = true)
         {
             if (Layers < layersBitmap.Count - 1)
             {
+                if (recorded)
+                {
+                    CreateAction(new MoveLayerAction
+                    {
+                        DB = this,
+                        LayerIndex = Layers,
+                        MovedUp = false
+                    });
+                }
                 BitmapLayer layer = layersBitmap[Layers];
                 layersBitmap.Remove(layer);
                 layersBitmap.Insert(Layers + 1, layer);
@@ -141,7 +191,6 @@ namespace PixelArtProgram
             }
             return false;
         }
-
 
         public void SaveFile()
         {
@@ -179,15 +228,12 @@ namespace PixelArtProgram
 
         public void ExtractLayer()
         {
-            SaveImage(GetActiveBitmapLayer().bitmap);
+            SaveImage(GetActiveBitmapLayers().bitmap);
         }
 
         public void ExtractAll()
         {
-
-
-
-            Bitmap target = new Bitmap(Width,Height);
+            Bitmap target = new Bitmap(Width, Height);
 
             using (var grafics = Graphics.FromImage(target))
             {
@@ -206,20 +252,15 @@ namespace PixelArtProgram
             sized.Title = "Eksport";
             if (sized.ShowDialog() == true)
             {
-
                 int size;
 
-                if(int.TryParse(sized.Input.Text,out size)==false)
+                if (int.TryParse(sized.Input.Text, out size) == false)
                 {
                     MessageBox.Show("Błędna wielkość");
                     return;
                 }
 
-
-
-
                 Bitmap Sized = new Bitmap(Width * size, Height * size);
-
 
                 for (int i = 0; i < Width; i++)
                 {
@@ -260,6 +301,36 @@ namespace PixelArtProgram
         public abstract void Redo();
     }
 
+    public class RemoveLayerAction : Action
+    {
+        public BitmapLayer BitmapLayer;
+        public int layerIndex;
+        public override void Redo()
+        {
+            DB.RemoveLayer(layerIndex, false);
+        }
+
+        public override void Undo()
+        {
+            DB.AddLayer(BitmapLayer, layerIndex, false);
+        }
+    }
+
+    public class AddLayerAction : Action
+    {
+        public BitmapLayer BitmapLayer;
+        public int layerIndex;
+        public override void Redo()
+        {
+            DB.AddLayer(BitmapLayer, layerIndex, false);
+        }
+
+        public override void Undo()
+        {
+            DB.RemoveLayer(layerIndex, false);
+        }
+    }
+
     public class DrawAction : Action
     {
         public Bitmap BitmapOld;
@@ -274,6 +345,27 @@ namespace PixelArtProgram
         public override void Redo()
         {
             DB.GetBitmapLayer(layerIndex).bitmap = BitmapNew;
+        }
+    }
+
+    public class MoveLayerAction : Action
+    {
+        public int LayerIndex;
+        public bool MovedUp;
+        public override void Redo()
+        {
+            if (MovedUp)
+                DB.LayerUp(LayerIndex, false);
+            else
+                DB.LayerDown(LayerIndex, false);
+        }
+
+        public override void Undo()
+        {
+            if (MovedUp)
+                DB.LayerDown(LayerIndex - 1, false);
+            else
+                DB.LayerUp(LayerIndex + 1, false);
         }
     }
 
