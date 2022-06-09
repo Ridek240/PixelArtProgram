@@ -54,16 +54,21 @@
                 <Button Width="20" x:Name="FillAll_Tool" Height="20" Grid.Column="0" Grid.Row="2" Click="Change_Tool" >
                     <Image Source="Grafic/fillAll.png"/>
                 </Button>
-                <Button Width="20" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" Content="D"/>
-                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" Content="E"/>
-                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="1" Click="Change_Tool" Content="F"/>
-                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="2" Click="Change_Tool" Content="G"/>
-                <Button Width="20" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" Content="H"/>
+                <Button Width="20" x:Name="DrawRect"  Height="20" Grid.Column="1" Grid.Row="2" Click="Change_Tool">
+                    <Image Source="Grafic/Rect_Icon.png"/>
+                </Button>
+                <Button Width="20" x:Name="DrawLine" Height="20" Grid.Column="1" Grid.Row="1" Click="Change_Tool" >
+                    <Image Source="Grafic/Line_Icon.png"/>
+                </Button>
+                <Button Width="20" x:Name="Eraser" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" >
+                    <Image Source="Grafic/Eraser.png"/>
+                </Button>
+
             </Grid>
             
                 <Rectangle Fill="Gray" Grid.Column="1"/>
 
-            <Grid Name="LayerGrid" Grid.Column="1" MouseMove="Draw" MouseLeftButtonDown="StartDraw" MouseLeftButtonUp="StopDraw" MouseRightButtonDown="StartRemove" MouseRightButtonUp="StopRemove">
+            <Grid Name="LayerGrid" Grid.Column="1" MouseMove="Draw" MouseLeftButtonDown="StartDraw" MouseLeftButtonUp="StopDraw" MouseRightButtonDown="StartDraw" MouseRightButtonUp="StopDraw">
            
                 <Image x:Name="Screen"   RenderOptions.BitmapScalingMode="NearestNeighbor" /> 
                 <Image x:Name="Screen_Background"  RenderOptions.BitmapScalingMode="NearestNeighbor" />

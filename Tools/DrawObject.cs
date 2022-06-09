@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace PixelArtProgram.Tools
 {
-    class DrawObject : DrawingTool
+    public class DrawObject : DrawingTool
     {
-        Point startingPoint;
+        protected Point startingPoint;
 
-        public DrawObject(System.Drawing.Color color) : base(color) { }
+        public DrawObject(System.Drawing.Color color,Point StartingPoint) : base(color)
+        {
+            startingPoint = StartingPoint;
+        }
+        
 
         public override void Draw(DrawingBoard drawingBoard, Point mousePosition)
         {
