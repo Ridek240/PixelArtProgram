@@ -9,13 +9,15 @@ namespace PixelArtProgram
     public abstract class DrawingTool
     {
         public Color Color;
-    
-        public DrawingTool(Color color)
+        protected DrawingBoard drawingBoard;
+
+        public DrawingTool(DrawingBoard _drawingBoard, Color color)
         {
             Color = color;
+            drawingBoard = _drawingBoard;
         }
 
-        public abstract void Draw(DrawingBoard drawingBoard, Point mousePosition);
+        public abstract void Draw(Point mousePosition);
     
     }
 }

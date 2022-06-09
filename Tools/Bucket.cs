@@ -5,14 +5,13 @@ namespace PixelArtProgram
 {
     public class Bucket : DrawingTool
     {
-        
-        public Bucket(System.Drawing.Color color) : base(color) { }
+        public Bucket(DrawingBoard _drawingBoard, Color color) : base(_drawingBoard, color) { }
 
-        public override void Draw(DrawingBoard drawingBoard, Point mousePosition)
+        public override void Draw(Point mousePosition) 
         {
-            drawingBoard.GetActiveBitmapLayers().bitmap = Fill(
+            drawingBoard.GetActiveBitmapLayer().bitmap = Fill(
                 new System.Drawing.Point(mousePosition.x, mousePosition.y),
-                drawingBoard.GetActiveBitmapLayers().bitmap, 
+                drawingBoard.GetActiveBitmapLayer().bitmap,
                 Color, 0);
         }
 

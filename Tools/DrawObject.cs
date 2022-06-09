@@ -7,24 +7,19 @@ using System.Drawing;
 
 namespace PixelArtProgram.Tools
 {
-    public class DrawObject : DrawingTool
+    public abstract class DrawObject : DrawingTool
     {
         protected Point startingPoint;
+        protected Bitmap OldBitmap;
 
-        public DrawObject(System.Drawing.Color color,Point StartingPoint) : base(color)
+        public DrawObject(DrawingBoard _drawingBoard, Color color, Point StartingPoint) : base(_drawingBoard, color)
         {
             startingPoint = StartingPoint;
+            OldBitmap = new Bitmap(drawingBoard.GetActiveBitmapLayer().bitmap);
         }
-        
-
-        public override void Draw(DrawingBoard drawingBoard, Point mousePosition)
-        {
-
-        }
-        public void GetStartingPoint(Point point)
-        {
-            startingPoint = point;
-        }
-
+        //public void GetStartingPoint(Point point)
+        //{
+        //    startingPoint = point;
+        //}
     }
 }

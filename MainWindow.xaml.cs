@@ -26,26 +26,25 @@ namespace PixelArtProgram
     /// </summary>
     public partial class MainWindow : Window
     {
-        bool draw = false;
-        bool remove = false;
-        Bitmap ActiveBitmap;
-        string tempname;
-        int NextVersion = 0;
-        Bitmap bitmapBachground;
+        private bool draw = false;
+        //bool remove = false;
+        private Bitmap ActiveBitmap;
+        private string tempname;
+        private int NextVersion = 0;
+        private Bitmap bitmapBachground;
 
-        int WidthGlobal;
-        int HeightGlobal;
-        
-        int Tools_ID = 5;
+        private int WidthGlobal;
+        private int HeightGlobal;
+
+        private DrawingTools Tool = DrawingTools.Pencil;
         public List<Controll.Image> layersImage = new List<Controll.Image>();
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
 
-        public DrawingBoard DB;
+        private DrawingBoard DB;
 
         public MainWindow()
         {
             InitializeComponent();
-
         }
 
         private void SaveImage(object sender, RoutedEventArgs e)
@@ -63,7 +62,7 @@ namespace PixelArtProgram
                 if (int.TryParse(Creating.Get_Width.Text, out Width) && int.TryParse(Creating.Get_Height.Text, out Height))
                 {
                     EmptyLayer = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    HeightGlobal = Height; 
+                    HeightGlobal = Height;
                     WidthGlobal = Width;
                     DB = new DrawingBoard(Width, Height);
                     CreateBackGround(Width, Height);
@@ -72,7 +71,6 @@ namespace PixelArtProgram
                     UpdateAllLayers();
                 }
                 else MessageBox.Show("Wartosci są nieprawidłowe");
-
             }
         }
 
@@ -101,8 +99,8 @@ namespace PixelArtProgram
                 UpdateScreen();
             }
             */
-            
-           
+
+
         }
 
         public void UpdateLayersImage()
@@ -122,28 +120,26 @@ namespace PixelArtProgram
             Screen_Background.Source = ConvertToImage(bitmapBachground);
             if (DB.CanDraw())
             {
-                layersImage[DB.ActiveLayer].Source = ConvertToImage(DB.GetActiveBitmapLayers().bitmap);
-                
+                layersImage[DB.ActiveLayer].Source = ConvertToImage(DB.GetActiveBitmapLayer().bitmap);
+
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
         }
         private void UpdateAllLayers()
         {
             Layers.Items.Clear();
-            foreach (BitmapLayer layer in DB.GetBitmapLayer())
+            foreach (BitmapLayer layer in DB.GetBitmapLayers())
             {
                 Controll.Label label = new Controll.Label();
                 label.Content = layer.name;
                 Layers.Items.Add(label);
-
             }
             Layers.SelectedIndex = DB.ActiveLayer;
-            for (int i = 0; i<DB.GetBitmapLayer().Count();i++)
+            for (int i = 0; i < DB.GetBitmapLayers().Count(); i++)
             {
-                layersImage[i].Source = ConvertToImage(DB.GetBitmapLayer()[i].bitmap);
+                layersImage[i].Source = ConvertToImage(DB.GetBitmapLayers()[i].bitmap);
             }
         }
-
 
         public BitmapImage ConvertToImage(Bitmap src)
         {
@@ -157,7 +153,7 @@ namespace PixelArtProgram
             return image;
         }
 
-        DrawObject drawObject = null;
+        //DrawObject drawObject = null;
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
             if (draw) return;
@@ -172,53 +168,54 @@ namespace PixelArtProgram
                 backupcolor = DB.GetPixel(point);
                 Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
             }
-            else if(Mouse.RightButton==MouseButtonState.Pressed)
+            else if (Mouse.RightButton == MouseButtonState.Pressed)
             {
                 draw = true;
-                DB.StartDrawing(point, new Eraser());
-                
+                DB.StartDrawing(point, new Eraser(DB));
+
             }
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                if (Tools_ID == 0)
+                if (Tool == DrawingTools.Pencil)
                 {
                     // Pencil
                     draw = true;
-                    DB.StartDrawing(point, new Pencil(TranstalteColor(BrushColor(Show_Color.Fill))));
+                    DB.StartDrawing(point, new Pencil(DB, TranstalteColor(BrushColor(Show_Color.Fill))));
                 }
-                else if (Tools_ID == 1)
+                else if (Tool == DrawingTools.FillBucket)
                 {
                     // This is a bucket
-                    DB.StartDrawing(point, new Bucket(TranstalteColor(BrushColor(Show_Color.Fill))));
-                    DB.Draw(point);
+                    draw = true;
+                    DB.StartDrawing(point, new Bucket(DB, TranstalteColor(BrushColor(Show_Color.Fill))));
                 }
-                else if (Tools_ID == 2)
+                else if (Tool == DrawingTools.FloodBucket)
                 {
                     // This is also a bucket but it fill everything 
-                    DB.StartDrawing(point, new FillBucket(TranstalteColor(BrushColor(Show_Color.Fill))));
-                    DB.Draw(point);
+                    draw = true;
+                    DB.StartDrawing(point, new FillBucket(DB, TranstalteColor(BrushColor(Show_Color.Fill))));
                 }
-                else if (Tools_ID == 3)
-                {
-                    //This is rectangle tool
-                    drawObject = new DrawRect(TranstalteColor(BrushColor(Show_Color.Fill)), point);
-                    DB.StartDrawing(point, drawObject);
-                }
-                else if (Tools_ID == 4)
+                else if (Tool == DrawingTools.Eraser)
                 {
                     //This is Erase Tool
+                    //drawObject = new DrawRect(TranstalteColor(BrushColor(Show_Color.Fill)), point);
                     draw = true;
-                    DB.StartDrawing(point, new Eraser());
-
+                    DB.StartDrawing(point, new Eraser(DB));
                 }
-                else if (Tools_ID == 5)
+                else if (Tool == DrawingTools.LineTool)
                 {
                     //This is line tool
-                    drawObject = new DrawLine(TranstalteColor(BrushColor(Show_Color.Fill)), point);
-                    DB.StartDrawing(point, drawObject);
+                    draw = true;
+                    DB.StartDrawing(point, new DrawLine(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point));
+
+                }
+                else if (Tool == DrawingTools.RectangleTool)
+                {
+                    //This is rectangle tool
+                    //drawObject = new DrawLine(TranstalteColor(BrushColor(Show_Color.Fill)), point);
+                    draw = true;
+                    DB.StartDrawing(point, new DrawRect(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point));
                 }
             }
-            
         }
 
         private Point Get_Mouse_Position(MouseEventArgs e)
@@ -243,21 +240,21 @@ namespace PixelArtProgram
             int pixelx = (int)(bitmapx * scalex);
             int pixely = (int)(bitmapy * scaley);
 
-            return new Point(pixelx,pixely);
-
+            return new Point(pixelx, pixely);
         }
 
         private void StopDraw(object sender, MouseButtonEventArgs e)
         {
-            if((Tools_ID == 3||Tools_ID==5)&& drawObject!=null)
-            {
-                DB.Draw(Get_Mouse_Position(e));
-                drawObject = null;
-                
-            }
-            else if (!draw) return;
+            if (!draw) return;
+            //if ((Tools_ID == 3||Tools_ID==5) && drawObject != null)
+            //{
+            //    DB.Draw(Get_Mouse_Position(e));
+            //    drawObject = null;
+            //}
+            //else 
             draw = false;
-            DB.StopDrawing();
+            Point point = Get_Mouse_Position(e);
+            DB.StopDrawing(point);
         }
 
         private void Draw(object sender, MouseEventArgs e)
@@ -268,7 +265,6 @@ namespace PixelArtProgram
             {
                 DB.Draw(point);
             }
-
         }
 
         private void ShortCuts(object sender, KeyEventArgs e)
@@ -281,11 +277,11 @@ namespace PixelArtProgram
                     //saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.png)|*.png|All files (*.*)|*.*";
                     if (tempname == null)
                     {
-                        
+
                         if (saveFileDialog.ShowDialog() == true)
                             tempname = saveFileDialog.FileName.ToString();
                     }
-                    ActiveBitmap.Save(tempname+NextVersion+".png", ImageFormat.Png);
+                    ActiveBitmap.Save(tempname + NextVersion + ".png", ImageFormat.Png);
                     NextVersion++;
                 }
                 if (Keyboard.IsKeyDown(Key.Z))
@@ -305,7 +301,7 @@ namespace PixelArtProgram
             }
             else
             {
-               
+
             }
         }
 
@@ -318,7 +314,7 @@ namespace PixelArtProgram
             {
                 for (int y = 0; y < bitmapBachground.Height; y++)
                 {
-                    bitmapBachground.SetPixel(x,y, (x + y) % 2 == 1 ? System.Drawing.Color.FromArgb(255, 100, 100, 100) : System.Drawing.Color.FromArgb(255, 50, 50, 50));
+                    bitmapBachground.SetPixel(x, y, (x + y) % 2 == 1 ? System.Drawing.Color.FromArgb(255, 100, 100, 100) : System.Drawing.Color.FromArgb(255, 50, 50, 50));
                 }
             }
         }
@@ -326,16 +322,16 @@ namespace PixelArtProgram
         private void Change_Color(object sender, MouseButtonEventArgs e)
         {
             System.Windows.Shapes.Rectangle rectangle = sender as System.Windows.Shapes.Rectangle;
-            if(rectangle!=null)
+            if (rectangle != null)
             {
                 ChangeColor change = new ChangeColor();
                 if (change.ShowDialog() == true)
                 {
                     rectangle.Fill = new SolidColorBrush(
                         System.Windows.Media.Color.FromArgb(
-                            255, 
-                            (byte)int.Parse(change.Red_color.Text), 
-                            (byte)int.Parse(change.Green_color.Text), 
+                            255,
+                            (byte)int.Parse(change.Red_color.Text),
+                            (byte)int.Parse(change.Green_color.Text),
                             (byte)int.Parse(change.Blue_color.Text)));
                 }
             }
@@ -361,19 +357,15 @@ namespace PixelArtProgram
 
                 DB.AddLayer(name.Input.Text);
                 //layersBitmap.Add(new BitmapLayer(name.Input.Text,new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb)));
-                
+
                 //image.MouseLeftButtonDown += StartDraw;
                 //image.MouseLeftButtonUp += StopDraw;
                 //image.MouseMove += Draw;
                 //image.MouseRightButtonDown += StartRemove;
                 //image.MouseRightButtonUp += StopRemove;
-                Controll.Image image = new Controll.Image();
-                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
-                layersImage.Add(image);
-                LayerGrid.Children.Add(image);
                 //activeLayer = layersBitmap.Count - 1;
                 //activeLayer = DB.ActiveLayer;
-            }
+
                 AddLayerImage();
             }
         }
@@ -381,11 +373,6 @@ namespace PixelArtProgram
         public void AddLayerImage()
         {
             Controll.Image image = new Controll.Image();
-            image.MouseLeftButtonDown += StartDraw;
-            image.MouseLeftButtonUp += StopDraw;
-            image.MouseMove += Draw;
-            image.MouseRightButtonDown += StartRemove;
-            image.MouseRightButtonUp += StopRemove;
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
             layersImage.Add(image);
             LayerGrid.Children.Add(image);
@@ -428,6 +415,7 @@ namespace PixelArtProgram
                 DB.ActiveLayer = Layers.SelectedIndex;
             }
         }
+
         private void UpLayer(object sender, RoutedEventArgs e)
         {
             if (Layers.SelectedIndex >= 0)
@@ -444,13 +432,12 @@ namespace PixelArtProgram
             {
                 if (DB.LayerDown(Layers.SelectedIndex))
                 {
-                    
                     UpdateAllLayers();
                     UpdateScreen();
                 }
-
             }
         }
+
         private System.Drawing.Color TranstalteColor(System.Windows.Media.Color color)
         {
             return System.Drawing.Color.FromArgb(255, color.R, color.G, color.B);
@@ -466,36 +453,26 @@ namespace PixelArtProgram
             return bruh.Color;
         }
 
-
         Controll.Button lastButton;
         private void Change_Tool(object sender, RoutedEventArgs e)
         {
             Controll.Button button = sender as Controll.Button;
             button.IsEnabled = false;
-            if(lastButton!=null)
+            if (lastButton != null)
             {
                 lastButton.IsEnabled = true;
             }
             lastButton = button;
-            if(button.Name=="Pencil")
+            switch (button.Name)
             {
-                Tools_ID = 0;
-            }
-            if(button.Name=="Fill_Tool")
-            {
-                Tools_ID = 1;
-            }
-            if(button.Name=="FillAll_Tool")
-            {
-                Tools_ID = 2;
-            }
-            if(button.Name=="DrawRect")
-            {
-                Tools_ID = 3;
-            }
-            if (button.Name == "DrawLine")
-            {
-                Tools_ID = 4;
+                case "Pencil": Tool = DrawingTools.Pencil; break;
+                case "Fill_Tool": Tool = DrawingTools.FillBucket; break;
+                case "FillAll_Tool": Tool = DrawingTools.FloodBucket; break;
+                case "Eraser": Tool = DrawingTools.Eraser; break;
+                case "DrawLine": Tool = DrawingTools.LineTool; break;
+                case "DrawRect": Tool = DrawingTools.RectangleTool; break;
+                default:
+                    break;
             }
         }
 
@@ -510,11 +487,6 @@ namespace PixelArtProgram
         }
     }
 
-
-
-
-
-
     public class Point
     {
         public int x;
@@ -525,9 +497,16 @@ namespace PixelArtProgram
             this.y = y;
         }
     }
-    //wyodrębnić
 
-
+    public enum DrawingTools
+    {
+        Pencil,
+        FillBucket,
+        FloodBucket,
+        Eraser,
+        LineTool,
+        RectangleTool
+    }
 
 }
 

@@ -9,16 +9,15 @@ namespace PixelArtProgram
 {
     public class FillBucket : Bucket
     {
-        public FillBucket(Color color): base(color){}
+        public FillBucket(DrawingBoard _drawingBoard, Color color) : base(_drawingBoard, color) { }
 
-
-        public override void Draw(DrawingBoard drawingBoard, Point mousePosition)
-       {
-           drawingBoard.GetActiveBitmapLayers().bitmap = Fill(
-               drawingBoard.GetPixel(mousePosition),
-         drawingBoard.GetActiveBitmapLayers().bitmap,
-         Color, 0);
-       }
+        public override void Draw(Point mousePosition)
+        {
+            drawingBoard.GetActiveBitmapLayer().bitmap = Fill(
+                drawingBoard.GetPixel(mousePosition),
+                drawingBoard.GetActiveBitmapLayer().bitmap,
+                Color, 0);
+        }
 
         protected Bitmap Fill(Color Color, Bitmap bitmap, Color ColorPixel, int range)
         {
@@ -27,7 +26,7 @@ namespace PixelArtProgram
             {
                 for (int y = 0; y < bitmap.Height; y++)
                 {
-                    System.Drawing.Color atpixel = bitmap.GetPixel(x, y);
+                    Color atpixel = bitmap.GetPixel(x, y);
                     if (GetTolerance(atpixel, Color, range))
                     {
                         bitmapResult.SetPixel(x, y, ColorPixel);

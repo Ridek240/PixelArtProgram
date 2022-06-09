@@ -90,30 +90,29 @@ namespace PixelArtProgram
         public void Draw(Point mousePosition)
         {
             if (!CanDraw()) return;
-            currentDrawingTool.Draw(this, mousePosition);
+            currentDrawingTool.Draw(mousePosition);
         }
 
         public void StartDrawing(Point mousePosition, DrawingTool newDrawingTool)
         {
             currentDrawingTool = newDrawingTool;
-            oldBitmap = new Bitmap(GetActiveBitmapLayers().bitmap);
+            oldBitmap = new Bitmap(GetActiveBitmapLayer().bitmap);
             Draw(mousePosition);
         }
 
-        public List<BitmapLayer> GetBitmapLayer()
+        public List<BitmapLayer> GetBitmapLayers()
         {
             return layersBitmap;
         }
-        public void StopDrawing()
+        public void StopDrawing(Point mousePosition)
         {
             currentAction = new DrawAction
             {
                 DB = this,
-                BitmapNew = new Bitmap(GetActiveBitmapLayers().bitmap),
+                BitmapNew = new Bitmap(GetActiveBitmapLayer().bitmap),
                 BitmapOld = oldBitmap,
                 layerIndex = activeLayer
             };
-
             CreateAction(currentAction);
         }
 
@@ -139,7 +138,7 @@ namespace PixelArtProgram
             OldActions.Push(action);
         }
 
-        public BitmapLayer GetActiveBitmapLayers()
+        public BitmapLayer GetActiveBitmapLayer()
         {
             return layersBitmap[activeLayer];
         }
@@ -242,7 +241,7 @@ namespace PixelArtProgram
 
         public void ExtractLayer()
         {
-            SaveImage(GetActiveBitmapLayers().bitmap);
+            SaveImage(GetActiveBitmapLayer().bitmap);
         }
 
         public void ExtractAll()
