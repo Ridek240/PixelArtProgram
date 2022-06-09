@@ -192,6 +192,20 @@ namespace PixelArtProgram
             return false;
         }
 
+        public void LoadLayer()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Dead Files (*.png)|*.png|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Bitmap TempBitmap = new Bitmap(openFileDialog.FileName);
+                AddLayer(openFileDialog.SafeFileName.Replace(".png",""));
+                using (var grafics = Graphics.FromImage(GetActiveBitmapLayer().bitmap))
+                {
+                    grafics.DrawImage(TempBitmap, new Rectangle(0, 0, Width, Height));
+                }
+            }
+        }
         public void SaveFile()
         {
             if (layersBitmap.Count() > 0)

@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using PixelArtProgram.Tools;
 
 namespace PixelArtProgram
 {
@@ -35,7 +36,7 @@ namespace PixelArtProgram
         int WidthGlobal;
         int HeightGlobal;
         
-        int Tools_ID = 0;
+        int Tools_ID = 5;
         public List<Controll.Image> layersImage = new List<Controll.Image>();
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
 
@@ -77,6 +78,13 @@ namespace PixelArtProgram
 
         private void OpenImage(object sender, RoutedEventArgs e)
         {
+            DB.LoadLayer();
+            Controll.Image image = new Controll.Image();
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+            layersImage.Add(image);
+            LayerGrid.Children.Add(image);
+            UpdateAllLayers();
+            /*
             if (layersBitmap.Count() >= 0)
             {
                 SaveImage(sender, e);
@@ -92,6 +100,7 @@ namespace PixelArtProgram
                 CreateBackGround(ActiveBitmap.Width,ActiveBitmap.Height);
                 UpdateScreen();
             }
+            */
             
            
         }
@@ -148,12 +157,7 @@ namespace PixelArtProgram
             return image;
         }
 
-
-        public bool Between(int a, int min = 0, int max = 255)
-        {
-            return a <= max && a >= min;
-        }
-        
+        DrawObject drawObject = null;
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
             if (draw) return;
@@ -168,26 +172,53 @@ namespace PixelArtProgram
                 backupcolor = DB.GetPixel(point);
                 Show_Color.Fill = new SolidColorBrush(TranstalteColor(backupcolor));
             }
-            else if(Tools_ID==0)
+            else if(Mouse.RightButton==MouseButtonState.Pressed)
             {
-                // Pencil
                 draw = true;
-                DB.StartDrawing(point, new Pencil(TranstalteColor(BrushColor(Show_Color.Fill))));
+                DB.StartDrawing(point, new Eraser());
+                
             }
-            else if(Tools_ID==1)
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                // This is a bucket
-                DB.StartDrawing(point, new Bucket(TranstalteColor(BrushColor(Show_Color.Fill))));
+                if (Tools_ID == 0)
+                {
+                    // Pencil
+                    draw = true;
+                    DB.StartDrawing(point, new Pencil(TranstalteColor(BrushColor(Show_Color.Fill))));
+                }
+                else if (Tools_ID == 1)
+                {
+                    // This is a bucket
+                    DB.StartDrawing(point, new Bucket(TranstalteColor(BrushColor(Show_Color.Fill))));
+                    DB.Draw(point);
+                }
+                else if (Tools_ID == 2)
+                {
+                    // This is also a bucket but it fill everything 
+                    DB.StartDrawing(point, new FillBucket(TranstalteColor(BrushColor(Show_Color.Fill))));
+                    DB.Draw(point);
+                }
+                else if (Tools_ID == 3)
+                {
+                    //This is rectangle tool
+                    drawObject = new DrawRect(TranstalteColor(BrushColor(Show_Color.Fill)), point);
+                    DB.StartDrawing(point, drawObject);
+                }
+                else if (Tools_ID == 4)
+                {
+                    //This is Erase Tool
+                    draw = true;
+                    DB.StartDrawing(point, new Eraser());
+
+                }
+                else if (Tools_ID == 5)
+                {
+                    //This is line tool
+                    drawObject = new DrawLine(TranstalteColor(BrushColor(Show_Color.Fill)), point);
+                    DB.StartDrawing(point, drawObject);
+                }
             }
-            else if(Tools_ID==2)
-            {
-                // This is also a bucket but it fill everything 
-                DB.StartDrawing(point, new FillBucket(TranstalteColor(BrushColor(Show_Color.Fill))));
-            }
-            else if(Tools_ID==3)
-            {
-                //This is rectangle tool
-            }
+            
         }
 
         private Point Get_Mouse_Position(MouseEventArgs e)
@@ -218,7 +249,13 @@ namespace PixelArtProgram
 
         private void StopDraw(object sender, MouseButtonEventArgs e)
         {
-            if (!draw) return;
+            if((Tools_ID == 3||Tools_ID==5)&& drawObject!=null)
+            {
+                DB.Draw(Get_Mouse_Position(e));
+                drawObject = null;
+                
+            }
+            else if (!draw) return;
             draw = false;
             DB.StopDrawing();
         }
@@ -231,22 +268,7 @@ namespace PixelArtProgram
             {
                 DB.Draw(point);
             }
-            if (remove)
-            {
-                DB.Draw(point);
-            }
-        }
 
-        private void StartRemove(object sender, MouseButtonEventArgs e)
-        {
-            remove = true;
-            Point point = Get_Mouse_Position(e);
-            DB.StartDrawing(point, new Eraser());
-        }
-
-        private void StopRemove(object sender, MouseButtonEventArgs e)
-        {
-            remove = false;
         }
 
         private void ShortCuts(object sender, KeyEventArgs e)
@@ -338,6 +360,20 @@ namespace PixelArtProgram
                 Layers.Items.Add(label);
 
                 DB.AddLayer(name.Input.Text);
+                //layersBitmap.Add(new BitmapLayer(name.Input.Text,new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb)));
+                
+                //image.MouseLeftButtonDown += StartDraw;
+                //image.MouseLeftButtonUp += StopDraw;
+                //image.MouseMove += Draw;
+                //image.MouseRightButtonDown += StartRemove;
+                //image.MouseRightButtonUp += StopRemove;
+                Controll.Image image = new Controll.Image();
+                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+                layersImage.Add(image);
+                LayerGrid.Children.Add(image);
+                //activeLayer = layersBitmap.Count - 1;
+                //activeLayer = DB.ActiveLayer;
+            }
                 AddLayerImage();
             }
         }
@@ -408,15 +444,7 @@ namespace PixelArtProgram
             {
                 if (DB.LayerDown(Layers.SelectedIndex))
                 {
-                    Layers.Items.Clear();
-                    foreach (BitmapLayer layer in DB.GetBitmapLayer())
-                    {
-                        Controll.Label label = new Controll.Label();
-                        label.Content = layer.name;
-                        Layers.Items.Add(label);
-
-                    }
-                    Layers.SelectedIndex = DB.ActiveLayer;
+                    
                     UpdateAllLayers();
                     UpdateScreen();
                 }
@@ -460,6 +488,14 @@ namespace PixelArtProgram
             if(button.Name=="FillAll_Tool")
             {
                 Tools_ID = 2;
+            }
+            if(button.Name=="DrawRect")
+            {
+                Tools_ID = 3;
+            }
+            if (button.Name == "DrawLine")
+            {
+                Tools_ID = 4;
             }
         }
 
