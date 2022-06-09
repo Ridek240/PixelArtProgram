@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace PixelArtProgram
+namespace PixelArtProgram.Tools
 {
     public abstract class DrawingTool
     {
@@ -18,6 +14,5 @@ namespace PixelArtProgram
         }
 
         public abstract void Draw(Point mousePosition);
-    
     }
 }

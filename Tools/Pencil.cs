@@ -1,4 +1,4 @@
-﻿namespace PixelArtProgram
+﻿namespace PixelArtProgram.Tools
 {
     public class Pencil : DrawingTool
     {

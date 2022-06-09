@@ -1,36 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Controll = System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
+
 using PixelArtProgram.Tools;
 
 namespace PixelArtProgram
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         private bool draw = false;
-        //bool remove = false;
-        private Bitmap ActiveBitmap;
-        private string tempname;
-        private int NextVersion = 0;
         private Bitmap bitmapBachground;
 
         private int WidthGlobal;
@@ -82,23 +67,7 @@ namespace PixelArtProgram
             layersImage.Add(image);
             LayerGrid.Children.Add(image);
             UpdateAllLayers();
-            /*
-            if (layersBitmap.Count() >= 0)
-            {
-                SaveImage(sender, e);
-                layersBitmap.Clear();
-                layersImage.Clear();
-            }
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Dead Files (*.png)|*.png|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog()==true)
-            {
-                ActiveBitmap = new Bitmap(openFileDialog.FileName);
-                CreateBackGround(ActiveBitmap.Width,ActiveBitmap.Height);
-                UpdateScreen();
-            }
-            */
 
 
         }
@@ -153,7 +122,7 @@ namespace PixelArtProgram
             return image;
         }
 
-        //DrawObject drawObject = null;
+        
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
             if (draw) return;
@@ -178,40 +147,38 @@ namespace PixelArtProgram
             {
                 if (Tool == DrawingTools.Pencil)
                 {
-                    // Pencil
+                    // This is a Pencil
                     draw = true;
                     DB.StartDrawing(point, new Pencil(DB, TranstalteColor(BrushColor(Show_Color.Fill))));
                 }
                 else if (Tool == DrawingTools.FillBucket)
                 {
-                    // This is a bucket
+                    // This is a Bucket
                     draw = true;
                     DB.StartDrawing(point, new Bucket(DB, TranstalteColor(BrushColor(Show_Color.Fill))));
                 }
                 else if (Tool == DrawingTools.FloodBucket)
                 {
-                    // This is also a bucket but it fill everything 
+                    // This is also a Bucket but it fill everything 
                     draw = true;
                     DB.StartDrawing(point, new FillBucket(DB, TranstalteColor(BrushColor(Show_Color.Fill))));
                 }
                 else if (Tool == DrawingTools.Eraser)
                 {
                     //This is Erase Tool
-                    //drawObject = new DrawRect(TranstalteColor(BrushColor(Show_Color.Fill)), point);
                     draw = true;
                     DB.StartDrawing(point, new Eraser(DB));
                 }
                 else if (Tool == DrawingTools.LineTool)
                 {
-                    //This is line tool
+                    //This is Line Tool
                     draw = true;
                     DB.StartDrawing(point, new DrawLine(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point));
 
                 }
                 else if (Tool == DrawingTools.RectangleTool)
                 {
-                    //This is rectangle tool
-                    //drawObject = new DrawLine(TranstalteColor(BrushColor(Show_Color.Fill)), point);
+                    //This is Rectangle Tool
                     draw = true;
                     DB.StartDrawing(point, new DrawRect(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point));
                 }
@@ -246,12 +213,6 @@ namespace PixelArtProgram
         private void StopDraw(object sender, MouseButtonEventArgs e)
         {
             if (!draw) return;
-            //if ((Tools_ID == 3||Tools_ID==5) && drawObject != null)
-            //{
-            //    DB.Draw(Get_Mouse_Position(e));
-            //    drawObject = null;
-            //}
-            //else 
             draw = false;
             Point point = Get_Mouse_Position(e);
             DB.StopDrawing(point);
@@ -271,19 +232,7 @@ namespace PixelArtProgram
         {
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
-                if (Keyboard.IsKeyDown(Key.S))
-                {
-                    SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    //saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.png)|*.png|All files (*.*)|*.*";
-                    if (tempname == null)
-                    {
 
-                        if (saveFileDialog.ShowDialog() == true)
-                            tempname = saveFileDialog.FileName.ToString();
-                    }
-                    ActiveBitmap.Save(tempname + NextVersion + ".png", ImageFormat.Png);
-                    NextVersion++;
-                }
                 if (Keyboard.IsKeyDown(Key.Z))
                 {
                     DB.Undo();
@@ -299,10 +248,7 @@ namespace PixelArtProgram
                     UpdateScreen();
                 }
             }
-            else
-            {
 
-            }
         }
 
 
@@ -324,7 +270,12 @@ namespace PixelArtProgram
             System.Windows.Shapes.Rectangle rectangle = sender as System.Windows.Shapes.Rectangle;
             if (rectangle != null)
             {
+                SolidColorBrush color = (SolidColorBrush)rectangle.Fill;
+                
                 ChangeColor change = new ChangeColor();
+                change.Red_color.Text = color.Color.R.ToString();
+                change.Green_color.Text = color.Color.G.ToString();
+                change.Blue_color.Text = color.Color.B.ToString();
                 if (change.ShowDialog() == true)
                 {
                     rectangle.Fill = new SolidColorBrush(
@@ -356,16 +307,6 @@ namespace PixelArtProgram
                 Layers.Items.Add(label);
 
                 DB.AddLayer(name.Input.Text);
-                //layersBitmap.Add(new BitmapLayer(name.Input.Text,new Bitmap(WidthGlobal, HeightGlobal, System.Drawing.Imaging.PixelFormat.Format32bppArgb)));
-
-                //image.MouseLeftButtonDown += StartDraw;
-                //image.MouseLeftButtonUp += StopDraw;
-                //image.MouseMove += Draw;
-                //image.MouseRightButtonDown += StartRemove;
-                //image.MouseRightButtonUp += StopRemove;
-                //activeLayer = layersBitmap.Count - 1;
-                //activeLayer = DB.ActiveLayer;
-
                 AddLayerImage();
             }
         }
@@ -384,7 +325,6 @@ namespace PixelArtProgram
             {
                 int temp = Layers.SelectedIndex;
                 Layers.SelectedIndex = -1;
-                //layersBitmap.RemoveAt(temp);
                 RemoveLayer(temp);
             }
         }
@@ -411,7 +351,6 @@ namespace PixelArtProgram
         {
             if (Layers.SelectedIndex >= 0)
             {
-                //activeLayer = Layers.SelectedIndex;
                 DB.ActiveLayer = Layers.SelectedIndex;
             }
         }

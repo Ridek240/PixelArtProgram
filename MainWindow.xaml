@@ -75,9 +75,6 @@
             </Grid>
             
 
-
-
-
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions >
                     <RowDefinition Height="auto"/>

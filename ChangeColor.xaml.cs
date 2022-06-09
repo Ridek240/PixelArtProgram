@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PixelArtProgram
 {
-    /// <summary>
-    /// Logika interakcji dla klasy ChangeColor.xaml
-    /// </summary>
     public partial class ChangeColor : Window
     {
         bool system_ready = false;
@@ -35,7 +22,6 @@ namespace PixelArtProgram
                     Between(red_value) && Between(blue_value) && Between(green_value))
                 {
                     Error_Label.Content = "Brak Błędów";
-                    //actualColor = System.Drawing.Color.FromArgb(255, red_value, green_value, blue_value);
                     Show_Color.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, (byte)red_value, (byte)green_value, (byte)blue_value));
                     Slider_red.Value = red_value;
                     Slider_Green.Value = green_value;

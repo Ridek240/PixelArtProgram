@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace PixelArtProgram.Tools
 {
@@ -17,9 +12,6 @@ namespace PixelArtProgram.Tools
             startingPoint = StartingPoint;
             OldBitmap = new Bitmap(drawingBoard.GetActiveBitmapLayer().bitmap);
         }
-        //public void GetStartingPoint(Point point)
-        //{
-        //    startingPoint = point;
-        //}
+
     }
 }
