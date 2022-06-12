@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using PixelArtProgram.Tools;
+using System.Windows.Data;
 
 namespace PixelArtProgram
 {
@@ -267,25 +268,32 @@ namespace PixelArtProgram
 
         private void Change_Color(object sender, MouseButtonEventArgs e)
         {
+            
             System.Windows.Shapes.Rectangle rectangle = sender as System.Windows.Shapes.Rectangle;
+            
             if (rectangle != null)
             {
+                ChangeColor change = new ChangeColor();
+                Binding bind = new Binding();
+                bind.Source = change.Show_Color;
+                bind.Path = new PropertyPath("Fill");
+                bind.Mode = BindingMode.OneWay;
+
+                
                 SolidColorBrush color = (SolidColorBrush)rectangle.Fill;
                 
-                ChangeColor change = new ChangeColor();
                 change.Red_color.Text = color.Color.R.ToString();
                 change.Green_color.Text = color.Color.G.ToString();
                 change.Blue_color.Text = color.Color.B.ToString();
-                if (change.ShowDialog() == true)
+                
+                rectangle.SetBinding(System.Windows.Shapes.Rectangle.FillProperty, bind);
+                if (change.ShowDialog() != true)
                 {
-                    rectangle.Fill = new SolidColorBrush(
-                        System.Windows.Media.Color.FromArgb(
-                            255,
-                            (byte)int.Parse(change.Red_color.Text),
-                            (byte)int.Parse(change.Green_color.Text),
-                            (byte)int.Parse(change.Blue_color.Text)));
+                    rectangle.Fill = color;
                 }
+
             }
+            
         }
 
         private void Set_Color(object sender, MouseButtonEventArgs e)
@@ -424,6 +432,48 @@ namespace PixelArtProgram
         {
             DB.ExtractAll();
         }
+
+        private void Cut(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Copy(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Paste(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ExtractColor(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void Undo(object sender, RoutedEventArgs e)
+        {
+
+                DB.Undo();
+                UpdateLayersImage();
+                UpdateAllLayers();
+                UpdateScreen();
+           
+
+        }
+
+        private void Redo(object sender, RoutedEventArgs e)
+        {
+
+                DB.Redo();
+                UpdateLayersImage();
+                UpdateAllLayers();
+                UpdateScreen();
+            
+        }
+
+
     }
 
     public class Point

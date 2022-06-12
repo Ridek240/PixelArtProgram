@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Input;
+
 
 namespace PixelArtProgram
 {
@@ -26,7 +28,7 @@ namespace PixelArtProgram
                     Slider_red.Value = red_value;
                     Slider_Green.Value = green_value;
                     Slider_Blue.Value = blue_value;
-
+                    
                 }
                 else Error_Label.Content = "Błąd Kolorów";
             }
@@ -36,19 +38,19 @@ namespace PixelArtProgram
             return a <= max && a >= min;
         }
 
-        private void Slide_Color(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (system_ready)
-            {
-                Red_color.Text = Slider_red.Value.ToString();
-                Green_color.Text = Slider_Green.Value.ToString();
-                Blue_color.Text = Slider_Blue.Value.ToString();
-            }
-        }
+
 
         private void Confirm(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
+
+        private void DragAndMoveWindow(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
     }
-}
+
+
+    }

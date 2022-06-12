@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Grafic\add_img.png" />
+    <None Remove="Grafic\cancel_img.png" />
     <None Remove="Grafic\Eraser.png" />
     <None Remove="Grafic\Fill.png" />
     <None Remove="Grafic\fillAll.png" />
@@ -20,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Grafic\add_img.png" />
+    <Resource Include="Grafic\cancel_img.png" />
     <Resource Include="Grafic\Eraser.png" />
     <Resource Include="Grafic\Fill.png" />
     <Resource Include="Grafic\fillAll.png" />
