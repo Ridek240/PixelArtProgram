@@ -33,6 +33,8 @@ namespace PixelArtProgram
         private int NextVersion = 0;
         private Bitmap bitmapBachground;
 
+        private Bitmap copyPlaceholder;
+
         private int WidthGlobal;
         private int HeightGlobal;
 
@@ -281,7 +283,8 @@ namespace PixelArtProgram
                         if (saveFileDialog.ShowDialog() == true)
                             tempname = saveFileDialog.FileName.ToString();
                     }
-                    ActiveBitmap.Save(tempname + NextVersion + ".png", ImageFormat.Png);
+                    Bitmap bitmap = DB.MergeLayers();
+                    bitmap.Save(tempname + NextVersion + ".png", ImageFormat.Png);
                     NextVersion++;
                 }
                 if (Keyboard.IsKeyDown(Key.Z))
@@ -297,6 +300,14 @@ namespace PixelArtProgram
                     UpdateLayersImage();
                     UpdateAllLayers();
                     UpdateScreen();
+                }
+                if (Keyboard.IsKeyDown(Key.C))
+                {
+                    copyPlaceholder = new Bitmap(DB.GetActiveBitmapLayer().bitmap);
+                }
+                if (Keyboard.IsKeyDown(Key.V))
+                {
+                    DB.Paste(copyPlaceholder);
                 }
             }
             else

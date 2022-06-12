@@ -6,6 +6,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Drawing.Drawing2D;
 
 namespace PixelArtProgram
 {
@@ -25,6 +26,49 @@ namespace PixelArtProgram
         {
             Width = width;
             Height = height;
+        }
+
+        public void Paste(Bitmap bitmap)
+        {
+            Bitmap bitmapOld = new Bitmap(GetActiveBitmapLayer().bitmap);
+            GetActiveBitmapLayer().bitmap = CombineBitmaps(GetActiveBitmapLayer().bitmap, bitmap);
+            CreateAction(new DrawAction
+            {
+                DB = this,
+                layerIndex = activeLayer,
+                BitmapOld = bitmapOld,
+                BitmapNew = new Bitmap(GetActiveBitmapLayer().bitmap)
+            });
+        }
+
+        public Bitmap MergeLayers()
+        {
+            if (layersBitmap.Count <= 0) return null;
+            Bitmap result = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+
+            foreach (BitmapLayer bitmapLayer in layersBitmap)
+            {
+                result = CombineBitmaps(result, bitmapLayer.bitmap);
+            }
+
+            return result;
+        }
+
+        public Bitmap CombineBitmaps(Bitmap largeBmp, Bitmap smallBmp)
+        {
+            Graphics g = Graphics.FromImage(largeBmp);
+            g.CompositingMode = CompositingMode.SourceOver;
+            smallBmp.MakeTransparent();
+            g.DrawImage(smallBmp, new System.Drawing.Point(0, 0));
+            return largeBmp;
+        }
+
+        public static void CopyRegionIntoImage(Bitmap srcBitmap, Rectangle srcRegion, ref Bitmap destBitmap, Rectangle destRegion)
+        {
+            using (Graphics grD = Graphics.FromImage(destBitmap))
+            {
+                grD.DrawImage(srcBitmap, destRegion, srcRegion, GraphicsUnit.Pixel);
+            }
         }
 
         public Color GetPixel(Point point)
@@ -104,6 +148,7 @@ namespace PixelArtProgram
         {
             return layersBitmap;
         }
+
         public void StopDrawing(Point mousePosition)
         {
             currentAction = new DrawAction
