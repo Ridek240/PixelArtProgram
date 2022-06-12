@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
 using Microsoft.Win32;
@@ -7,6 +6,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Drawing.Drawing2D;
+using PixelArtProgram.Tools;
 
 namespace PixelArtProgram
 {

@@ -16,11 +16,23 @@
         <Grid Grid.Row="0">
             <Menu>
                 <MenuItem Header="Plik">
-                    <MenuItem Header="Zapisz" Click="SaveImage"/>
-                    <MenuItem Header="Nowy" Click="CreateNew"/>
-                    <MenuItem Header="Otwórz" Click="OpenImage"/>
-                    <MenuItem Header="Wyekstraktuj Warstwę" Click="ExtractLayer"/>
-                    <MenuItem Header="Wyekstraktuj Wszystko" Click="ExtractAll"/>
+                    <MenuItem Header="Zapisz" Click="SaveImage" InputGestureText="Ctrl + S"/>
+                    <MenuItem Header="Nowy" Click="CreateNew" InputGestureText="Ctrl + N"/>
+                    <MenuItem Header="Otwórz" Click="OpenImage" InputGestureText="Ctrl + O"/>
+                    <Separator/>
+                    <MenuItem Header="Wyekstraktuj Warstwę" Click="ExtractLayer" InputGestureText="Ctrl + E"/>
+                    <MenuItem Header="Wyekstraktuj Wszystko" Click="ExtractAll" InputGestureText="Ctrl + R"/>
+                </MenuItem>
+                <MenuItem Header="Edytuj">
+                    <MenuItem Header="Cofnij" Click="Cut" InputGestureText="Ctrl + Z"/>
+                    <MenuItem Header="Ponów" Click="Copy" InputGestureText="Ctrl + Y"/>
+                    <Separator/>
+                    <MenuItem Header="Wytnij" Click="Cut" InputGestureText="Ctrl + X"/>
+                    <MenuItem Header="Kopiuj" Click="Copy" InputGestureText="Ctrl + C"/>
+                    <MenuItem Header="Wklej" Click="Paste" InputGestureText="Ctrl + V"/>
+                    <Separator/>
+                    <MenuItem Header="Kolor Do Warstwy" Click="ExtractColor"/>
+                    
                 </MenuItem>
             </Menu>
 
@@ -74,9 +86,6 @@
                 <Image x:Name="Screen_Background"  RenderOptions.BitmapScalingMode="NearestNeighbor" />
             </Grid>
             
-
-
-
 
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions >

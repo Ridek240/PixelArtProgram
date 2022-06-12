@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-namespace PixelArtProgram
+namespace PixelArtProgram.Tools
 {
     public class Bucket : DrawingTool
     {
@@ -17,7 +17,6 @@ namespace PixelArtProgram
 
         protected Bitmap Fill(System.Drawing.Point position, Bitmap bitmap, Color ColorPixel, int range, int maxIteration = 0)
         {
-            //System.Drawing.Color blackpixel = System.Drawing.Color.FromArgb(0, 0, 0);
             System.Drawing.Color pixelCompateTo = bitmap.GetPixel(position.X, position.Y);
 
             Queue<System.Drawing.Point> pixels = new Queue<System.Drawing.Point>();

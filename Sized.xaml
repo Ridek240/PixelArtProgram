@@ -16,7 +16,10 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Modyfikator" Grid.Column="0"/>
+            <Label Content="Modyfikator" Grid.Column="0">
+                <Label.ToolTip>Modyfikator - pozwala na zesalowanie obrazu w celu użyskania wyszej rozdzielczość
+                np. dla warstwy o wysokaści 16 i modyfikatorze 10 wysokość obrazu będzie wynosiła 160 pikseli</Label.ToolTip>
+            </Label>
             <TextBox Name="Input" Grid.Column="1" />
         </Grid>
         <Button Grid.Row="1" Content="Akcuptuj" Click="Confirm" />

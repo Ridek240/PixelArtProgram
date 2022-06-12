@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PixelArtProgram"
         mc:Ignorable="d"
+        MouseLeftButtonDown="DragAndMoveWindow"
         Title="ChangeColor" Height="300" Width="200">
     <Grid>
         <Grid.RowDefinitions>
@@ -17,7 +18,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -26,30 +27,45 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="R" Grid.Column="0"/>
-            <TextBox x:Name="Red_color" Grid.Column="1" Text="255" TextChanged="Switch_Color"/>
+            <TextBox x:Name="Red_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_red}" TextChanged="Switch_Color"/>
         </Grid>
-        <Slider Name="Slider_red" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" ValueChanged="Slide_Color"/>
+        
+        <Slider Name="Slider_red" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true"/>
+        
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="G" Grid.Column="0"/>
-            <TextBox x:Name="Green_color" Grid.Column="1" Text="255" TextChanged="Switch_Color"/>
+            <TextBox x:Name="Green_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Green}" TextChanged="Switch_Color"/>
         </Grid>
-        <Slider Name="Slider_Green" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" ValueChanged="Slide_Color"/>
+        
+        <Slider Name="Slider_Green" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" />
+        
         <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="B" Grid.Column="0"/>
-            <TextBox x:Name="Blue_color" Grid.Column="1" Text="255" TextChanged="Switch_Color"/>
+            <TextBox x:Name="Blue_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Blue}" TextChanged="Switch_Color"/>
         </Grid>
-        <Slider Name="Slider_Blue" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" ValueChanged="Slide_Color"/>
+        <Slider Name="Slider_Blue" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true"/>
         <Label Content="Brak Błędów" Name="Error_Label" Grid.Row="7"/>
-        <Rectangle Name="Show_Color" Grid.Row="8" Width="16" Height="16" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Left"/>
-        <Button Click="Confirm" IsDefault="True" Content="Utwórz" Grid.Row="9"/>
-        <Button IsCancel="true" Content="Anuluj" Grid.Row="10"/>
+        <Rectangle Name="Show_Color" Grid.Row="8" Width="16" Height="16" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Left" />
+
+        <Grid Grid.Row="9">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+        <Button Click="Confirm" Style="{StaticResource EnterBtnStyle}" IsDefault="True" Content="Utwórz" Grid.Column="0"/>
+        <Button IsCancel="true" Style="{StaticResource CloseBtnStyle}"  Content="Anuluj" Grid.Column="1"/>
+
+        </Grid>
+        
+        
     </Grid>
 </Window>
