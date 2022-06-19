@@ -122,6 +122,14 @@ namespace PixelArtProgram
         private Action currentAction;
         private Bitmap oldBitmap;
 
+        public bool CanDraw(Point point)
+        {
+            if (!CanDraw()) return false;
+            if (point.x >= Width || point.y >= Height) return false;
+
+            return true;
+        }
+
         public bool CanDraw()
         {
             if (activeLayer < 0) return false;
@@ -133,7 +141,7 @@ namespace PixelArtProgram
 
         public void Draw(Point mousePosition)
         {
-            if (!CanDraw()) return;
+            if (!CanDraw(mousePosition)) return;
             currentDrawingTool.Draw(mousePosition);
         }
 

@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 
 using PixelArtProgram.Tools;
 using System.Windows.Data;
+using System.Windows.Media.Media3D;
 
 namespace PixelArtProgram
 {
@@ -17,6 +18,8 @@ namespace PixelArtProgram
     public partial class MainWindow : Window
     {
         private bool draw = false;
+        private bool cooler3D = false;
+        private bool HoWmUcHiHaTe3dInWpF = false;
         private Bitmap bitmapBachground;
 
         private Bitmap copyPlaceholder;
@@ -29,6 +32,8 @@ namespace PixelArtProgram
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
 
         private DrawingBoard DB;
+
+        private int spread = 10;
 
         public MainWindow()
         {
@@ -70,9 +75,6 @@ namespace PixelArtProgram
             layersImage.Add(image);
             LayerGrid.Children.Add(image);
             UpdateAllLayers();
-
-
-
         }
 
         public void UpdateLayersImage()
@@ -89,6 +91,7 @@ namespace PixelArtProgram
 
         private void UpdateScreen()
         {
+            if (bitmapBachground == null) return;
             Screen_Background.Source = ConvertToImage(bitmapBachground);
             if (DB.CanDraw())
             {
@@ -96,7 +99,30 @@ namespace PixelArtProgram
 
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
+            if (HoWmUcHiHaTe3dInWpF)
+                CreateHateSpace();
+            else
+                EndHateSpace();
         }
+
+        private void EndHateSpace()
+        {
+            HateSpace.Children.Clear();
+        }
+
+        private void CreateHateSpace()
+        {
+            HateSpace.Children.Clear();
+            HateSpace.Children.Add(
+                new DirectionalLight(
+                    System.Windows.Media.Color.FromRgb(255, 255, 255), 
+                    new Vector3D(-20, 20, 20)));
+            for (int i = 0; i < DB.GetBitmapLayers().Count; i++)
+            {
+                HowIHate3DInWPF.EndThisWorld(HateSpace, DB.GetBitmapLayer(i).bitmap, i);
+            }
+        }
+
         private void UpdateAllLayers()
         {
             Layers.Items.Clear();
@@ -128,6 +154,7 @@ namespace PixelArtProgram
         
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
+            if (DB == null) return;
             if (draw) return;
             if (!DB.CanDraw()) return;
             Point point = Get_Mouse_Position(e);
@@ -315,6 +342,23 @@ namespace PixelArtProgram
             }
         }
 
+        private void RepositionLayers()
+        {
+            for (int i = 0; i < layersImage.Count; i++)
+            {
+                int distance = (i - DB.ActiveLayer) * spread;
+                layersImage[i].Margin = new Thickness(distance, distance, -distance, -distance);
+            }
+        }
+
+        private void RepositionLayersFix()
+        {
+            for (int i = 0; i < layersImage.Count; i++)
+            {
+                layersImage[i].Margin = new Thickness(0, 0, -0, -0);
+            }
+        }
+
         private void AddLayer(object sender, RoutedEventArgs e)
         {
             Naming name = new Naming();
@@ -335,6 +379,10 @@ namespace PixelArtProgram
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
             layersImage.Add(image);
             LayerGrid.Children.Add(image);
+            if (cooler3D)
+                RepositionLayers();
+            else
+                RepositionLayersFix();
         }
 
         private void RemoveLayer(object sender, RoutedEventArgs e)
@@ -370,6 +418,10 @@ namespace PixelArtProgram
             if (Layers.SelectedIndex >= 0)
             {
                 DB.ActiveLayer = Layers.SelectedIndex;
+                if (cooler3D)
+                    RepositionLayers();
+                else
+                    RepositionLayersFix();
             }
         }
 
@@ -483,7 +535,24 @@ namespace PixelArtProgram
             
         }
 
+        private void flat3D(object sender, RoutedEventArgs e)
+        {
+            cooler3D = !cooler3D;
+            if (cooler3D)
+                RepositionLayers();
+            else
+                RepositionLayersFix();
+        }
 
+        private void fat3D(object sender, RoutedEventArgs e)
+        {
+            HoWmUcHiHaTe3dInWpF = !HoWmUcHiHaTe3dInWpF;
+
+            if (HoWmUcHiHaTe3dInWpF)
+                CreateHateSpace();
+            else
+                EndHateSpace();
+        }
     }
 
     public class Point

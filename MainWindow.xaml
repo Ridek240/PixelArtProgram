@@ -13,7 +13,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="18*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Panel.ZIndex="9999">
             <Menu>
                 <MenuItem Header="Plik">
                     <MenuItem Header="Zapisz" Click="SaveImage" InputGestureText="Ctrl + S"/>
@@ -33,6 +33,11 @@
                     <Separator/>
                     <MenuItem Header="Kolor Do Warstwy" Click="ExtractColor"/>
                     
+                </MenuItem>
+                <MenuItem Header="Filtry">
+                    <MenuItem Header="Płaskie 3D" Click="flat3D" />
+                    <MenuItem Header="Wypukłe 3D" Click="fat3D" />
+
                 </MenuItem>
             </Menu>
 
@@ -81,12 +86,24 @@
                 <Rectangle Fill="Gray" Grid.Column="1"/>
 
             <Grid Name="LayerGrid" Grid.Column="1" MouseMove="Draw" MouseLeftButtonDown="StartDraw" MouseLeftButtonUp="StopDraw" MouseRightButtonDown="StartDraw" MouseRightButtonUp="StopDraw">
-           
+                
                 <Image x:Name="Screen"   RenderOptions.BitmapScalingMode="NearestNeighbor" /> 
                 <Image x:Name="Screen_Background"  RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                <Viewport3D Panel.ZIndex="99999">
+                    <Viewport3D.Camera>
+                        <PerspectiveCamera Position="50, 50, -50" 
+                                      LookDirection="-1, -1, 1" 
+                         UpDirection="1,0,0" />
+                    </Viewport3D.Camera>
+                    <ModelVisual3D>
+                        <ModelVisual3D.Content>
+                            <Model3DGroup x:Name="HateSpace">
+                                <DirectionalLight Color="White" Direction="-2, -2.5, -2" />
+                            </Model3DGroup>
+                        </ModelVisual3D.Content>
+                    </ModelVisual3D>
+                </Viewport3D>
             </Grid>
-            
-
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions >
                     <RowDefinition Height="auto"/>
