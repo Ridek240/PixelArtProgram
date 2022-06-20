@@ -38,6 +38,51 @@ namespace PixelArtProgram
         public MainWindow()
         {
             InitializeComponent();
+
+            //New
+            CommandBinding bind = new CommandBinding();
+            bind.Command = ApplicationCommands.New;
+            bind.Executed += CreateNew;
+            this.CommandBindings.Add(bind);
+
+            //Save
+            bind = new CommandBinding();
+            bind.Command = ApplicationCommands.Save;
+            bind.Executed += SaveImage;
+            bind.CanExecute += CanExtractExecute;
+            this.CommandBindings.Add(bind);
+            //Open
+            bind = new CommandBinding();
+            bind.Command = ApplicationCommands.Open;
+            bind.Executed += OpenImage;
+            bind.CanExecute += DBOpenned;
+            this.CommandBindings.Add(bind);
+            //Undo
+            bind = new CommandBinding();
+            bind.Command = ApplicationCommands.Undo;
+            bind.Executed += Undo;
+            bind.CanExecute += DBOpenned;
+            this.CommandBindings.Add(bind);
+            //Redo
+            bind = new CommandBinding();
+            bind.Command = ApplicationCommands.Redo;
+            bind.Executed += Redo;
+            bind.CanExecute += DBOpenned;
+            this.CommandBindings.Add(bind);
+            //Copy
+            bind = new CommandBinding();
+            bind.Command = ApplicationCommands.Copy;
+            bind.Executed += Copy;
+            bind.CanExecute += CanExtractExecute;
+            this.CommandBindings.Add(bind);
+            //Paste
+            bind = new CommandBinding();
+            bind.Command = ApplicationCommands.Paste;
+            bind.Executed += Paste;
+            bind.CanExecute += CanPasteExecute;
+            this.CommandBindings.Add(bind);
+
+
         }
 
         private void SaveImage(object sender, RoutedEventArgs e)
@@ -74,6 +119,14 @@ namespace PixelArtProgram
         {
             OpenImage();
         }
+        private void DBOpenned(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (DB != null)
+                e.CanExecute = true;
+            else
+                e.CanExecute = false;
+		
+        }
         private void OpenImage()
         {
             DB.LoadLayer();
@@ -103,7 +156,7 @@ namespace PixelArtProgram
             if (DB.CanDraw())
             {
                 layersImage[DB.ActiveLayer].Source = DB.GetActiveBitmapLayer().IsVisible ? ConvertToImage(DB.GetActiveBitmapLayer().bitmap) : ConvertToImage(EmptyLayer);
-
+                UpdateAllLayers();
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
             if (HoWmUcHiHaTe3dInWpF)
@@ -139,9 +192,13 @@ namespace PixelArtProgram
             Layers.Items.Clear();
             foreach (BitmapLayer layer in DB.GetBitmapLayers())
             {
-                Controll.Label label = new Controll.Label();
-                label.Content = layer.name;
-                Layers.Items.Add(label);
+                ListElement listel = new ListElement();
+                listel.Label = layer.name;
+                listel.Image = ConvertToImage(layer.bitmap);
+                listel.IsVisibleFun = layer.IsVisible;
+                //Controll.Label label = new Controll.Label();
+                //label.Content = layer.name;
+                Layers.Items.Add(listel);
             }
             Layers.SelectedIndex = DB.ActiveLayer;
             for (int i = 0; i < DB.GetBitmapLayers().Count(); i++)
@@ -276,50 +333,7 @@ namespace PixelArtProgram
             }
         }
 
-        private void ShortCuts(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl))
-            {
 
-                if (Keyboard.IsKeyDown(Key.Z))
-                {
-                    Undo();
-                }
-                if (Keyboard.IsKeyDown(Key.Y))
-                {
-                    Redo();
-                }
-                if (Keyboard.IsKeyDown(Key.C))
-                {
-                    Copy();
-                }
-                if (Keyboard.IsKeyDown(Key.V))
-                {
-                    DB.Paste(copyPlaceholder);
-                }
-                if (Keyboard.IsKeyDown(Key.N))
-                {
-                    CreateNew();
-                }
-                if (Keyboard.IsKeyDown(Key.S))
-                {
-                    DB.SaveFile();
-                }
-                if (Keyboard.IsKeyDown(Key.O))
-                {
-                    OpenImage();
-                }
-                if (Keyboard.IsKeyDown(Key.E))
-                {
-                    DB.ExtractLayer();
-                }
-                if (Keyboard.IsKeyDown(Key.R))
-                {
-                    DB.ExtractAll();
-                }
-            }
-
-        }
 
         private void Undo()
         {
@@ -407,6 +421,7 @@ namespace PixelArtProgram
 
         private void AddLayer(object sender, RoutedEventArgs e)
         {
+            if (DB == null) return;
             Naming name = new Naming();
             if (name.ShowDialog() == true)
             {
@@ -414,8 +429,8 @@ namespace PixelArtProgram
                 listElement.Label = name.Input.Text;
                 //Controll.Label label = new Controll.Label();
                 //label.Content = name.Input.Text;
-                //Layers.Items.Add(label);
-                //
+                Layers.Items.Add(listElement);
+                
                 DB.AddLayer(name.Input.Text);
                 AddLayerImage();
             }
@@ -536,6 +551,14 @@ namespace PixelArtProgram
         {
             copyPlaceholder = new Bitmap(DB.GetActiveBitmapLayer().bitmap);
         }
+        private void CanExtractExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (DB != null&&DB.ActiveLayer>=0)
+                e.CanExecute = true;
+            else
+                e.CanExecute = false;
+
+        }
         private void ExtractLayer(object sender, RoutedEventArgs e)
         {
             DB.ExtractLayer();
@@ -578,6 +601,13 @@ namespace PixelArtProgram
             else
                 RepositionLayersFix();
         }
+        private void CanPasteExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (DB != null && DB.ActiveLayer >= 0 && copyPlaceholder != null)
+                e.CanExecute = true;
+            else
+                e.CanExecute = false;
+        }
 
         private void fat3D(object sender, RoutedEventArgs e)
         {
@@ -612,6 +642,8 @@ namespace PixelArtProgram
                 UpdateAllLayers();
             }
         }
+
+
     }
 
     public class Point
@@ -635,5 +667,30 @@ namespace PixelArtProgram
         RectangleTool
     }
 
+    public static class CustomCommands
+    {
+        public static readonly RoutedUICommand ExtractLayer =
+            new RoutedUICommand
+            (
+                "ExtractLayer",
+                "ExtractLayer",
+                typeof(CustomCommands),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.E,ModifierKeys.Control)
+                }
+            );
+        public static readonly RoutedUICommand ExtractAll =
+            new RoutedUICommand
+                (
+                    "ExtractAll",
+                    "ExtractAll",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.R,ModifierKeys.Control)
+                    }
+    );
+    }
 }
 

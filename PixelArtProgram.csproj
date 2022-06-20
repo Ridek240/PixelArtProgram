@@ -8,13 +8,20 @@
 
   <ItemGroup>
     <None Remove="Grafic\add_img.png" />
+    <None Remove="Grafic\add_layer.png" />
+    <None Remove="Grafic\blindeye.png" />
     <None Remove="Grafic\cancel_img.png" />
+    <None Remove="Grafic\down_layer.png" />
     <None Remove="Grafic\Eraser.png" />
     <None Remove="Grafic\Fill.png" />
     <None Remove="Grafic\fillAll.png" />
     <None Remove="Grafic\Line_Icon.png" />
+    <None Remove="Grafic\merge_layer.png" />
+    <None Remove="Grafic\oko.png" />
     <None Remove="Grafic\pencil.png" />
     <None Remove="Grafic\Rect_Icon.png" />
+    <None Remove="Grafic\remove_layer.png" />
+    <None Remove="Grafic\up_layer.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,13 +30,20 @@
 
   <ItemGroup>
     <Resource Include="Grafic\add_img.png" />
+    <Resource Include="Grafic\add_layer.png" />
+    <Resource Include="Grafic\blindeye.png" />
     <Resource Include="Grafic\cancel_img.png" />
+    <Resource Include="Grafic\down_layer.png" />
     <Resource Include="Grafic\Eraser.png" />
     <Resource Include="Grafic\Fill.png" />
     <Resource Include="Grafic\fillAll.png" />
     <Resource Include="Grafic\Line_Icon.png" />
+    <Resource Include="Grafic\merge_layer.png" />
+    <Resource Include="Grafic\oko.png" />
     <Resource Include="Grafic\pencil.png" />
     <Resource Include="Grafic\Rect_Icon.png" />
+    <Resource Include="Grafic\remove_layer.png" />
+    <Resource Include="Grafic\up_layer.png" />
   </ItemGroup>
 
 </Project>

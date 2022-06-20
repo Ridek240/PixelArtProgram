@@ -29,7 +29,9 @@ namespace PixelArtProgram.Grafic
         {
             get { return LabelSus.Content.ToString();  }
 
-            set { LabelSus.Content = value; }
+            set { LabelSus.Content = value;
+                LabelSus.ToolTip = value;
+            }
         }
 
         public BitmapImage Image
@@ -40,7 +42,7 @@ namespace PixelArtProgram.Grafic
         public bool IsVisibleFun
         {
             set { 
-                if(value)
+                if(!value)
                 {
                     IsVisible.Visibility = Visibility.Visible;
                 }

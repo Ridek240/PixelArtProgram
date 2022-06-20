@@ -5,20 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PixelArtProgram.Grafic"
              mc:Ignorable="d" 
-             d:DesignHeight="50"  MinWidth="150" Width="auto">
+             d:DesignHeight="50"  MinWidth="150" Width="150">
     <Grid>
         <Rectangle Fill="LightGray"/>
         <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50"/>
-            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Name="Bitmapa" Grid.Column="0"/>
-            <Rectangle Stroke="Gray" Grid.Column="1"/>
-            <Image Name="IsVisible" Source="blindeye.png" Grid.Column="1" Visibility="Visible" Width="50"/>
-
-            <Label Name="LabelSus" Content="naem" Grid.Column="2" />
+            <Image Name="Bitmapa" Grid.Column="0" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            
+            <Image Name="IsVisible" Source="blindeye.png" Grid.Column="0" Visibility="Collapsed" Width="50" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            <Line  Grid.Column="1" Stroke="Black" X1="0" X2="0" Y1="0" Y2="50"></Line>
+            <Label Name="LabelSus"  Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label.ToolTip>aaa</Label.ToolTip>
+            </Label>
         </Grid>
     </Grid>
 </UserControl>
