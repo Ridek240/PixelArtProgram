@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:PixelArtProgram"
         mc:Ignorable="d"
         MouseLeftButtonDown="DragAndMoveWindow"
-        Title="ChangeColor" Height="300" Width="200">
+        WindowStyle="None"
+        Title="ChangeColor" Height="250" MaxHeight="250" Width="200" MaxWidth="200" MinWidth="200" MinHeight="250">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -19,7 +20,6 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -60,9 +60,13 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+
+            <Button Click="Confirm" Style="{StaticResource EnterBtnStyle}" IsDefault="True" Grid.Column="0"/>
             
-        <Button Click="Confirm" Style="{StaticResource EnterBtnStyle}" IsDefault="True" Content="Utwórz" Grid.Column="0"/>
-        <Button IsCancel="true" Style="{StaticResource CloseBtnStyle}"  Content="Anuluj" Grid.Column="1"/>
+
+            <Button IsCancel="true" Style="{StaticResource CloseBtnStyle}"   Grid.Column="1"/>
+            
+
 
         </Grid>
         

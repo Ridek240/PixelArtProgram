@@ -7,7 +7,7 @@ using Controll = System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using PixelArtProgram.Grafic;
 using PixelArtProgram.Tools;
 using System.Windows.Data;
 using System.Windows.Media.Media3D;
@@ -48,6 +48,10 @@ namespace PixelArtProgram
         Bitmap EmptyLayer;
         private void CreateNew(object sender, RoutedEventArgs e)
         {
+            CreateNew();
+        }
+        private void CreateNew()
+        {
             NewPixel Creating = new NewPixel();
             if (Creating.ShowDialog() == true)
             {
@@ -66,8 +70,11 @@ namespace PixelArtProgram
                 else MessageBox.Show("Wartosci są nieprawidłowe");
             }
         }
-
         private void OpenImage(object sender, RoutedEventArgs e)
+        {
+            OpenImage();
+        }
+        private void OpenImage()
         {
             DB.LoadLayer();
             Controll.Image image = new Controll.Image();
@@ -95,7 +102,7 @@ namespace PixelArtProgram
             Screen_Background.Source = ConvertToImage(bitmapBachground);
             if (DB.CanDraw())
             {
-                layersImage[DB.ActiveLayer].Source = ConvertToImage(DB.GetActiveBitmapLayer().bitmap);
+                layersImage[DB.ActiveLayer].Source = DB.GetActiveBitmapLayer().IsVisible ? ConvertToImage(DB.GetActiveBitmapLayer().bitmap) : ConvertToImage(EmptyLayer);
 
                 Screen.Source = ConvertToImage(EmptyLayer);
             }
@@ -119,7 +126,11 @@ namespace PixelArtProgram
                     new Vector3D(-20, 20, 20)));
             for (int i = 0; i < DB.GetBitmapLayers().Count; i++)
             {
-                HowIHate3DInWPF.EndThisWorld(HateSpace, DB.GetBitmapLayer(i).bitmap, i);
+                if(DB.GetBitmapLayer(i).IsVisible)
+                    HowIHate3DInWPF.EndThisWorld(HateSpace, DB.GetBitmapLayer(i).bitmap, i);
+                else
+                    HowIHate3DInWPF.EndThisWorld(HateSpace, EmptyLayer, i);
+
             }
         }
 
@@ -135,8 +146,15 @@ namespace PixelArtProgram
             Layers.SelectedIndex = DB.ActiveLayer;
             for (int i = 0; i < DB.GetBitmapLayers().Count(); i++)
             {
-                layersImage[i].Source = ConvertToImage(DB.GetBitmapLayers()[i].bitmap);
+                if (DB.GetBitmapLayer(i).IsVisible)
+                    layersImage[i].Source = ConvertToImage(DB.GetBitmapLayers()[i].bitmap);
+                else
+                    layersImage[i].Source = ConvertToImage(EmptyLayer);
             }
+            if (HoWmUcHiHaTe3dInWpF)
+                CreateHateSpace();
+            else
+                EndHateSpace();
         }
 
         public BitmapImage ConvertToImage(Bitmap src)
@@ -265,31 +283,59 @@ namespace PixelArtProgram
 
                 if (Keyboard.IsKeyDown(Key.Z))
                 {
-                    DB.Undo();
-                    UpdateLayersImage();
-                    UpdateAllLayers();
-                    UpdateScreen();
+                    Undo();
                 }
                 if (Keyboard.IsKeyDown(Key.Y))
                 {
-                    DB.Redo();
-                    UpdateLayersImage();
-                    UpdateAllLayers();
-                    UpdateScreen();
+                    Redo();
                 }
                 if (Keyboard.IsKeyDown(Key.C))
                 {
-                    copyPlaceholder = new Bitmap(DB.GetActiveBitmapLayer().bitmap);
+                    Copy();
                 }
                 if (Keyboard.IsKeyDown(Key.V))
                 {
                     DB.Paste(copyPlaceholder);
                 }
+                if (Keyboard.IsKeyDown(Key.N))
+                {
+                    CreateNew();
+                }
+                if (Keyboard.IsKeyDown(Key.S))
+                {
+                    DB.SaveFile();
+                }
+                if (Keyboard.IsKeyDown(Key.O))
+                {
+                    OpenImage();
+                }
+                if (Keyboard.IsKeyDown(Key.E))
+                {
+                    DB.ExtractLayer();
+                }
+                if (Keyboard.IsKeyDown(Key.R))
+                {
+                    DB.ExtractAll();
+                }
             }
 
         }
 
+        private void Undo()
+        {
+            DB.Undo();
+            UpdateLayersImage();
+            UpdateAllLayers();
+            UpdateScreen();
+        }
 
+        private void Redo()
+        {
+            DB.Redo();
+            UpdateLayersImage();
+            UpdateAllLayers();
+            UpdateScreen();
+        }
         private void CreateBackGround(int width, int height)
         {
             bitmapBachground = new Bitmap(width * 2, height * 2);
@@ -364,10 +410,12 @@ namespace PixelArtProgram
             Naming name = new Naming();
             if (name.ShowDialog() == true)
             {
-                Controll.Label label = new Controll.Label();
-                label.Content = name.Input.Text;
-                Layers.Items.Add(label);
-
+                ListElement listElement = new ListElement();
+                listElement.Label = name.Input.Text;
+                //Controll.Label label = new Controll.Label();
+                //label.Content = name.Input.Text;
+                //Layers.Items.Add(label);
+                //
                 DB.AddLayer(name.Input.Text);
                 AddLayerImage();
             }
@@ -484,7 +532,10 @@ namespace PixelArtProgram
                     break;
             }
         }
-
+        private void Copy()
+        {
+            copyPlaceholder = new Bitmap(DB.GetActiveBitmapLayer().bitmap);
+        }
         private void ExtractLayer(object sender, RoutedEventArgs e)
         {
             DB.ExtractLayer();
@@ -495,19 +546,14 @@ namespace PixelArtProgram
             DB.ExtractAll();
         }
 
-        private void Cut(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Copy(object sender, RoutedEventArgs e)
         {
-
+            Copy();
         }
 
         private void Paste(object sender, RoutedEventArgs e)
         {
-
+            DB.Paste(copyPlaceholder);
         }
 
         private void ExtractColor(object sender, RoutedEventArgs e)
@@ -516,23 +562,12 @@ namespace PixelArtProgram
         }
         private void Undo(object sender, RoutedEventArgs e)
         {
-
-                DB.Undo();
-                UpdateLayersImage();
-                UpdateAllLayers();
-                UpdateScreen();
-           
-
+            Undo();
         }
 
         private void Redo(object sender, RoutedEventArgs e)
         {
-
-                DB.Redo();
-                UpdateLayersImage();
-                UpdateAllLayers();
-                UpdateScreen();
-            
+            Redo();
         }
 
         private void flat3D(object sender, RoutedEventArgs e)
@@ -552,6 +587,30 @@ namespace PixelArtProgram
                 CreateHateSpace();
             else
                 EndHateSpace();
+        }
+
+        private void MergeLayer(object sender, RoutedEventArgs e)
+        {
+            if (Layers.SelectedIndex >= 1)
+            {
+                DB.CombineBitmaps(DB.GetBitmapLayer(Layers.SelectedIndex-1).bitmap, DB.GetActiveBitmapLayer().bitmap);
+                RemoveLayer(sender, e);
+                UpdateAllLayers();
+            }
+
+
+
+        }
+
+        private void VisibleLayer(object sender, RoutedEventArgs e)
+        {
+            if (Layers.SelectedIndex >= 0)
+            {
+
+                bool test = !DB.GetActiveBitmapLayer().IsVisible;
+                DB.GetActiveBitmapLayer().IsVisible = !DB.GetActiveBitmapLayer().IsVisible;
+                UpdateAllLayers();
+            }
         }
     }
 

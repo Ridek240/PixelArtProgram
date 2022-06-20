@@ -169,6 +169,8 @@ namespace PixelArtProgram
             CreateAction(currentAction);
         }
 
+
+
         public void CreateAction(Action action)
         {
             OldActions.Push(action);
@@ -247,7 +249,7 @@ namespace PixelArtProgram
         public void LoadLayer()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Dead Files (*.png)|*.png|All files (*.*)|*.*";
+            openFileDialog.Filter = "Dead Files (*.png)|*.png|Dead Files (*.bmp)|*.bmp|Dead Files (*.jpg)|*.jpg|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
                 Bitmap TempBitmap = new Bitmap(openFileDialog.FileName);
@@ -343,7 +345,7 @@ namespace PixelArtProgram
                 }
 
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.png)|*.png|All files (*.*)|*.*";
+                saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.png)|*.png|Nie nadpisuj utwórz nowy \n (*.bmp)|*.bmp|Nie nadpisuj utwórz nowy \n (*.jpg)|*.jpg|All files (*.*)|*.*";
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     try
@@ -439,10 +441,12 @@ namespace PixelArtProgram
     {
         public string name;
         public Bitmap bitmap;
+        public bool IsVisible;
         public BitmapLayer(string name, Bitmap bitmap)
         {
             this.name = name;
             this.bitmap = bitmap;
+            IsVisible = true;
         }
     }
 }

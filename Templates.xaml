@@ -50,6 +50,8 @@
                             Value="30" />
                             <Setter Property="Width"
                             Value="30" />
+                            <Setter Property="ToolTip" 
+                            Value="Anuluj"/>
 
                         </Trigger>
 
@@ -113,6 +115,8 @@
                             Value="30" />
                             <Setter Property="Width"
                             Value="30" />
+                            <Setter Property="ToolTip" 
+                            Value="Zatwierdź"/>
 
                         </Trigger>
 

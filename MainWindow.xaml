@@ -24,10 +24,9 @@
                     <MenuItem Header="Wyekstraktuj Wszystko" Click="ExtractAll" InputGestureText="Ctrl + R"/>
                 </MenuItem>
                 <MenuItem Header="Edytuj">
-                    <MenuItem Header="Cofnij" Click="Cut" InputGestureText="Ctrl + Z"/>
-                    <MenuItem Header="Ponów" Click="Copy" InputGestureText="Ctrl + Y"/>
+                    <MenuItem Header="Cofnij" Click="Undo" InputGestureText="Ctrl + Z"/>
+                    <MenuItem Header="Ponów" Click="Redo" InputGestureText="Ctrl + Y"/>
                     <Separator/>
-                    <MenuItem Header="Wytnij" Click="Cut" InputGestureText="Ctrl + X"/>
                     <MenuItem Header="Kopiuj" Click="Copy" InputGestureText="Ctrl + C"/>
                     <MenuItem Header="Wklej" Click="Paste" InputGestureText="Ctrl + V"/>
                     <Separator/>
@@ -157,15 +156,19 @@
 
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>    
-                        <Button Content="+" Grid.Column="0" Click="AddLayer"/>
-                        <Button Content="-" Grid.Column="1" Click="RemoveLayer"/>
-                        <Button Content="/\" Grid.Column="2" Click="UpLayer" />
-                        <Button Content="\/" Grid.Column="3" Click="DownLayer" />
+                        <Button Content="+" Grid.Column="0" Click="AddLayer" MinWidth="15"/>
+                        <Button Content="-" Grid.Column="1" Click="RemoveLayer" MinWidth="15"/>
+                        <Button Content="/\" Grid.Column="2" Click="UpLayer" MinWidth="15"/>
+                        <Button Content="\/" Grid.Column="3" Click="DownLayer" MinWidth="15"/>
+                        <Button Content="C" Grid.Column="4" Click="MergeLayer" MinWidth="15"/>
+                        <Button Content="O" Grid.Column="5" Click="VisibleLayer" MinWidth="15"/>
                     </Grid>
                 </Grid>
             </Grid>
