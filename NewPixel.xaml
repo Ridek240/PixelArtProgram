@@ -5,15 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PixelArtProgram"
         mc:Ignorable="d"
-        Title="NewPixel" Height="300" Width="200">
+        MouseLeftButtonDown="DragAndMoveWindow"
+        Title="NewPixel" Height="200" Width="200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+
+
         </Grid.RowDefinitions>
         <Label Content="Wymiary Planszy" Grid.Row="0"/>
         <Grid Grid.Row="1">
@@ -32,7 +33,20 @@
                 <Label Content="Wysokość:" Grid.Column="0"/>
                 <TextBox Name="Get_Height" Grid.Column="1"/>
          </Grid>
-        <Button Click="Confirm" IsDefault="True" Content="Utwórz" Grid.Row="4"/>
-        <Button IsCancel="true" Content="Anuluj" Grid.Row="5"/>
+        
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Click="Confirm" Style="{StaticResource EnterBtnStyle}" IsDefault="True" Grid.Column="0"/>
+
+
+            <Button IsCancel="true" Style="{StaticResource CloseBtnStyle}"   Grid.Column="1"/>
+
+
+
+        </Grid>
     </Grid>
 </Window>

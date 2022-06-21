@@ -28,5 +28,11 @@ namespace PixelArtProgram
         {
             DialogResult = true;
         }
+
+        private void DragAndMoveWindow(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
     }
 }
