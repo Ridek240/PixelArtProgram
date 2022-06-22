@@ -111,7 +111,7 @@
                 <Button Width="20" x:Name="Eraser" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" >
                     <Image Source="Grafic/Eraser.png"/>
                 </Button>
-                <Button Width="20" x:Name="Brush" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" >
+                <Button Width="20" x:Name="Brush" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" >
                     <Image Source="Grafic/Eraser.png"/>
                 </Button>
                 </Grid>
@@ -120,9 +120,11 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <TextBox Name="size" Grid.Row="0"></TextBox>
-                    <StackPanel Margin="3" Grid.Row="1" >
+                    <Label Grid.Row="0">Wielkosć Pędzla</Label>
+                    <TextBox Name="size" Grid.Row="1"></TextBox>
+                    <StackPanel Margin="3" Grid.Row="2" >
                         <RadioButton Name="Grad1" Checked="ChangebrushSys">Kolor</RadioButton>
                         <RadioButton Name="Grad2" Checked="ChangebrushSys" IsChecked="True">Threshold</RadioButton>
                         <RadioButton Name="Grad3" Checked="ChangebrushSys" >Otsu</RadioButton>
