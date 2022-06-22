@@ -58,7 +58,7 @@ namespace PixelArtProgram
         {
             Graphics g = Graphics.FromImage(largeBmp);
             g.CompositingMode = CompositingMode.SourceOver;
-            smallBmp.MakeTransparent();
+            //smallBmp.MakeTransparent();
             g.DrawImage(smallBmp, new System.Drawing.Point(0, 0));
             return largeBmp;
         }

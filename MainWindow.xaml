@@ -50,6 +50,14 @@
                 <MenuItem Header="Filtry">
                     <MenuItem Header="Płaskie 3D" Click="flat3D" />
                     <MenuItem Header="Wypukłe 3D" Click="fat3D" />
+                    <Separator />
+                    <MenuItem Header="Rozciąganie Histogramu" Click="Streching" />
+                    <MenuItem Header="Wyrównanie Histogramu" Click="Equailization" />
+                    <Separator />
+                    <MenuItem Header="Binaryzacja" Click="Threshold" />
+                    <MenuItem Header="Otsu" Click="Otsu" />
+                    <MenuItem Header="NiBlack" Click="NiBlack" />
+
 
                 </MenuItem>
             </Menu>

@@ -11,6 +11,7 @@ using PixelArtProgram.Grafic;
 using PixelArtProgram.Tools;
 using System.Windows.Data;
 using System.Windows.Media.Media3D;
+using PixelArtProgram.Algorytms;
 
 namespace PixelArtProgram
 {
@@ -643,7 +644,51 @@ namespace PixelArtProgram
             }
         }
 
+        private void Streching(object sender, RoutedEventArgs e)
+        {
+            NewPixel pixel = new NewPixel();
 
+            if (pixel.ShowDialog() == true)
+            {
+                int min, max;
+                if (!int.TryParse(pixel.Get_Width.Text, out min)) return;
+                if (!int.TryParse(pixel.Get_Height.Text, out max)) return;
+
+                HistogramSteching steching = new HistogramSteching();
+                DB.Paste(steching.Function(DB.GetActiveBitmapLayer().bitmap, min, max));
+            }
+            
+        }
+
+        private void Equailization(object sender, RoutedEventArgs e)
+        {
+            HistogramEqual equal = new HistogramEqual();
+            DB.Paste(equal.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
+
+        private void Threshold(object sender, RoutedEventArgs e)
+        {
+            Sized sized = new Sized();
+            if(sized.ShowDialog()==true)
+            {
+                int m;
+                if (!int.TryParse(sized.Input.Text, out m)) return;
+                BinaryTreshhold threshold = new BinaryTreshhold();
+                DB.Paste(threshold.BinaryThreshold(DB.GetActiveBitmapLayer().bitmap, (byte) m , true));
+            }
+        }
+
+        private void Otsu(object sender, RoutedEventArgs e)
+        {
+            Otsu otsu = new Otsu();
+            DB.Paste(otsu.OtsuMethod(DB.GetActiveBitmapLayer().bitmap));
+        }
+
+        private void NiBlack(object sender, RoutedEventArgs e)
+        {
+            NiBlack niBlack = new NiBlack();
+            DB.Paste(niBlack.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
     }
 
     public class Point
