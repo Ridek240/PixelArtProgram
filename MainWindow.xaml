@@ -57,6 +57,10 @@
                     <MenuItem Header="Binaryzacja" Click="Threshold" />
                     <MenuItem Header="Otsu" Click="Otsu" />
                     <MenuItem Header="NiBlack" Click="NiBlack" />
+                    <MenuItem Header="Odwróć Kolory" Click="ReverseColors" />
+                    <MenuItem Header="Zmień Kontrast" Click="Kontrast" />
+                    <MenuItem Header="Zmień Jasność" Click="Jasnosc" />
+                    <MenuItem Header="Przeprować Szkieletyzację" Click="Szkieletyzacja" />
 
 
                 </MenuItem>

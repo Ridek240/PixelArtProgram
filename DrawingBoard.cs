@@ -41,6 +41,19 @@ namespace PixelArtProgram
             });
         }
 
+        public void Replace(Bitmap bitmap)
+        {
+            Bitmap bitmapOld = new Bitmap(GetActiveBitmapLayer().bitmap);
+            GetActiveBitmapLayer().bitmap = bitmap;
+            CreateAction(new DrawAction
+            {
+                DB = this,
+                layerIndex = activeLayer,
+                BitmapOld = bitmapOld,
+                BitmapNew = new Bitmap(GetActiveBitmapLayer().bitmap)
+            });
+        }
+
         public Bitmap MergeLayers()
         {
             if (layersBitmap.Count <= 0) return null;

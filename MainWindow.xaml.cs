@@ -28,7 +28,7 @@ namespace PixelArtProgram
         private int WidthGlobal;
         private int HeightGlobal;
 
-        private DrawingTools Tool = DrawingTools.Pencil;
+        private DrawingTools Tool = DrawingTools.Brush;
         public List<Controll.Image> layersImage = new List<Controll.Image>();
         public List<BitmapLayer> layersBitmap = new List<BitmapLayer>();
 
@@ -287,6 +287,23 @@ namespace PixelArtProgram
                     //This is Rectangle Tool
                     draw = true;
                     DB.StartDrawing(point, new DrawRect(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point));
+                }
+                else if (Tool == DrawingTools.Brush)
+                {
+                    draw = true;
+                    int brushSize = 5;
+                    bool[][] colors = new bool[brushSize][];
+                    for (int x = 0; x < brushSize; x++)
+                    {
+                        colors[x] = new bool[brushSize];
+                    }
+
+                    colors[2][2] = true;
+                    colors[1][2] = true;
+                    colors[3][2] = true;
+                    colors[2][1] = true;
+                    colors[2][3] = true;
+                    DB.StartDrawing(point, new Tools.Brush(DB, TranstalteColor(BrushColor(Show_Color.Fill)), colors));
                 }
             }
         }
@@ -663,7 +680,7 @@ namespace PixelArtProgram
         private void Equailization(object sender, RoutedEventArgs e)
         {
             HistogramEqual equal = new HistogramEqual();
-            DB.Paste(equal.Function(DB.GetActiveBitmapLayer().bitmap));
+            DB.Replace(equal.Function(DB.GetActiveBitmapLayer().bitmap));
         }
 
         private void Threshold(object sender, RoutedEventArgs e)
@@ -674,20 +691,59 @@ namespace PixelArtProgram
                 int m;
                 if (!int.TryParse(sized.Input.Text, out m)) return;
                 BinaryTreshhold threshold = new BinaryTreshhold();
-                DB.Paste(threshold.BinaryThreshold(DB.GetActiveBitmapLayer().bitmap, (byte) m , true));
+                DB.Replace(threshold.BinaryThreshold(DB.GetActiveBitmapLayer().bitmap, (byte) m , true));
             }
         }
 
         private void Otsu(object sender, RoutedEventArgs e)
         {
             Otsu otsu = new Otsu();
-            DB.Paste(otsu.OtsuMethod(DB.GetActiveBitmapLayer().bitmap));
+            DB.Replace(otsu.OtsuMethod(DB.GetActiveBitmapLayer().bitmap));
         }
 
         private void NiBlack(object sender, RoutedEventArgs e)
         {
             NiBlack niBlack = new NiBlack();
-            DB.Paste(niBlack.Function(DB.GetActiveBitmapLayer().bitmap));
+            DB.Replace(niBlack.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
+
+        private void ReverseColors(object sender, RoutedEventArgs e)
+        {
+            RevertColors rev = new RevertColors();
+            DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
+
+        private void Kontrast(object sender, RoutedEventArgs e)
+        {
+
+            Sized sized = new Sized();
+            if (sized.ShowDialog() == true)
+            {
+                float m;
+                if (!float.TryParse(sized.Input.Text, out m)) return;
+
+                Kontrast kon = new Kontrast();
+                DB.Replace(kon.Function(DB.GetActiveBitmapLayer().bitmap,m));
+            }
+        }
+
+        private void Jasnosc(object sender, RoutedEventArgs e)
+        {
+            Sized sized = new Sized();
+            if (sized.ShowDialog() == true)
+            {
+                float m;
+                if (!float.TryParse(sized.Input.Text, out m)) return;
+
+                Jasnosc jan = new Jasnosc();
+                DB.Replace(jan.Function(DB.GetActiveBitmapLayer().bitmap, (int)m));
+            }
+        }
+
+        private void Szkieletyzacja(object sender, RoutedEventArgs e)
+        {
+            Szkieletyzacja szkieletyzacja = new Szkieletyzacja();
+            DB.Replace(szkieletyzacja.KMM(DB.GetActiveBitmapLayer().bitmap));
         }
     }
 
@@ -709,7 +765,8 @@ namespace PixelArtProgram
         FloodBucket,
         Eraser,
         LineTool,
-        RectangleTool
+        RectangleTool,
+        Brush
     }
 
     public static class CustomCommands
