@@ -76,11 +76,17 @@
             </Grid.ColumnDefinitions>
 
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -105,7 +111,25 @@
                 <Button Width="20" x:Name="Eraser" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" >
                     <Image Source="Grafic/Eraser.png"/>
                 </Button>
+                <Button Width="20" x:Name="Brush" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" >
+                    <Image Source="Grafic/Eraser.png"/>
+                </Button>
+                </Grid>
 
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBox Name="size" Grid.Row="0"></TextBox>
+                    <StackPanel Margin="3" Grid.Row="1" >
+                        <RadioButton Name="Grad1" Checked="ChangebrushSys">Kolor</RadioButton>
+                        <RadioButton Name="Grad2" Checked="ChangebrushSys" IsChecked="True">Threshold</RadioButton>
+                        <RadioButton Name="Grad3" Checked="ChangebrushSys" >Otsu</RadioButton>
+                        <RadioButton Name="Grad4" Checked="ChangebrushSys">Niblack</RadioButton>
+                    </StackPanel>
+                </Grid>
+                
             </Grid>
             
                 <Rectangle Fill="Gray" Grid.Column="1"/>

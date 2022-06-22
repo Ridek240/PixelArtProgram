@@ -561,6 +561,9 @@ namespace PixelArtProgram
                 case "Eraser": Tool = DrawingTools.Eraser; break;
                 case "DrawLine": Tool = DrawingTools.LineTool; break;
                 case "DrawRect": Tool = DrawingTools.RectangleTool; break;
+                case "Brush": Tool = DrawingTools.Brush; 
+                    
+                    break;
                 default:
                     break;
             }
@@ -744,6 +747,11 @@ namespace PixelArtProgram
         {
             Szkieletyzacja szkieletyzacja = new Szkieletyzacja();
             DB.Replace(szkieletyzacja.KMM(DB.GetActiveBitmapLayer().bitmap));
+        }
+
+        private void ChangebrushSys(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 
