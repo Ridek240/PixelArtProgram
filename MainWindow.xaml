@@ -61,6 +61,7 @@
                     <MenuItem Header="Zmień Kontrast" Click="Kontrast" />
                     <MenuItem Header="Zmień Jasność" Click="Jasnosc" />
                     <MenuItem Header="Przeprować Szkieletyzację" Click="Szkieletyzacja" />
+                    <MenuItem Header="Rozdziel na tło i Obiektu" Click="SplitLayer" />
 
 
                 </MenuItem>
@@ -114,6 +115,9 @@
                 <Button Width="20" x:Name="Brush" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" >
                     <Image Source="Grafic/Eraser.png"/>
                 </Button>
+                    <Button Width="20" x:Name="ColorBrake" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" >
+                        <Image Source="Grafic/Eraser.png"/>
+                    </Button>
                 </Grid>
 
                 <Grid Grid.Row="1">

@@ -305,6 +305,19 @@ namespace PixelArtProgram
                     colors[2][3] = true;
                     DB.StartDrawing(point, new Tools.Brush(DB, TranstalteColor(BrushColor(Show_Color.Fill)), colors));
                 }
+
+                else if (Tool == DrawingTools.ColorBrake)
+                {
+                    ColorBrake color = new ColorBrake();
+                    if (color.Function(DB.GetActiveBitmapLayer().bitmap, DB.GetPixel(point)))
+                    {
+                        DB.Replace(color.Background);
+                        DB.AddLayer(DB.GetActiveBitmapLayer().name + "Color");
+                        DB.Replace(color.Object);
+                        AddLayerImage();
+                        UpdateAllLayers();
+                    }
+                }
             }
         }
 
@@ -561,9 +574,11 @@ namespace PixelArtProgram
                 case "Eraser": Tool = DrawingTools.Eraser; break;
                 case "DrawLine": Tool = DrawingTools.LineTool; break;
                 case "DrawRect": Tool = DrawingTools.RectangleTool; break;
-                case "Brush": Tool = DrawingTools.Brush; 
+                case "Brush": Tool = DrawingTools.Brush; break;
+                case "ColorBrake": Tool = DrawingTools.ColorBrake; break;
+
+
                     
-                    break;
                 default:
                     break;
             }
@@ -588,6 +603,7 @@ namespace PixelArtProgram
         private void ExtractAll(object sender, RoutedEventArgs e)
         {
             DB.ExtractAll();
+            
         }
 
         private void Copy(object sender, RoutedEventArgs e)
@@ -753,6 +769,21 @@ namespace PixelArtProgram
         {
 
         }
+
+        private void SplitLayer(object sender, RoutedEventArgs e)
+        {
+            SplitLayer split = new SplitLayer();
+
+            if (split.Function(DB.GetActiveBitmapLayer().bitmap))
+            {
+                DB.Replace(split.Background);
+                DB.AddLayer(DB.GetActiveBitmapLayer().name + "Object");
+                DB.Replace(split.Object);
+                AddLayerImage();
+                UpdateAllLayers();
+            }
+
+        }
     }
 
     public class Point
@@ -774,7 +805,8 @@ namespace PixelArtProgram
         Eraser,
         LineTool,
         RectangleTool,
-        Brush
+        Brush,
+        ColorBrake
     }
 
     public static class CustomCommands
