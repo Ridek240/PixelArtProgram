@@ -22,7 +22,7 @@ namespace PixelArtProgram.Tools
                 for (int y = 0; y < bitmap.Height; y++)
                 {
                     Color atpixel = bitmap.GetPixel(x, y);
-                    if (GetTolerance(atpixel, Color, range))
+                    if (atpixel.A == Color.A && GetTolerance(atpixel, Color, range))
                     {
                         bitmapResult.SetPixel(x, y, ColorPixel);
                     }

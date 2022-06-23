@@ -9,7 +9,9 @@
   <ItemGroup>
     <None Remove="Grafic\add_img.png" />
     <None Remove="Grafic\add_layer.png" />
+    <None Remove="Grafic\binatu.png" />
     <None Remove="Grafic\blindeye.png" />
+    <None Remove="Grafic\brush.png" />
     <None Remove="Grafic\cancel_img.png" />
     <None Remove="Grafic\down_layer.png" />
     <None Remove="Grafic\Eraser.png" />
@@ -17,7 +19,9 @@
     <None Remove="Grafic\fillAll.png" />
     <None Remove="Grafic\Line_Icon.png" />
     <None Remove="Grafic\merge_layer.png" />
+    <None Remove="Grafic\Niblack.png" />
     <None Remove="Grafic\oko.png" />
+    <None Remove="Grafic\Otsu.png" />
     <None Remove="Grafic\pencil.png" />
     <None Remove="Grafic\Rect_Icon.png" />
     <None Remove="Grafic\remove_layer.png" />
@@ -25,13 +29,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Accord.Imaging" Version="3.8.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Grafic\add_img.png" />
     <Resource Include="Grafic\add_layer.png" />
+    <Resource Include="Grafic\binatu.png" />
     <Resource Include="Grafic\blindeye.png" />
+    <Resource Include="Grafic\brush.png" />
     <Resource Include="Grafic\cancel_img.png" />
     <Resource Include="Grafic\down_layer.png" />
     <Resource Include="Grafic\Eraser.png" />
@@ -39,7 +46,9 @@
     <Resource Include="Grafic\fillAll.png" />
     <Resource Include="Grafic\Line_Icon.png" />
     <Resource Include="Grafic\merge_layer.png" />
+    <Resource Include="Grafic\Niblack.png" />
     <Resource Include="Grafic\oko.png" />
+    <Resource Include="Grafic\Otsu.png" />
     <Resource Include="Grafic\pencil.png" />
     <Resource Include="Grafic\Rect_Icon.png" />
     <Resource Include="Grafic\remove_layer.png" />

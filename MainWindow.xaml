@@ -114,16 +114,16 @@
                     <Image Source="Grafic/Eraser.png"/>
                 </Button>
                 <Button Width="20" x:Name="Brush" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" >
-                    <Image Source="Grafic/Eraser.png"/>
+                    <Image Source="Grafic/brush.png"/>
                 </Button>
                     <Button Width="20" x:Name="ColorBrake" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" >
                         <Image Source="Grafic/Eraser.png"/>
                     </Button>
                     <Button Width="20" x:Name="NiBlackBrush" Height="20" Grid.Column="0" Grid.Row="4" Click="Change_Tool" >
-                        <Image Source="Grafic/Eraser.png"/>
+                        <Image Source="Grafic/niblack.png"/>
                     </Button>
                     <Button Width="20" x:Name="OtsuBrush" Height="20" Grid.Column="1" Grid.Row="4" Click="Change_Tool" >
-                        <Image Source="Grafic/Eraser.png"/>
+                        <Image Source="Grafic/Otsu.png"/>
                     </Button>
                 </Grid>
 

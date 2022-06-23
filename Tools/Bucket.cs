@@ -38,7 +38,7 @@ namespace PixelArtProgram.Tools
 
                 visited[pixel.X, pixel.Y] = true;
 
-                if (GetTolerance(bitmap.GetPixel(pixel.X, pixel.Y), pixelCompateTo, range))
+                if (bitmap.GetPixel(pixel.X, pixel.Y).A== pixelCompateTo.A&&GetTolerance(bitmap.GetPixel(pixel.X, pixel.Y), pixelCompateTo, range))
                 {
                     bitmapResult.SetPixel(pixel.X, pixel.Y, ColorPixel);
                     foreach (System.Drawing.Point neighbour in neighbours)

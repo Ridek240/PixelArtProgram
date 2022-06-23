@@ -59,7 +59,7 @@ namespace PixelArtProgram.Algorytms
             Marshal.Copy(bitmapDataout, 0, data.Scan0, bitmapDataout.Length);
             bitmap.UnlockBits(data);
 
-            return bitmap;
+            return RemoveColorPixels(bitmap);
         }
 
         public double Median(List<double> numbers)
@@ -88,6 +88,28 @@ namespace PixelArtProgram.Algorytms
                 result = Math.Sqrt((sum) / sequence.Count());
             }
             return result;
+        }
+
+
+        private Bitmap RemoveColorPixels(Bitmap bitmap)
+        {
+            Bitmap output = new Bitmap(bitmap.Width, bitmap.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            for (int i = 0; i < bitmap.Width; i++)
+            {
+                for (int x = 0; x < bitmap.Height; x++)
+                {
+                    if(bitmap.GetPixel(i, x) == Color.FromArgb(255, 255,255,255))
+                    {
+                        output.SetPixel(i, x, bitmap.GetPixel(i, x));
+                    }
+                    else
+                    {
+                        output.SetPixel(i, x, Color.FromArgb(255, 0,0,0));
+                    }
+                }
+            }
+
+            return output;
         }
     }
 }
