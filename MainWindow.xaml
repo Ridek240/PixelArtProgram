@@ -92,6 +92,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
                 <Button Width="20" x:Name="Pencil"   Height="20" Grid.Column="0" Grid.Row="0" Click="Change_Tool" >
@@ -116,6 +117,12 @@
                     <Image Source="Grafic/Eraser.png"/>
                 </Button>
                     <Button Width="20" x:Name="ColorBrake" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" >
+                        <Image Source="Grafic/Eraser.png"/>
+                    </Button>
+                    <Button Width="20" x:Name="NiBlackBrush" Height="20" Grid.Column="0" Grid.Row="4" Click="Change_Tool" >
+                        <Image Source="Grafic/Eraser.png"/>
+                    </Button>
+                    <Button Width="20" x:Name="OtsuBrush" Height="20" Grid.Column="1" Grid.Row="4" Click="Change_Tool" >
                         <Image Source="Grafic/Eraser.png"/>
                     </Button>
                 </Grid>

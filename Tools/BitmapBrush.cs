@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelArtProgram.Algorytms;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -7,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace PixelArtProgram.Tools
 {
-    public class Brush : DrawingTool
+    public class BitmapBrush : Brush
     {
-        public bool[][] Colors;
-        public Brush(DrawingBoard _drawingBoard, Color color, bool[][] colors) : base(_drawingBoard, color)
+        public Bitmap algorytmBitmap;
+        public BitmapBrush(DrawingBoard _drawingBoard, Bitmap bitmap, bool[][] colors) : base(_drawingBoard, Color.Empty, colors)
         {
-            Colors = colors;
+            if (bitmap != null)
+                algorytmBitmap = new Bitmap(bitmap);
         }
 
         public override void Draw(Point mousePosition)
@@ -32,11 +34,12 @@ namespace PixelArtProgram.Tools
                         locX >= sizeX ||
                         locY < 0 ||
                         locY >= sizeY) continue;
-                    if (!Colors[x][y]) continue;
+                    if (!Colors[x][y]) 
+                        continue;
                     drawingBoard.GetActiveBitmapLayer().bitmap.SetPixel(
-                        locX, 
-                        locY, 
-                        Color);
+                        locX,
+                        locY,
+                        algorytmBitmap.GetPixel(locX, locY));
 
                 }
             }

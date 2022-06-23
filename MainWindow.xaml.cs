@@ -291,21 +291,8 @@ namespace PixelArtProgram
                 else if (Tool == DrawingTools.Brush)
                 {
                     draw = true;
-                    int brushSize = 5;
-                    bool[][] colors = new bool[brushSize][];
-                    for (int x = 0; x < brushSize; x++)
-                    {
-                        colors[x] = new bool[brushSize];
-                    }
-
-                    colors[2][2] = true;
-                    colors[1][2] = true;
-                    colors[3][2] = true;
-                    colors[2][1] = true;
-                    colors[2][3] = true;
-                    DB.StartDrawing(point, new Tools.Brush(DB, TranstalteColor(BrushColor(Show_Color.Fill)), colors));
+                    DB.StartDrawing(point, new Tools.Brush(DB, TranstalteColor(BrushColor(Show_Color.Fill)), CreateBrushMask()));
                 }
-
                 else if (Tool == DrawingTools.ColorBrake)
                 {
                     ColorBrake color = new ColorBrake();
@@ -318,7 +305,38 @@ namespace PixelArtProgram
                         UpdateAllLayers();
                     }
                 }
+                else if (Tool == DrawingTools.NiBlackBrush)
+                {
+                    draw = true;
+                    DB.StartDrawing(point, new Tools.NiBlackBrush(DB, CreateBrushMask()));
+                }
+                else if (Tool == DrawingTools.OtsuBrush)
+                {
+                    draw = true;
+                    
+                    DB.StartDrawing(point, new Tools.OtsuBrush(DB, CreateBrushMask()));
+                }
             }
+        }
+
+        private bool[][] CreateBrushMask()
+        {
+            if (!int.TryParse(size.Text, out int brushSize))
+                brushSize = 5;
+            bool[][] colors = new bool[brushSize][];
+            for (int x = 0; x < brushSize; x++)
+            {
+                colors[x] = new bool[brushSize];
+            }
+            for (int x = 0; x < brushSize; x++)
+            {
+                colors[x][brushSize / 2] = true;
+            }
+            for (int x = 0; x < brushSize; x++)
+            {
+                colors[brushSize / 2][x] = true;
+            }
+            return colors;
         }
 
         private Point Get_Mouse_Position(MouseEventArgs e)
@@ -576,9 +594,11 @@ namespace PixelArtProgram
                 case "DrawRect": Tool = DrawingTools.RectangleTool; break;
                 case "Brush": Tool = DrawingTools.Brush; break;
                 case "ColorBrake": Tool = DrawingTools.ColorBrake; break;
+                case "NiBlackBrush": Tool = DrawingTools.NiBlackBrush; break;
+                case "OtsuBrush": Tool = DrawingTools.OtsuBrush; break;
 
 
-                    
+
                 default:
                     break;
             }
@@ -806,7 +826,9 @@ namespace PixelArtProgram
         LineTool,
         RectangleTool,
         Brush,
-        ColorBrake
+        ColorBrake,
+        NiBlackBrush,
+        OtsuBrush
     }
 
     public static class CustomCommands
