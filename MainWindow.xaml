@@ -11,6 +11,11 @@
     <Window.CommandBindings>
         <CommandBinding Command="local:CustomCommands.ExtractLayer"  Executed="ExtractLayer" CanExecute="CanExtractExecute"/>
         <CommandBinding Command="local:CustomCommands.ExtractAll"  Executed="ExtractAll" CanExecute="CanExtractExecute"/>
+        <CommandBinding Command="local:CustomCommands.ExtractToP1"  Executed="ExtractToP1" CanExecute="CanExtractExecute"/>
+        <CommandBinding Command="local:CustomCommands.ExtractToP2"  Executed="ExtractToP2" CanExecute="CanExtractExecute"/>
+        <CommandBinding Command="local:CustomCommands.ExtractToP3"  Executed="ExtractToP3" CanExecute="CanExtractExecute"/>
+        <CommandBinding Command="local:CustomCommands.ExtractToP4"  Executed="ExtractToP4" CanExecute="CanExtractExecute"/>
+        <CommandBinding Command="local:CustomCommands.OpenNetpbm"  Executed="OpenNetpbm" />
     </Window.CommandBindings>   
     <Window.InputBindings>
         <KeyBinding Command="New" Key="N" Modifiers="Ctrl"/>
@@ -36,6 +41,11 @@
                     <Separator/>
                     <MenuItem Header="Wyekstraktuj Warstwę" Command="local:CustomCommands.ExtractLayer" InputGestureText="Ctrl + E"/>
                     <MenuItem Header="Wyekstraktuj Wszystko" Command="local:CustomCommands.ExtractAll" InputGestureText="Ctrl + R"/>
+                    <MenuItem Header="Wyekstraktuj Do P1" Command="local:CustomCommands.ExtractToP1" InputGestureText="Ctrl + L"/>
+                    <MenuItem Header="Wyekstraktuj Do P2" Command="local:CustomCommands.ExtractToP2" InputGestureText="Ctrl + L"/>
+                    <MenuItem Header="Wyekstraktuj Do P3" Command="local:CustomCommands.ExtractToP3" InputGestureText="Ctrl + L"/>
+                    <MenuItem Header="Wyekstraktuj Do P4" Command="local:CustomCommands.ExtractToP4" InputGestureText="Ctrl + L"/>
+                    <MenuItem Header="Otwórz Do P1" Command="local:CustomCommands.OpenNetpbm" InputGestureText="Ctrl + I"/>
                 </MenuItem>
                 <MenuItem Header="Edytuj">
                     <MenuItem Header="Cofnij" Command="Undo" InputGestureText="Ctrl + Z"/>
@@ -116,15 +126,21 @@
                 <Button Width="20" x:Name="Brush" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" >
                     <Image Source="Grafic/brush.png"/>
                 </Button>
-                    <Button Width="20" x:Name="ColorBrake" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" >
-                        <Image Source="Grafic/Eraser.png"/>
-                    </Button>
-                    <Button Width="20" x:Name="NiBlackBrush" Height="20" Grid.Column="0" Grid.Row="4" Click="Change_Tool" >
-                        <Image Source="Grafic/niblack.png"/>
-                    </Button>
-                    <Button Width="20" x:Name="OtsuBrush" Height="20" Grid.Column="1" Grid.Row="4" Click="Change_Tool" >
-                        <Image Source="Grafic/Otsu.png"/>
-                    </Button>
+                <Button Width="20" x:Name="ColorBrake" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" >
+                    <Image Source="Grafic/Eraser.png"/>
+                </Button>
+                <Button Width="20" x:Name="NiBlackBrush" Height="20" Grid.Column="0" Grid.Row="4" Click="Change_Tool" >
+                    <Image Source="Grafic/niblack.png"/>
+                </Button>
+                <Button Width="20" x:Name="OtsuBrush" Height="20" Grid.Column="1" Grid.Row="4" Click="Change_Tool" >
+                    <Image Source="Grafic/Otsu.png"/>
+                </Button>
+                <Button Width="20" x:Name="DrawEllipse"  Height="20" Grid.Column="0" Grid.Row="5" Click="Change_Tool">
+                    <Image Source="Grafic/Rect_Icon.png"/>
+                </Button>
+                <Button Width="20" x:Name="DrawPoly"  Height="20" Grid.Column="1" Grid.Row="5" Click="Change_Tool">
+                    <Image Source="Grafic/Rect_Icon.png"/>
+                </Button>
                 </Grid>
 
                 <Grid Grid.Row="1">

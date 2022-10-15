@@ -7,55 +7,189 @@
         mc:Ignorable="d"
         MouseLeftButtonDown="DragAndMoveWindow"
         WindowStyle="None"
-        Title="ChangeColor" Height="250" MaxHeight="250" Width="200" MaxWidth="200" MinWidth="200" MinHeight="250">
+        Title="ChangeColor" Height="1000" MaxHeight="1000" Width="200" MaxWidth="200" MinWidth="200" MinHeight="250">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
+        
+        
+        
         <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Content="R" Grid.Column="0"/>
-            <TextBox x:Name="Red_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_red}" TextChanged="Switch_Color"/>
-        </Grid>
-        
-        <Slider Name="Slider_red" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true"/>
-        
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Content="G" Grid.Column="0"/>
-            <TextBox x:Name="Green_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Green}" TextChanged="Switch_Color"/>
-        </Grid>
-        
-        <Slider Name="Slider_Green" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" />
-        
-        <Grid Grid.Row="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Content="B" Grid.Column="0"/>
-            <TextBox x:Name="Blue_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Blue}" TextChanged="Switch_Color"/>
-        </Grid>
-        <Slider Name="Slider_Blue" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true"/>
-        <Label Content="Brak Błędów" Name="Error_Label" Grid.Row="7"/>
-        <Rectangle Name="Show_Color" Grid.Row="8" Width="16" Height="16" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Left" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+   
+            </Grid.RowDefinitions>
 
-        <Grid Grid.Row="9">
+            <CheckBox Content="RGB" Grid.Row="0" x:Name="RGBBOX" Checked="OnRGB"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="R" Grid.Column="0"/>
+                <TextBox x:Name="Red_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_red}" TextChanged="Switch_Color"/>
+            </Grid>
+
+            <Slider Name="Slider_red" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true"/>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="G" Grid.Column="0"/>
+                <TextBox x:Name="Green_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Green}" TextChanged="Switch_Color"/>
+            </Grid>
+
+            <Slider Name="Slider_Green" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true" />
+
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="B" Grid.Column="0"/>
+                <TextBox x:Name="Blue_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Blue}" TextChanged="Switch_Color"/>
+            </Grid>
+            <Slider Name="Slider_Blue" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="true"/>
+
+        </Grid>
+
+
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>                
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+
+            </Grid.RowDefinitions>
+            <CheckBox Content="CMYK" Grid.Row="0" x:Name="CMYKBOX" Checked="OnCMYK"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="C" Grid.Column="0"/>
+                <TextBox x:Name="Cyan_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_cyan}" TextChanged="Switch_CMYK"/>
+            </Grid>
+
+            <Slider Name="Slider_cyan" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="100" IsSnapToTickEnabled="true"/>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="M" Grid.Column="0"/>
+                <TextBox x:Name="Magenta_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Magenta}" TextChanged="Switch_CMYK"/>
+            </Grid>
+
+            <Slider Name="Slider_Magenta" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="100" IsSnapToTickEnabled="true" />
+
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Y" Grid.Column="0"/>
+                <TextBox x:Name="Yellow_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Yellow}" TextChanged="Switch_CMYK"/>
+            </Grid>
+            <Slider Name="Slider_Yellow" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="100" IsSnapToTickEnabled="true"/>
+
+            <Grid Grid.Row="7">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="K" Grid.Column="0"/>
+                <TextBox x:Name="Black_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Black}" TextChanged="Switch_CMYK"/>
+            </Grid>
+            <Slider Name="Slider_Black" Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="100" IsSnapToTickEnabled="true"/>
+
+
+        </Grid>
+
+
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+
+            </Grid.RowDefinitions>
+
+            <CheckBox Content="HSV" Grid.Row="0" x:Name="HSVBOX" Checked="OnHSV"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="H" Grid.Column="0"/>
+                <TextBox x:Name="Hue_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Hue}" TextChanged="Switch_HSV"/>
+            </Grid>
+
+            <Slider Name="Slider_Hue" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="359" Value="359" IsSnapToTickEnabled="true"/>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="S" Grid.Column="0"/>
+                <TextBox x:Name="Saturation_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Saturation}" TextChanged="Switch_HSV"/>
+            </Grid>
+
+            <Slider Name="Slider_Saturation" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="100" IsSnapToTickEnabled="true" />
+
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="V" Grid.Column="0"/>
+                <TextBox x:Name="Value_color" Grid.Column="1" Text="{Binding Path=Value, ElementName=Slider_Value}" TextChanged="Switch_HSV"/>
+            </Grid>
+            <Slider Name="Slider_Value" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="100" IsSnapToTickEnabled="true"/>
+
+        </Grid>
+
+
+        <Grid Grid.Row="3">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Content="Brak Błędów" Name="Error_Label" Grid.Row="0"/>
+        <Rectangle Name="Show_Color" Grid.Row="1" Width="16" Height="16" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Left" />
+
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -69,7 +203,8 @@
 
 
         </Grid>
-        
-        
+        </Grid>
+
+
     </Grid>
 </Window>

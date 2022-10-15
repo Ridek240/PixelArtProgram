@@ -227,7 +227,7 @@ namespace PixelArtProgram
             return image;
         }
 
-        
+        List<Point> polypoints;
         private void StartDraw(object sender, MouseButtonEventArgs e)
         {
             if (DB == null) return;
@@ -288,6 +288,12 @@ namespace PixelArtProgram
                     draw = true;
                     DB.StartDrawing(point, new DrawRect(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point));
                 }
+                else if (Tool == DrawingTools.EllipseTool)
+                {
+                    //This is Ellipse Tool yes its new
+                    draw = true;
+                    DB.StartDrawing(point, new DrawElli(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point));
+                }
                 else if (Tool == DrawingTools.Brush)
                 {
                     draw = true;
@@ -315,6 +321,21 @@ namespace PixelArtProgram
                     draw = true;
                     
                     DB.StartDrawing(point, new Tools.OtsuBrush(DB, CreateBrushMask()));
+                }
+                else if(Tool==DrawingTools.PolyDraw)
+                {
+                    if(Keyboard.IsKeyDown(Key.LeftShift)||polypoints==null)
+                    {
+                        if (polypoints == null)
+                            polypoints = new List<Point>();
+                        polypoints.Add(point);
+
+                    }
+                    else
+                    {
+                        DB.StartDrawing(point, new Tools.DrawPoly(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point, polypoints));
+                        polypoints = null;
+                    }
                 }
             }
         }
@@ -592,10 +613,13 @@ namespace PixelArtProgram
                 case "Eraser": Tool = DrawingTools.Eraser; break;
                 case "DrawLine": Tool = DrawingTools.LineTool; break;
                 case "DrawRect": Tool = DrawingTools.RectangleTool; break;
+                case "DrawEllipse": Tool = DrawingTools.EllipseTool; break;
                 case "Brush": Tool = DrawingTools.Brush; break;
                 case "ColorBrake": Tool = DrawingTools.ColorBrake; break;
                 case "NiBlackBrush": Tool = DrawingTools.NiBlackBrush; break;
                 case "OtsuBrush": Tool = DrawingTools.OtsuBrush; break;
+                case "DrawPoly": Tool = DrawingTools.PolyDraw; break;
+
 
 
 
@@ -624,6 +648,70 @@ namespace PixelArtProgram
         {
             DB.ExtractAll();
             
+        }
+        private void ExtractToP1(object sender, RoutedEventArgs e)
+        {
+            DB.SaveP1();
+        }
+        private void ExtractToP2(object sender, RoutedEventArgs e)
+        {
+            Sized sized = new Sized();
+            sized.Title = "Eksport";
+            if (sized.ShowDialog() == true)
+            {
+                int size;
+
+                if (int.TryParse(sized.Input.Text, out size) == false)
+                {
+                    MessageBox.Show("Błędna wielkość");
+                    return;
+                }
+
+                DB.SaveP2(size);
+            }
+        }
+        private void ExtractToP3(object sender, RoutedEventArgs e)
+        {
+            Sized sized = new Sized();
+            sized.Title = "Eksport";
+            if (sized.ShowDialog() == true)
+            {
+                int size;
+
+                if (int.TryParse(sized.Input.Text, out size) == false)
+                {
+                    MessageBox.Show("Błędna wielkość");
+                    return;
+                }
+
+                DB.SaveP3(size);
+            }
+        }
+        private void ExtractToP4(object sender, RoutedEventArgs e)
+        {
+            Sized sized = new Sized();
+            sized.Title = "Eksport";
+            if (sized.ShowDialog() == true)
+            {
+                int size;
+
+                if (int.TryParse(sized.Input.Text, out size) == false)
+                {
+                    MessageBox.Show("Błędna wielkość");
+                    return;
+                }
+
+                DB.SaveP6(size);
+            }
+        }
+        private void OpenNetpbm(object sender, RoutedEventArgs e)
+        {
+            DB.OpenNetpbm();
+            Controll.Image image = new Controll.Image();
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+            layersImage.Add(image);
+            LayerGrid.Children.Add(image);
+            UpdateAllLayers();
         }
 
         private void Copy(object sender, RoutedEventArgs e)
@@ -825,10 +913,12 @@ namespace PixelArtProgram
         Eraser,
         LineTool,
         RectangleTool,
+        EllipseTool,
         Brush,
         ColorBrake,
         NiBlackBrush,
-        OtsuBrush
+        OtsuBrush,
+        PolyDraw
     }
 
     public static class CustomCommands
@@ -853,6 +943,62 @@ namespace PixelArtProgram
                     new InputGestureCollection()
                     {
                         new KeyGesture(Key.R,ModifierKeys.Control)
+                    }
+    );        
+        
+        public static readonly RoutedUICommand ExtractToP1 =
+            new RoutedUICommand
+                (
+                    "ExtractToP1",
+                    "ExtractToP1",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.L,ModifierKeys.Control)
+                    }
+    );         
+        public static readonly RoutedUICommand ExtractToP2 =
+            new RoutedUICommand
+                (
+                    "ExtractToP2",
+                    "ExtractToP2",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.L,ModifierKeys.Control)
+                    }
+    );         
+        public static readonly RoutedUICommand ExtractToP3 =
+            new RoutedUICommand
+                (
+                    "ExtractToP3",
+                    "ExtractToP3",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.L,ModifierKeys.Control)
+                    }
+    );         
+        public static readonly RoutedUICommand ExtractToP4 =
+            new RoutedUICommand
+                (
+                    "ExtractToP4",
+                    "ExtractToP4",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.L,ModifierKeys.Control)
+                    }
+    ); 
+        public static readonly RoutedUICommand OpenNetpbm =
+            new RoutedUICommand
+                (
+                    "OpenNetpbm",
+                    "OpenNetpbm",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.I,ModifierKeys.Control)
                     }
     );
     }

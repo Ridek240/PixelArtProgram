@@ -7,11 +7,15 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Drawing.Drawing2D;
 using PixelArtProgram.Tools;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
 
 namespace PixelArtProgram
 {
     public class DrawingBoard
     {
+        
         public int Width;
         public int Height;
         private int activeLayer = -1;
@@ -266,7 +270,7 @@ namespace PixelArtProgram
             if (openFileDialog.ShowDialog() == true)
             {
                 Bitmap TempBitmap = new Bitmap(openFileDialog.FileName);
-                AddLayer(openFileDialog.SafeFileName.Replace(".png",""));
+                AddLayer(openFileDialog.SafeFileName.Replace(".png", ""));
                 using (var grafics = Graphics.FromImage(GetActiveBitmapLayer().bitmap))
                 {
                     grafics.DrawImage(TempBitmap, new Rectangle(0, 0, Width, Height));
@@ -311,6 +315,356 @@ namespace PixelArtProgram
         {
             SaveImage(GetActiveBitmapLayer().bitmap);
         }
+
+        public void SaveP1()
+        {
+            string outputstring = "";
+            outputstring += "P1 \n";
+            outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
+
+            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
+                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
+                {
+
+                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
+                    if (pixel == Color.FromArgb(255, 255, 255))
+                    { outputstring += 0; }
+                    else outputstring += 1;
+                }
+
+            SaveFile(outputstring);
+        }
+
+        public void SaveP4()
+        {
+
+            string outputstring = "";
+            outputstring += "P4 \n";
+            outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
+            byte[] bytelist = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height];
+
+            int x = 0;
+            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
+                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
+                {
+
+                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
+                    if (pixel == Color.FromArgb(255, 255, 255))
+                    { bytelist[x] = 0; }
+                    else bytelist[x] = 1;
+                    x++;
+                }
+            byte[] array = Encoding.ASCII.GetBytes(outputstring);
+
+
+            SaveFileByte(Combine(array,bytelist));
+        }
+        public static byte[] Combine(byte[] first, byte[] second)
+        {
+            byte[] bytes = new byte[first.Length + second.Length];
+            Buffer.BlockCopy(first, 0, bytes, 0, first.Length);
+            Buffer.BlockCopy(second, 0, bytes, first.Length, second.Length);
+            return bytes;
+        }
+        public void SaveP2(int range)
+        {
+            string outputstring = "";
+            outputstring += "P2 \n";
+            outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
+            int rangesys = 255 / range;
+            outputstring += range + "\n";
+
+            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
+                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
+                {
+
+                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
+                    int value = (pixel.R + pixel.G + pixel.B) / 3;
+
+                    outputstring += value/rangesys + " ";
+                }
+
+            SaveFile(outputstring);
+        }
+
+        public void SaveP3(int range)
+        {
+            string outputstring = "";
+            outputstring += "P3 \n";
+            outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
+            int rangesys = 255 / range;
+            outputstring += range + "\n";
+
+            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
+                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
+                {
+
+                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
+                    outputstring = pixel.R/rangesys + " " + pixel.G/rangesys + " " + pixel.B/rangesys + " ";
+
+                    
+                }
+
+            SaveFile(outputstring);
+        }
+
+        public void SaveP6(int range)
+        {
+            string outputstring = "";
+            outputstring += "P6 \n";
+            outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
+            int rangesys = 255 / range;
+
+
+            byte[] bytelist = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height*3];
+            outputstring += range + "\n";
+            int x = 0;
+            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
+                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
+                {
+
+                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
+                    //outputstring = pixel.R / rangesys + " " + pixel.G / rangesys + " " + pixel.B / rangesys + " ";
+                    bytelist[x] = (byte)(pixel.R / rangesys);
+                    bytelist[x+1] = (byte)(pixel.G / rangesys);
+                    bytelist[x+2] = (byte)(pixel.B / rangesys);
+                    x += 3;
+                }
+
+            byte[] array = Encoding.ASCII.GetBytes(outputstring);
+            SaveFileByte(Combine(array, bytelist));
+        }
+
+        public void SaveFile(string message)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.ppm)|*.pbm|All files (*.*)|*.*";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    
+                    File.WriteAllText(saveFileDialog.FileName, message);
+                }
+                catch { _ = MessageBox.Show("Błąd w zapisywaniu pliku"); }
+            }
+            else
+                MessageBox.Show("Plik nie istnieje");
+        }
+        public void SaveFileByte(byte[] message)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Nie nadpisuj utwórz nowy \n (*.ppm)|*.pbm|All files (*.*)|*.*";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+
+                    File.WriteAllBytes(saveFileDialog.FileName, message);
+                }
+                catch { _ = MessageBox.Show("Błąd w zapisywaniu pliku"); }
+            }
+            else
+                MessageBox.Show("Plik nie istnieje");
+        }
+
+
+        public void OpenP1(string[] texting)
+        {
+
+            int width = int.Parse(texting[1]), height = int.Parse(texting[2]);
+
+            Bitmap tempbitmap = new Bitmap(width, height);
+
+            int x = 0;
+
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    char temp = texting[3][x];
+                    if(temp.CompareTo('1')==0)
+                    {
+                        tempbitmap.SetPixel(i, j, Color.FromArgb(255, 0, 0, 0));
+                    }
+                    else if(temp.CompareTo('0') == 0)
+                    {
+                        tempbitmap.SetPixel(i, j, Color.FromArgb(255, 255, 255, 255));
+                    }
+                    x++;
+                }
+
+            AddLayer(new BitmapLayer("intport",tempbitmap), layersBitmap.Count);
+        }
+
+        public void OpenP2(string[] texting)
+        {
+
+            int width = int.Parse(texting[1]), height = int.Parse(texting[2]);
+            int range = int.Parse(texting[3]);
+            int sysrange = 255 / range;
+            
+
+
+            int x = 4;
+            Bitmap tempbitmap = new Bitmap(width, height);
+
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    string temp = texting[x];
+                    int tempint = int.Parse(temp) * sysrange;
+                    tempbitmap.SetPixel(i, j, Color.FromArgb(255, tempint, tempint, tempint));
+
+                    x++;
+                }
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+
+        }
+        public void OpenP3(string[] texting)
+        {
+
+            int width = int.Parse(texting[1]), height = int.Parse(texting[2]);
+            int range = int.Parse(texting[3]);
+            float sysrange = 255f / range;
+
+
+            int x = 4;
+            Bitmap tempbitmap = new Bitmap(width, height);
+
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    string tempr = texting[x];
+                    string tempg = texting[x+1];
+                    string tempb = texting[x+2];
+                    float tempintr = int.Parse(tempr) * sysrange;
+                    float tempintg = int.Parse(tempg) * sysrange;
+                    float tempintb = int.Parse(tempb) * sysrange;
+                    tempbitmap.SetPixel(i, j, Color.FromArgb(255, (int)tempintr, (int)tempintg, (int)tempintb));
+
+                    x+=3;
+                }
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+        }
+
+
+
+        public void openp6test(string filename)
+        {
+            using var reader = new StreamReader(filename);
+            string? header = null;
+            int? width = null, height = null;
+            //while(!reader.EndOfStream)
+            string[] line = reader.ReadLine()?.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (header == null)
+                header = line[0];
+            else if (width == null)
+            {
+                width = int.Parse(line[0]);
+            }
+            //else if ()
+
+
+              //  byte[] arr = new byte[width * height * 3];
+        }
+
+        public void OpenP6(string filename)
+        {
+            //byte[] byte_value = File.ReadAllBytes(filename);
+            var reader = new BinaryReader(new FileStream(filename, FileMode.Open));
+            
+            string width = "", height = "",range = "";
+            char temp;
+
+            if (reader.ReadChar() != 'P' || reader.ReadChar() != '6')
+                return;
+            reader.ReadChar();
+            RemoveComment(reader, out temp);
+            width += temp;
+            while ((temp = reader.ReadChar()) != ' ')
+                width += temp;
+            while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
+                height += temp;
+           // if (reader.ReadChar() != '2' || reader.ReadChar() != '5' || reader.ReadChar() != '5')
+           //     return;
+            while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
+                range += temp;
+            //reader.ReadChar();
+
+            int iwidth = int.Parse(width), iheight = int.Parse(height), irange = int.Parse(range);
+            int a = 0;
+            Bitmap tempbitmap = new Bitmap(iwidth, iheight);
+
+            for (int y = 0; y < iheight; y++)
+                for (int x = 0; x < iwidth; x++)
+                {
+
+                    tempbitmap.SetPixel(x, y, Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte()));
+                }
+
+
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+
+
+
+
+        }
+        public BinaryReader RemoveComment(BinaryReader reader, out char temp)
+        {
+            if ((temp = reader.ReadChar()) == '#')
+            {
+                temp = ' ';
+                while (reader.ReadChar() != '\n') ;
+            }
+
+            return reader;
+        }
+        public void OpenNetpbm()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string input = File.ReadAllText(openFileDialog.FileName);
+
+                string pattern = "#" + "(.*?)" + "\n";
+               Regex regex = new Regex(pattern, RegexOptions.RightToLeft);
+               
+               foreach (Match match in regex.Matches(input))
+               {
+                   input = input.Replace(match.Groups[1].Value, string.Empty);
+               }
+
+                input = input.Replace("#", "");
+                input = Regex.Replace(input, @"\s+", " ");
+                string[] texting = input.Split(" ");
+
+                
+
+
+                if(texting[0].CompareTo("P1")==0)
+                {
+                    OpenP1(texting);
+                }
+                if(texting[0].CompareTo("P2")==0)
+                {
+                    OpenP2(texting);
+                }
+                if (texting[0].CompareTo("P3") == 0)
+                {
+                    OpenP3(texting);
+                }
+                if(texting[0].CompareTo("P6")==0)
+                {
+                    OpenP6(openFileDialog.FileName);
+                }
+
+
+            }
+        }
+
+    
 
         public void ExtractAll()
         {
