@@ -689,6 +689,28 @@ namespace PixelArtProgram
         }
         private void ExtractToP4(object sender, RoutedEventArgs e)
         {
+          DB.SaveP4();  
+          
+        }
+        private void ExtractToP5(object sender, RoutedEventArgs e)
+        {
+            Sized sized = new Sized();
+            sized.Title = "Eksport";
+            if (sized.ShowDialog() == true)
+            {
+                int size;
+
+                if (int.TryParse(sized.Input.Text, out size) == false)
+                {
+                    MessageBox.Show("Błędna wielkość");
+                    return;
+                }
+
+                DB.SaveP5(size);
+            }
+        }
+        private void ExtractToP6(object sender, RoutedEventArgs e)
+        {
             Sized sized = new Sized();
             sized.Title = "Eksport";
             if (sized.ShowDialog() == true)
@@ -984,6 +1006,28 @@ namespace PixelArtProgram
                 (
                     "ExtractToP4",
                     "ExtractToP4",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.L,ModifierKeys.Control)
+                    }
+    );        
+        public static readonly RoutedUICommand ExtractToP5 =
+            new RoutedUICommand
+                (
+                    "ExtractToP5",
+                    "ExtractToP5",
+                    typeof(CustomCommands),
+                    new InputGestureCollection()
+                    {
+                        new KeyGesture(Key.L,ModifierKeys.Control)
+                    }
+    );         
+        public static readonly RoutedUICommand ExtractToP6 =
+            new RoutedUICommand
+                (
+                    "ExtractToP6",
+                    "ExtractToP6",
                     typeof(CustomCommands),
                     new InputGestureCollection()
                     {

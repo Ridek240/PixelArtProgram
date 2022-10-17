@@ -10,6 +10,7 @@ using PixelArtProgram.Tools;
 using System.Text.RegularExpressions;
 using System.Text;
 using System;
+using System.Runtime.InteropServices;
 
 namespace PixelArtProgram
 {
@@ -322,15 +323,25 @@ namespace PixelArtProgram
             outputstring += "P1 \n";
             outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
 
-            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
-                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
-                {
+            var data = GetActiveBitmapLayer().bitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, GetActiveBitmapLayer().bitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
 
-                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
-                    if (pixel == Color.FromArgb(255, 255, 255))
-                    { outputstring += 0; }
-                    else outputstring += 1;
+            byte[] arr = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height * 4];
+            Marshal.Copy(data.Scan0, arr,0,arr.Length);
+            GetActiveBitmapLayer().bitmap.UnlockBits(data);
+
+
+            for(int i =0; i<arr.Length;i+=4)
+            {
+                if (arr[i] == 255 && arr[i] == 255 && arr[i] == 255)
+                {
+                    outputstring += 0;
                 }
+                else outputstring += 1;
+            }
 
             SaveFile(outputstring);
         }
@@ -343,17 +354,28 @@ namespace PixelArtProgram
             outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
             byte[] bytelist = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height];
 
-            int x = 0;
-            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
-                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
-                {
 
-                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
-                    if (pixel == Color.FromArgb(255, 255, 255))
-                    { bytelist[x] = 0; }
-                    else bytelist[x] = 1;
-                    x++;
+            var data = GetActiveBitmapLayer().bitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, GetActiveBitmapLayer().bitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
+
+            byte[] arr = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height * 4];
+            Marshal.Copy(data.Scan0, arr, 0, arr.Length);
+            GetActiveBitmapLayer().bitmap.UnlockBits(data);
+            int x = 0;
+            for (int i = 0; i < arr.Length; i += 4)
+            {
+                if (arr[i] == 255 && arr[i] == 255 && arr[i] == 255)
+                {
+                    bytelist[x] =(byte)0;
                 }
+                else bytelist[x] = (byte)1;
+                x++;
+            }
+
+
             byte[] array = Encoding.ASCII.GetBytes(outputstring);
 
 
@@ -366,6 +388,7 @@ namespace PixelArtProgram
             Buffer.BlockCopy(second, 0, bytes, first.Length, second.Length);
             return bytes;
         }
+
         public void SaveP2(int range)
         {
             string outputstring = "";
@@ -374,17 +397,62 @@ namespace PixelArtProgram
             int rangesys = 255 / range;
             outputstring += range + "\n";
 
-            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
-                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
-                {
+            var data = GetActiveBitmapLayer().bitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, GetActiveBitmapLayer().bitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
 
-                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
-                    int value = (pixel.R + pixel.G + pixel.B) / 3;
+            byte[] arr = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height * 4];
+            Marshal.Copy(data.Scan0, arr, 0, arr.Length);
+            GetActiveBitmapLayer().bitmap.UnlockBits(data);
 
-                    outputstring += value/rangesys + " ";
-                }
+
+
+            for(int ha=0;ha<arr.Length;ha+=4)
+            {
+                int value = ((int)arr[ha] + (int)arr[ha+1] + (int)arr[ha+2]) / 3;
+                outputstring += value / rangesys + " ";
+            }
+
 
             SaveFile(outputstring);
+        }
+
+        public void SaveP5(int range)
+        {
+            string outputstring = "";
+            outputstring += "P5 \n";
+            outputstring += GetActiveBitmapLayer().bitmap.Width + " " + GetActiveBitmapLayer().bitmap.Height + "\n";
+            int rangesys = 255 / range;
+            outputstring += range + "\n";
+
+            var data = GetActiveBitmapLayer().bitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, GetActiveBitmapLayer().bitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
+
+            byte[] arr = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height * 4];
+            Marshal.Copy(data.Scan0, arr, 0, arr.Length);
+
+            byte[] bytelist = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height];
+            GetActiveBitmapLayer().bitmap.UnlockBits(data);
+
+
+            int x = 0;
+            for (int ha = 0; ha < arr.Length; ha += 4)
+            {
+                int value = ((int)arr[ha] + (int)arr[ha + 1] + (int)arr[ha + 2]) / 3;
+                bytelist[x] = (byte)(value / rangesys);
+                x++;
+            }
+
+
+            byte[] array = Encoding.ASCII.GetBytes(outputstring);
+
+
+            SaveFileByte(Combine(array, bytelist));
         }
 
         public void SaveP3(int range)
@@ -395,15 +463,25 @@ namespace PixelArtProgram
             int rangesys = 255 / range;
             outputstring += range + "\n";
 
-            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
-                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
-                {
 
-                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
-                    outputstring = pixel.R/rangesys + " " + pixel.G/rangesys + " " + pixel.B/rangesys + " ";
+            var data = GetActiveBitmapLayer().bitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, GetActiveBitmapLayer().bitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
 
-                    
-                }
+            byte[] arr = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height * 4];
+            Marshal.Copy(data.Scan0, arr, 0, arr.Length);
+            GetActiveBitmapLayer().bitmap.UnlockBits(data);
+
+
+            for (int ha = 0; ha < arr.Length; ha += 4)
+            {
+                
+                outputstring += (int)arr[ha+2] / rangesys + " " + (int)arr[ha+1] / rangesys + " " + (int)arr[ha] / rangesys + " ";
+            }
+
+
 
             SaveFile(outputstring);
         }
@@ -419,15 +497,22 @@ namespace PixelArtProgram
             byte[] bytelist = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height*3];
             outputstring += range + "\n";
             int x = 0;
-            for (int j = 0; j < GetActiveBitmapLayer().bitmap.Height; j++)
-                for (int i = 0; i < GetActiveBitmapLayer().bitmap.Width; i++)
+            var data = GetActiveBitmapLayer().bitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, GetActiveBitmapLayer().bitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
+
+            byte[] arr = new byte[GetActiveBitmapLayer().bitmap.Width * GetActiveBitmapLayer().bitmap.Height * 4];
+            Marshal.Copy(data.Scan0, arr, 0, arr.Length);
+            GetActiveBitmapLayer().bitmap.UnlockBits(data);
+
+            for(int ha=0; ha<arr.Length;ha+=4)
                 {
 
-                    Color pixel = GetActiveBitmapLayer().bitmap.GetPixel(i, j);
-                    //outputstring = pixel.R / rangesys + " " + pixel.G / rangesys + " " + pixel.B / rangesys + " ";
-                    bytelist[x] = (byte)(pixel.R / rangesys);
-                    bytelist[x+1] = (byte)(pixel.G / rangesys);
-                    bytelist[x+2] = (byte)(pixel.B / rangesys);
+                    bytelist[x] = (byte)((int)arr[ha+2] / rangesys);
+                    bytelist[x+1] = (byte)((int)arr[ha + 1] / rangesys);
+                    bytelist[x+2] = (byte)((int)arr[ha] / rangesys);
                     x += 3;
                 }
 
@@ -468,7 +553,7 @@ namespace PixelArtProgram
                 MessageBox.Show("Plik nie istnieje");
         }
 
-
+        #region OldFiles
         public void OpenP1(string[] texting)
         {
 
@@ -546,27 +631,120 @@ namespace PixelArtProgram
                 }
             AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
         }
+        #endregion
 
-
-
-        public void openp6test(string filename)
+        public void OpenP4(string filename)
         {
-            using var reader = new StreamReader(filename);
-            string? header = null;
-            int? width = null, height = null;
-            //while(!reader.EndOfStream)
-            string[] line = reader.ReadLine()?.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var reader = new BinaryReader(new FileStream(filename, FileMode.Open));
 
-            if (header == null)
-                header = line[0];
-            else if (width == null)
-            {
-                width = int.Parse(line[0]);
-            }
-            //else if ()
+            string width = "", height = "";
+            char temp;
+
+            if (reader.ReadChar() != 'P' || reader.ReadChar() != '4')
+                return;
+            reader.ReadChar();
+            RemoveComment(reader, out temp);
+            width += temp;
+            while ((temp = reader.ReadChar()) != ' ')
+                width += temp;
+
+            RemoveComment(reader, out temp);
+            height += temp;
+            while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
+                height += temp;
 
 
-              //  byte[] arr = new byte[width * height * 3];
+            int iwidth = int.Parse(width), iheight = int.Parse(height);
+            Bitmap tempbitmap = new Bitmap(iwidth, iheight);
+
+            var data = tempbitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, tempbitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
+
+            byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height * 4];
+            int ind = 0;
+
+            for (int y = 0; y < iheight; y++)
+                for (int x = 0; x < iwidth; x++)
+                {
+                    byte bit = reader.ReadByte();
+                    bit = (byte)(bit == 1 ? 0 : 1);
+                    arr[ind + 2] = (byte)((int)bit * 255f);
+                    arr[ind + 1] = (byte)((int)bit * 255f);
+                    arr[ind] = (byte)((int)bit * 255f);
+                    arr[ind + 3] = (byte)255;
+
+                    ind += 4;
+                }
+
+
+            Marshal.Copy(arr, 0, data.Scan0, arr.Length);
+            tempbitmap.UnlockBits(data);
+
+
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+        }
+
+        public void OpenP5(string filename)
+        {
+            var reader = new BinaryReader(new FileStream(filename, FileMode.Open));
+
+            string width = "", height = "", range = "";
+            char temp;
+
+            if (reader.ReadChar() != 'P' || reader.ReadChar() != '5')
+                return;
+            reader.ReadChar();
+            RemoveComment(reader, out temp);
+            width += temp;
+            while ((temp = reader.ReadChar()) != ' ')
+                width += temp;
+
+            RemoveComment(reader, out temp);
+            height += temp;
+            while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
+                height += temp;
+
+            RemoveComment(reader, out temp);
+            range += temp;
+            while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
+                range += temp;
+            //reader.ReadChar();
+
+            int iwidth = int.Parse(width), iheight = int.Parse(height), irange = int.Parse(range);
+            float sysrange = 255f / irange;
+            Bitmap tempbitmap = new Bitmap(iwidth, iheight);
+
+            var data = tempbitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, tempbitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
+
+            byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height * 4];
+            int ind = 0;
+
+            for (int y = 0; y < iheight; y++)
+                for (int x = 0; x < iwidth; x++)
+                {
+                    byte bit = reader.ReadByte();
+                    arr[ind + 2] = (byte)((int)bit * sysrange);
+                    arr[ind + 1] = (byte)((int)bit * sysrange);
+                    arr[ind] = (byte)((int)bit * sysrange);
+                    arr[ind + 3] = (byte)255;
+
+                    ind += 4;
+                }
+
+
+            Marshal.Copy(arr, 0, data.Scan0, arr.Length);
+            tempbitmap.UnlockBits(data);
+
+
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+
         }
 
         public void OpenP6(string filename)
@@ -584,10 +762,14 @@ namespace PixelArtProgram
             width += temp;
             while ((temp = reader.ReadChar()) != ' ')
                 width += temp;
+
+            RemoveComment(reader, out temp);
+            height += temp;
             while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
                 height += temp;
-           // if (reader.ReadChar() != '2' || reader.ReadChar() != '5' || reader.ReadChar() != '5')
-           //     return;
+
+            RemoveComment(reader, out temp);
+            range += temp;
             while ((temp = reader.ReadChar()) >= '0' && temp <= '9')
                 range += temp;
             //reader.ReadChar();
@@ -596,12 +778,29 @@ namespace PixelArtProgram
             int a = 0;
             Bitmap tempbitmap = new Bitmap(iwidth, iheight);
 
+            var data = tempbitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, tempbitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+            );
+
+            byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height * 4];
+            int ind = 0;
+
             for (int y = 0; y < iheight; y++)
                 for (int x = 0; x < iwidth; x++)
                 {
+                    arr[ind + 2] = reader.ReadByte();
+                    arr[ind + 1] = reader.ReadByte();
+                    arr[ind] = reader.ReadByte();
+                    arr[ind + 3] = (byte)255;
 
-                    tempbitmap.SetPixel(x, y, Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte()));
+                    ind += 4;
                 }
+
+
+            Marshal.Copy(arr, 0, data.Scan0, arr.Length);
+            tempbitmap.UnlockBits(data);
 
 
             AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
@@ -610,14 +809,178 @@ namespace PixelArtProgram
 
 
         }
-        public BinaryReader RemoveComment(BinaryReader reader, out char temp)
+
+        public void NewOpenP1(String filename)
         {
-            if ((temp = reader.ReadChar()) == '#')
+
+            string[] info = ReadTokens(filename).Take(3).ToArray();
+            int width = int.Parse(info[1]), height = int.Parse(info[2]);
+
+            Bitmap tempbitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppRgb); ;
+
+            var data = tempbitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, tempbitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+        );
+            int x = 0;
+
+            byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height*4];
+            
+            foreach (var token in ReadTokens(filename).Skip(3).ToArray())
             {
-                temp = ' ';
-                while (reader.ReadChar() != '\n') ;
+                foreach (var item in token)
+                {
+
+
+                    if (item.CompareTo('1') == 0)
+                    {
+                        arr[x] = 0;
+                        arr[x + 1] = 0;
+                        arr[x + 2] = 0;
+                        arr[x + 3] = 255;
+                    }
+                    else if (item.CompareTo('0') == 0)
+                    {
+                        arr[x] = 255;
+                        arr[x + 1] = 255;
+                        arr[x + 2] = 255;
+                        arr[x + 3] = 255;
+                    }
+                    x += 4;
+                }
             }
 
+
+            Marshal.Copy(arr, 0, data.Scan0, arr.Length);
+            tempbitmap.UnlockBits(data);
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+        }
+
+
+        public void NewOpenP2(string filename)
+        {
+            string[] info = ReadTokens(filename).Take(4).ToArray();
+            int width = int.Parse(info[1]), height = int.Parse(info[2]);
+            int range = int.Parse(info[3]);
+            float sysrange = 255f / range;
+
+            Bitmap tempbitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppRgb); ;
+
+            var data = tempbitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, tempbitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+        );
+
+            byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height * 4];
+
+            int index = 0;
+            foreach(var token in ReadTokens(filename).Skip(4))
+            {
+                int value = (int)(int.Parse(token) * sysrange);
+                arr[index] = (byte)value;
+                arr[index + 1] = (byte)value;
+                arr[index + 2] = (byte)value;
+
+
+                index += 4;
+            }
+
+            Marshal.Copy(arr, 0, data.Scan0, arr.Length);
+            tempbitmap.UnlockBits(data);
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+        }
+
+
+
+        public void NewOpenP3(string filename)
+        {
+
+            string[] info = ReadTokens(filename).Take(4).ToArray();
+            int width = int.Parse(info[1]), height = int.Parse(info[2]);
+            int range = int.Parse(info[3]);
+            float sysrange = 255f / range;
+
+
+            
+            Bitmap tempbitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppRgb); ;
+
+            var data = tempbitmap.LockBits(
+            new Rectangle(System.Drawing.Point.Empty, tempbitmap.Size),
+            System.Drawing.Imaging.ImageLockMode.ReadWrite,
+            System.Drawing.Imaging.PixelFormat.Format32bppRgb
+        );
+
+            byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height * 4];
+
+            string[] texting = ReadTokens(filename).Skip(4).ToArray();
+
+            int x = 0;
+            int index = 0;
+            for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
+                {
+                    string tempr = texting[x];
+                    string tempg = texting[x + 1];
+                    string tempb = texting[x + 2];
+                    float tempintr = int.Parse(tempr) * sysrange;
+                    float tempintg = int.Parse(tempg) * sysrange;
+                    float tempintb = int.Parse(tempb) * sysrange;
+
+
+                    arr[index] = (byte)(int)tempintb;
+                    arr[index+1] = (byte)(int)tempintg;
+                    arr[index+2] = (byte)(int)tempintr;
+
+                    x += 3;
+                    index += 4;
+                }
+
+            Marshal.Copy(arr, 0, data.Scan0, arr.Length);
+            tempbitmap.UnlockBits(data);
+
+
+            AddLayer(new BitmapLayer("intport", tempbitmap), layersBitmap.Count);
+        }
+        private IEnumerable<String> ReadTokens(string filename)
+        {
+            using var reader = new StreamReader(filename);
+            
+                while(!reader.EndOfStream)
+            {
+                string line = reader.ReadLine()!;
+                int comment = line.IndexOf('#');
+                if (comment != -1)
+                    line = line[..comment];
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                line = Regex.Replace(line, @"\s+", " ");
+
+                string[] values = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    yield return values[i];
+                }
+            }
+
+        }
+
+
+            public BinaryReader RemoveComment(BinaryReader reader, out char temp)
+        {
+            temp = reader.ReadChar();
+            if (temp  == '#')
+            {
+                temp = ' ';
+                while (reader.ReadByte() != '\n') ;
+            }
+            else if(temp== ' ')
+            {
+                    while ((temp = reader.ReadChar()) == ' ') ;
+            }
             return reader;
         }
         public void OpenNetpbm()
@@ -626,34 +989,32 @@ namespace PixelArtProgram
             openFileDialog.Filter = "All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                string input = File.ReadAllText(openFileDialog.FileName);
 
-                string pattern = "#" + "(.*?)" + "\n";
-               Regex regex = new Regex(pattern, RegexOptions.RightToLeft);
-               
-               foreach (Match match in regex.Matches(input))
-               {
-                   input = input.Replace(match.Groups[1].Value, string.Empty);
-               }
-
-                input = input.Replace("#", "");
-                input = Regex.Replace(input, @"\s+", " ");
-                string[] texting = input.Split(" ");
-
-                
+                string[] texting = ReadTokens(openFileDialog.FileName).Take(2).ToArray(); ;
 
 
                 if(texting[0].CompareTo("P1")==0)
                 {
-                    OpenP1(texting);
+                    //OpenP1(texting);
+                    NewOpenP1(openFileDialog.FileName);
                 }
                 if(texting[0].CompareTo("P2")==0)
                 {
-                    OpenP2(texting);
+                    //OpenP2(texting);
+                    NewOpenP2(openFileDialog.FileName);
                 }
                 if (texting[0].CompareTo("P3") == 0)
                 {
-                    OpenP3(texting);
+                    //OpenP3(texting);
+                    NewOpenP3(openFileDialog.FileName);
+                }
+                if (texting[0].CompareTo("P4") == 0)
+                {
+                    OpenP4(openFileDialog.FileName);
+                }
+                if (texting[0].CompareTo("P5")==0)
+                {
+                    OpenP5(openFileDialog.FileName);
                 }
                 if(texting[0].CompareTo("P6")==0)
                 {

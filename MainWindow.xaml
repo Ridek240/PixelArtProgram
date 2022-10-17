@@ -15,6 +15,8 @@
         <CommandBinding Command="local:CustomCommands.ExtractToP2"  Executed="ExtractToP2" CanExecute="CanExtractExecute"/>
         <CommandBinding Command="local:CustomCommands.ExtractToP3"  Executed="ExtractToP3" CanExecute="CanExtractExecute"/>
         <CommandBinding Command="local:CustomCommands.ExtractToP4"  Executed="ExtractToP4" CanExecute="CanExtractExecute"/>
+        <CommandBinding Command="local:CustomCommands.ExtractToP5"  Executed="ExtractToP5" CanExecute="CanExtractExecute"/>
+        <CommandBinding Command="local:CustomCommands.ExtractToP6"  Executed="ExtractToP6" CanExecute="CanExtractExecute"/>
         <CommandBinding Command="local:CustomCommands.OpenNetpbm"  Executed="OpenNetpbm" />
     </Window.CommandBindings>   
     <Window.InputBindings>
@@ -45,7 +47,9 @@
                     <MenuItem Header="Wyekstraktuj Do P2" Command="local:CustomCommands.ExtractToP2" InputGestureText="Ctrl + L"/>
                     <MenuItem Header="Wyekstraktuj Do P3" Command="local:CustomCommands.ExtractToP3" InputGestureText="Ctrl + L"/>
                     <MenuItem Header="Wyekstraktuj Do P4" Command="local:CustomCommands.ExtractToP4" InputGestureText="Ctrl + L"/>
-                    <MenuItem Header="Otwórz Do P1" Command="local:CustomCommands.OpenNetpbm" InputGestureText="Ctrl + I"/>
+                    <MenuItem Header="Wyekstraktuj Do P5" Command="local:CustomCommands.ExtractToP5" InputGestureText="Ctrl + L"/>
+                    <MenuItem Header="Wyekstraktuj Do P6" Command="local:CustomCommands.ExtractToP6" InputGestureText="Ctrl + L"/>
+                    <MenuItem Header="Otwórz Plik ppm" Command="local:CustomCommands.OpenNetpbm" InputGestureText="Ctrl + I"/>
                 </MenuItem>
                 <MenuItem Header="Edytuj">
                     <MenuItem Header="Cofnij" Command="Undo" InputGestureText="Ctrl + Z"/>
