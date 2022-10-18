@@ -914,6 +914,26 @@ namespace PixelArtProgram
 
             byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height * 4];
 
+            int index = 0;
+            foreach (var token in ReadTokens(filename).Skip(4).Chunk(3))
+            {
+                string tempr = token[0];
+                string tempg = token[1];
+                string tempb = token[2];
+                float tempintr = int.Parse(tempr) * sysrange;
+                float tempintg = int.Parse(tempg) * sysrange;
+                float tempintb = int.Parse(tempb) * sysrange;
+
+
+                arr[index] = (byte)(int)tempintb;
+                arr[index + 1] = (byte)(int)tempintg;
+                arr[index + 2] = (byte)(int)tempintr;
+                index += 4;
+            }
+
+
+
+            /* //.net5
             string[] texting = ReadTokens(filename).Skip(4).ToArray();
 
             int x = 0;
@@ -936,7 +956,7 @@ namespace PixelArtProgram
                     x += 3;
                     index += 4;
                 }
-
+            */
             Marshal.Copy(arr, 0, data.Scan0, arr.Length);
             tempbitmap.UnlockBits(data);
 
@@ -995,17 +1015,14 @@ namespace PixelArtProgram
 
                 if(texting[0].CompareTo("P1")==0)
                 {
-                    //OpenP1(texting);
                     NewOpenP1(openFileDialog.FileName);
                 }
                 if(texting[0].CompareTo("P2")==0)
                 {
-                    //OpenP2(texting);
                     NewOpenP2(openFileDialog.FileName);
                 }
                 if (texting[0].CompareTo("P3") == 0)
                 {
-                    //OpenP3(texting);
                     NewOpenP3(openFileDialog.FileName);
                 }
                 if (texting[0].CompareTo("P4") == 0)
