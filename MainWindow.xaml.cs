@@ -861,7 +861,11 @@ namespace PixelArtProgram
             RevertColors rev = new RevertColors();
             DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap));
         }
-
+        private void AddColor(object sender, RoutedEventArgs e)
+        {
+            GrayScale rev = new GrayScale();
+            DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap, true,true,true));
+        }
         private void Kontrast(object sender, RoutedEventArgs e)
         {
 

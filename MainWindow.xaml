@@ -76,6 +76,7 @@
                     <MenuItem Header="Zmień Jasność" Click="Jasnosc" />
                     <MenuItem Header="Przeprować Szkieletyzację" Click="Szkieletyzacja" />
                     <MenuItem Header="Rozdziel na tło i Obiektu" Click="SplitLayer" />
+                    <MenuItem Header="Dodaj wartość" Click="AddColor" />
 
 
                 </MenuItem>

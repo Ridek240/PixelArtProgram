@@ -99,8 +99,8 @@ namespace PixelArtProgram
 
 
             Slider_Hue.Value = (int)h;
-            Slider_Saturation.Value = s;
-            Slider_Value.Value = (v/255F)*100;
+            Slider_Saturation.Value = (int)(s*100);
+            Slider_Value.Value = (int)((v/255F)*100);
         }
  
 

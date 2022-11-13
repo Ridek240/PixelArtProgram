@@ -14,7 +14,7 @@ namespace PixelArtProgram.Algorytms
         public Bitmap OtsuMethod(Bitmap bitmap)
         {
             System.Drawing.Imaging.BitmapData data = null;
-            byte[] bitmapData = LockBitmap(bitmap, ref data);
+            byte[] bitmapData = LockBitmap24(bitmap, ref data);
             int[] histogramValues = GetHistogram(bitmapData);
 
             float weightedSumMax = 0;

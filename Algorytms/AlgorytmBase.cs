@@ -12,12 +12,26 @@ namespace PixelArtProgram.Algorytms
     public class AlgorytmBase
     {
 
-        protected byte[] LockBitmap(Bitmap bitmap, ref System.Drawing.Imaging.BitmapData data)
+        protected byte[] LockBitmap24(Bitmap bitmap, ref System.Drawing.Imaging.BitmapData data)
         {
             data = bitmap.LockBits(
                 new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), bitmap.Size),
                 System.Drawing.Imaging.ImageLockMode.ReadWrite,
                 System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            var bitmapData = new byte[data.Stride * data.Height];
+
+            Marshal.Copy(data.Scan0, bitmapData, 0, bitmapData.Length);
+
+            return bitmapData;
+        }
+
+        protected byte[] LockBitmap32(Bitmap bitmap, ref System.Drawing.Imaging.BitmapData data)
+        {
+            data = bitmap.LockBits(
+                new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), bitmap.Size),
+                System.Drawing.Imaging.ImageLockMode.ReadWrite,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             var bitmapData = new byte[data.Stride * data.Height];
 

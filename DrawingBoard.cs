@@ -827,7 +827,7 @@ namespace PixelArtProgram
 
             byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height*4];
             
-            foreach (var token in ReadTokens(filename).Skip(3).ToArray())
+            foreach (var token in ReadTokens(filename).Skip(3))
             {
                 foreach (var item in token)
                 {
@@ -915,21 +915,21 @@ namespace PixelArtProgram
             byte[] arr = new byte[tempbitmap.Width * tempbitmap.Height * 4];
 
             int index = 0;
-            foreach (var token in ReadTokens(filename).Skip(4).Chunk(3))
-            {
-                string tempr = token[0];
-                string tempg = token[1];
-                string tempb = token[2];
-                float tempintr = int.Parse(tempr) * sysrange;
-                float tempintg = int.Parse(tempg) * sysrange;
-                float tempintb = int.Parse(tempb) * sysrange;
-
-
-                arr[index] = (byte)(int)tempintb;
-                arr[index + 1] = (byte)(int)tempintg;
-                arr[index + 2] = (byte)(int)tempintr;
-                index += 4;
-            }
+           // foreach (var token in ReadTokens(filename).Skip(4).Chunk(3))
+           // {
+           //     string tempr = token[0];
+           //     string tempg = token[1];
+           //     string tempb = token[2];
+           //     float tempintr = int.Parse(tempr) * sysrange;
+           //     float tempintg = int.Parse(tempg) * sysrange;
+           //     float tempintb = int.Parse(tempb) * sysrange;
+           //
+           //
+           //     arr[index] = (byte)(int)tempintb;
+           //     arr[index + 1] = (byte)(int)tempintg;
+           //     arr[index + 2] = (byte)(int)tempintr;
+           //     index += 4;
+           // }
 
 
 

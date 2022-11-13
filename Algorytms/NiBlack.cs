@@ -13,7 +13,7 @@ namespace PixelArtProgram.Algorytms
         public Bitmap Function(Bitmap bitmap, int w = 2, float k = -0.2f)
         {
             System.Drawing.Imaging.BitmapData data = null;
-            byte[] bitmapDataIn = LockBitmap(bitmap, ref data);
+            byte[] bitmapDataIn = LockBitmap24(bitmap, ref data);
             byte[] bitmapDataout = new byte[data.Stride * data.Height];
 
             Marshal.Copy(data.Scan0, bitmapDataout, 0, bitmapDataout.Length);

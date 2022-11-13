@@ -15,7 +15,7 @@ namespace PixelArtProgram.Algorytms
         public Bitmap Function(Bitmap bitmap, int minValue, int maxValue)
         {
             System.Drawing.Imaging.BitmapData data = null;
-            byte[] bitmapData = LockBitmap(bitmap, ref data);
+            byte[] bitmapData = LockBitmap24(bitmap, ref data);
 
             for (int i = 0; i < bitmapData.Length; i++)
             {
