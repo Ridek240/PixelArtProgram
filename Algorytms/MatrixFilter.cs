@@ -20,7 +20,7 @@ namespace PixelArtProgram.Algorytms
 
             int dy = data.Height, dx = data.Stride;
 
-            int w = (matrix.Length - 1) / 2;
+            int w = ((int)matrix.GetLongLength(0) - 1) / 2;
 
             for (int i = w + 1; i < dx - w; i++)
             {
@@ -35,7 +35,8 @@ namespace PixelArtProgram.Algorytms
                         {
                             float bbb = bitmapDataIn[x + y * data.Stride] + bitmapDataIn[x + y * data.Stride + 1] + bitmapDataIn[x + y * data.Stride + 2];
                             bbb /= 3;
-                            pixelValue += bbb * matrix[x, y];
+                            int seevaluex = x - (i - w), seevaluey = y - (j - w);
+                            pixelValue += bbb * matrix[x - (i - w), y - (j - w)];
                             //neighbours.Add(bbb);
                         }
                     }
@@ -50,7 +51,7 @@ namespace PixelArtProgram.Algorytms
             Marshal.Copy(bitmapDataout, 0, data.Scan0, bitmapDataout.Length);
             bitmap.UnlockBits(data);
 
-            return RemoveColorPixels(bitmap);
+            return bitmap;
         }
 
         private Bitmap RemoveColorPixels(Bitmap bitmap)

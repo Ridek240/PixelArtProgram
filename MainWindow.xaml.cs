@@ -1099,17 +1099,23 @@ namespace PixelArtProgram
 
         private void Maskweave(object sender, RoutedEventArgs e)
         {
-            // TODO: Change thuis matrix to custom
-            float[,] matrix = new float[,]
+            AddMask mask = new AddMask();
+            if (mask.ShowDialog() == true)
             {
-                {1, 2, 1},
-                {2, 4, 2},
-                {1, 2, 1}
-            };
+                float[,] matrix = mask.GetMask();
+
+                // TODO: Change thuis matrix to custom
+                //float[,] matrix = new float[,]
+                //{
+                //    {1, 2, 1},
+                //    {2, 4, 2},
+                //    {1, 2, 1}
+                //};
 
 
-            MatrixFilter matrixFilter = new MatrixFilter();
-            DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
+                MatrixFilter matrixFilter = new MatrixFilter();
+                DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
+            }
         }
     }
 

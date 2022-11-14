@@ -1,0 +1,40 @@
+﻿<Window x:Class="PixelArtProgram.AddMask"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PixelArtProgram"
+        mc:Ignorable="d"
+        Title="AddMask" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="RozmiarMaski:" Grid.Column="0"/>
+            <TextBox Name="MaskSize" Grid.Column="1"/>
+        </Grid>
+        <TextBox x:Name="textblock" Grid.Row="1"/>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Click="Confirm" Style="{StaticResource EnterBtnStyle}" IsDefault="True" Grid.Column="0"/>
+
+
+            <Button IsCancel="true" Style="{StaticResource CloseBtnStyle}"   Grid.Column="1"/>
+
+
+
+        </Grid>
+    </Grid>
+</Window>
