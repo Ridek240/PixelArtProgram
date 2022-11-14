@@ -13,7 +13,7 @@ namespace PixelArtProgram.Algorytms
     {
         public Bitmap Function(Bitmap bitmap, bool red, bool green, bool blue)
         {
-            if (red == blue == green == false) return bitmap;
+            if (red == false && blue == false && green == false) return bitmap;
 
             System.Drawing.Imaging.BitmapData data = null;
             byte[] bitmapDataIn = LockBitmap32(bitmap, ref data);
@@ -21,7 +21,7 @@ namespace PixelArtProgram.Algorytms
             int size = bitmapDataIn.Length;
             for (int i = 0; i < size; i += 4)
             {
-                int treshold = bitmapDataIn[i] * BooltoInt(red) + bitmapDataIn[i + 1] * BooltoInt(green) + bitmapDataIn[i + 2] * BooltoInt(blue) / BooltoInt(red) + BooltoInt(green) + BooltoInt(blue);
+                int treshold = (bitmapDataIn[i] * BooltoInt(red) + bitmapDataIn[i + 1] * BooltoInt(green) + bitmapDataIn[i + 2] * BooltoInt(blue)) / (BooltoInt(red) + BooltoInt(green) + BooltoInt(blue));
                 bitmapDataIn[i] = (byte)treshold;
                 bitmapDataIn[i + 1] = (byte)treshold;
                 bitmapDataIn[i + 2] = (byte)treshold;

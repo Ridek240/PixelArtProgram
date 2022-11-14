@@ -76,8 +76,19 @@
                     <MenuItem Header="Zmień Jasność" Click="Jasnosc" />
                     <MenuItem Header="Przeprować Szkieletyzację" Click="Szkieletyzacja" />
                     <MenuItem Header="Rozdziel na tło i Obiektu" Click="SplitLayer" />
+                    <Separator />
                     <MenuItem Header="Dodaj wartość" Click="AddColor" />
-
+                    <MenuItem Header="Odejmij wartość" Click="SubColor" />
+                    <MenuItem Header="Pomnóż wartość" Click="MultiColor" />
+                    <MenuItem Header="Podziel wartość" Click="DevideColor" />
+                    <MenuItem Header="Skala Szarości" Click="GrayScale" />
+                    <Separator />
+                    <MenuItem Header="Filtr wygładzający" Click="Lowpass" />
+                    <MenuItem Header="Filtr medianowy" Click="Median" />
+                    <MenuItem Header="Filtr Sobela" Click="Sobel" />
+                    <MenuItem Header="Filtr górnoprzepustowy wyostrzający" Click="HighPass" />
+                    <MenuItem Header="Filtr rozmycie gaussowskie" Click="Gauss" />
+                    <MenuItem Header="Splot maski " Click="Maskweave" />
 
                 </MenuItem>
             </Menu>

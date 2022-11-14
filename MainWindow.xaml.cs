@@ -861,11 +861,7 @@ namespace PixelArtProgram
             RevertColors rev = new RevertColors();
             DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap));
         }
-        private void AddColor(object sender, RoutedEventArgs e)
-        {
-            GrayScale rev = new GrayScale();
-            DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap, true,true,true));
-        }
+
         private void Kontrast(object sender, RoutedEventArgs e)
         {
 
@@ -916,6 +912,152 @@ namespace PixelArtProgram
                 AddLayerImage();
                 UpdateAllLayers();
             }
+
+        }
+        private void AddColor(object sender, RoutedEventArgs e)
+        {
+            AddingValue val = new AddingValue();
+            if(val.ShowDialog()==true)
+            {
+                float value = 0, red = 0 , green = 0, blue = 0;
+                bool chackbox;
+
+                chackbox = (bool)val.RGB.IsChecked;
+                if(chackbox)
+                {
+                    if (!float.TryParse(val.Red_Value.Text, out red)) return;
+                    if (!float.TryParse(val.Green_Value.Text, out green)) return;
+                    if (!float.TryParse(val.Blue_Value.Text, out blue)) return;
+                }
+                else
+                {
+                    if (!float.TryParse(val.Sum_Color.Text, out value)) return;
+                }
+
+            AddValue rev = new AddValue();
+                DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap, (int)value, chackbox, (int)red, (int)green, (int)blue));
+            }
+        }
+        private void SubColor(object sender, RoutedEventArgs e)
+        {
+            AddingValue val = new AddingValue();
+            if (val.ShowDialog() == true)
+            {
+                float value = 0, red = 0, green = 0, blue = 0;
+                bool chackbox;
+
+                chackbox = (bool)val.RGB.IsChecked;
+                if (chackbox)
+                {
+                    if (!float.TryParse(val.Red_Value.Text, out red)) return;
+                    if (!float.TryParse(val.Green_Value.Text, out green)) return;
+                    if (!float.TryParse(val.Blue_Value.Text, out blue)) return;
+                }
+                else
+                {
+                    if (!float.TryParse(val.Sum_Color.Text, out value)) return;
+                }
+
+                AddValue rev = new AddValue();
+                DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap, -(int)value, chackbox, -(int)red, -(int)green, -(int)blue));
+            }
+        }
+
+        private void MultiColor(object sender, RoutedEventArgs e)
+        {
+            AddingValue val = new AddingValue();
+            if (val.ShowDialog() == true)
+            {
+                float value = 0, red = 0, green = 0, blue = 0;
+                bool chackbox;
+
+                chackbox = (bool)val.RGB.IsChecked;
+                if (chackbox)
+                {
+                    if (!float.TryParse(val.Red_Value.Text, out red)) return;
+                    if (!float.TryParse(val.Green_Value.Text, out green)) return;
+                    if (!float.TryParse(val.Blue_Value.Text, out blue)) return;
+                }
+                else
+                {
+                    if (!float.TryParse(val.Sum_Color.Text, out value)) return;
+                }
+
+                MultiplyValue rev = new MultiplyValue();
+                DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap, value, chackbox, red, green, blue));
+            }
+        }
+
+        private void DevideColor(object sender, RoutedEventArgs e)
+        {
+            AddingValue val = new AddingValue();
+            if (val.ShowDialog() == true)
+            {
+                float value = 0, red = 0, green = 0, blue = 0;
+                bool chackbox;
+
+                chackbox = (bool)val.RGB.IsChecked;
+                if (chackbox)
+                {
+                    if (!float.TryParse(val.Red_Value.Text, out red)) return;
+                    if (!float.TryParse(val.Green_Value.Text, out green)) return;
+                    if (!float.TryParse(val.Blue_Value.Text, out blue)) return;
+                }
+                else
+                {
+                    if (!float.TryParse(val.Sum_Color.Text, out value)) return;
+                }
+
+                DevideValue rev = new DevideValue();
+                DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap, value, chackbox, red, green, blue));
+            }
+        }
+
+        private void GrayScale(object sender, RoutedEventArgs e)
+        {
+            Greyscale grey = new Greyscale();
+            if(grey.ShowDialog()==true)
+            {
+                bool red, green, blue;
+                red = (bool)grey.Red.IsChecked;
+                green = (bool)grey.Green.IsChecked;
+                blue = (bool)grey.Blue.IsChecked;
+
+                GrayScale scale = new GrayScale();
+                DB.Replace(scale.Function(DB.GetActiveBitmapLayer().bitmap, red, green, blue));
+
+            }
+        }
+
+
+        // Wojtek masz miejsce Możesz użyć NewPixel do 2 wartości
+        private void Lowpass(object sender, RoutedEventArgs e)
+        {
+            NewPixel nep = new NewPixel();
+        }
+
+        private void Median(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Sobel(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void HighPass(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Gauss(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Maskweave(object sender, RoutedEventArgs e)
+        {
 
         }
     }
