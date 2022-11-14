@@ -12,6 +12,7 @@ using PixelArtProgram.Tools;
 using System.Windows.Data;
 using System.Windows.Media.Media3D;
 using PixelArtProgram.Algorytms;
+using Accord.Imaging.Filters;
 
 namespace PixelArtProgram
 {
@@ -1034,31 +1035,81 @@ namespace PixelArtProgram
         private void Lowpass(object sender, RoutedEventArgs e)
         {
             NewPixel nep = new NewPixel();
+            float[,] matrix = new float[,]
+            {
+                {1, 1, 1},
+                {1, 1, 1},
+                {1, 1, 1}
+            };
+            MatrixFilter matrixFilter = new MatrixFilter();
+            DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
         }
 
         private void Median(object sender, RoutedEventArgs e)
         {
-
+            int maskRadius = 2;
+            Algorytms.Median median = new Algorytms.Median();
+            DB.Replace(median.Function(DB.GetActiveBitmapLayer().bitmap, maskRadius));
         }
 
         private void Sobel(object sender, RoutedEventArgs e)
         {
+            float[,] matrix1 = new float[,]
+            {
+                { 1,  1,  1},
+                { 0,  0,  0},
+                {-1, -2, -1}
+            };
+            MatrixFilter matrix1Filter = new MatrixFilter();
+            DB.Replace(matrix1Filter.Function(DB.GetActiveBitmapLayer().bitmap, matrix1));
 
+            //float[,] matrix2 = new float[,]
+            //{
+            //    { 1,  1,  1},
+            //    { 0,  0,  0},
+            //    {-1, -2, -1}
+            //};
+            //MatrixFilter matrix2Filter = new MatrixFilter();
+            //DB.Replace(matrix2Filter.Function(DB.GetActiveBitmapLayer().bitmap, matrix2));
         }
 
         private void HighPass(object sender, RoutedEventArgs e)
         {
-
+            float[,] matrix = new float[,]
+            {
+                {-1, -1, -1},
+                {-1,  9, -1},
+                {-1, -1, -1}
+            };
+            MatrixFilter matrixFilter = new MatrixFilter();
+            DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
         }
 
         private void Gauss(object sender, RoutedEventArgs e)
         {
-
+            float[,] matrix = new float[,]
+            {
+                {1, 2, 1},
+                {2, 4, 2},
+                {1, 2, 1}
+            };
+            MatrixFilter matrixFilter = new MatrixFilter();
+            DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
         }
 
         private void Maskweave(object sender, RoutedEventArgs e)
         {
+            // TODO: Change thuis matrix to custom
+            float[,] matrix = new float[,]
+            {
+                {1, 2, 1},
+                {2, 4, 2},
+                {1, 2, 1}
+            };
 
+
+            MatrixFilter matrixFilter = new MatrixFilter();
+            DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
         }
     }
 
