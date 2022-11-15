@@ -1035,19 +1035,23 @@ namespace PixelArtProgram
         private void Lowpass(object sender, RoutedEventArgs e)
         {
             NewPixel nep = new NewPixel();
-            float[,] matrix = new float[,]
+            int radius = 3;
+            float[,] matrix = new float[radius * 2 + 1, radius * 2 + 1];
+
+            for (int i = 0; i < radius * 2 + 1; i++)
             {
-                {1, 1, 1},
-                {1, 1, 1},
-                {1, 1, 1}
-            };
+                for (int j = 0; j < radius * 2 + 1; j++)
+                {
+                    matrix[i, j] = 1;
+                }
+            }
             MatrixFilter matrixFilter = new MatrixFilter();
             DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
         }
 
         private void Median(object sender, RoutedEventArgs e)
         {
-            int maskRadius = 2;
+            int maskRadius = 1;
             Algorytms.Median median = new Algorytms.Median();
             DB.Replace(median.Function(DB.GetActiveBitmapLayer().bitmap, maskRadius));
         }

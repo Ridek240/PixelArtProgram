@@ -18,37 +18,46 @@ namespace PixelArtProgram.Algorytms
 
             Marshal.Copy(data.Scan0, bitmapDataout, 0, bitmapDataout.Length);
 
-            int dy = data.Height, dx = data.Stride;
+            int dy = data.Height, dx = data.Stride / 3;
 
             for (int i = w + 1; i < dx - w; i++)
             {
                 for (int j = w + 1; j < dy - w; j++)
                 {
-                    List<double> neighbours = new List<double>();
+                    //List<double> neighbours = new List<double>();
+                    List<double> neighboursR = new List<double>();
+                    List<double> neighboursG = new List<double>();
+                    List<double> neighboursB = new List<double>();
                     // Extract the neighbourhood area
                     for (int x = i - w; x < i + w; x++)
                     {
                         for (int y = j - w; y < j + w; y++)
                         {
-                            float bbb = bitmapDataIn[x + y * data.Stride] + bitmapDataIn[x + y * data.Stride + 1] + bitmapDataIn[x + y * data.Stride + 2];
-                            bbb /= 3;
-                            neighbours.Add(bbb);
+                            //float bbb = bitmapDataIn[x + y * data.Stride] + bitmapDataIn[x + y * data.Stride + 1] + bitmapDataIn[x + y * data.Stride + 2];
+                            //bbb /= 3;
+                            //neighbours.Add(bbb);
+                            neighboursR.Add(bitmapDataIn[x * 3 + y * data.Stride]);
+                            neighboursG.Add(bitmapDataIn[x * 3 + y * data.Stride + 1]);
+                            neighboursB.Add(bitmapDataIn[x * 3 + y * data.Stride + 2]);
                         }
                     }
 
                     // Calculate the mean of the neighbourhood region
-                    float wBmn = (float)Med(neighbours);
-                    bitmapDataout[i + j * data.Stride] =
-                        bitmapDataout[i + j * data.Stride + 1] =
-                        bitmapDataout[i + j * data.Stride + 2] =
-                        (byte)wBmn;
+
+                    float wBmnR = (float)Med(neighboursR);
+                    float wBmnG = (float)Med(neighboursG);
+                    float wBmnB = (float)Med(neighboursB);
+
+                    bitmapDataout[i * 3 + j * data.Stride] = (byte)wBmnR;
+                    bitmapDataout[i * 3 + j * data.Stride + 1] = (byte)wBmnG;
+                    bitmapDataout[i * 3 + j * data.Stride + 2] = (byte)wBmnB;
                 }
             }
 
             Marshal.Copy(bitmapDataout, 0, data.Scan0, bitmapDataout.Length);
             bitmap.UnlockBits(data);
 
-            return RemoveColorPixels(bitmap);
+            return bitmap;
         }
 
         public double Med(List<double> numbers)

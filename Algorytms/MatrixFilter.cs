@@ -12,46 +12,86 @@ namespace PixelArtProgram.Algorytms
     {
         public Bitmap Function(Bitmap bitmap, float[,] matrix)
         {
-            System.Drawing.Imaging.BitmapData data = null;
-            byte[] bitmapDataIn = LockBitmap24(bitmap, ref data);
-            byte[] bitmapDataout = new byte[data.Stride * data.Height];
+            //System.Drawing.Imaging.BitmapData data = null;
+            //byte[] bitmapDataIn = LockBitmap24(bitmap, ref data);
+            //byte[] bitmapDataout = new byte[data.Stride * data.Height];
 
-            Marshal.Copy(data.Scan0, bitmapDataout, 0, bitmapDataout.Length);
+            //Marshal.Copy(data.Scan0, bitmapDataout, 0, bitmapDataout.Length);
 
-            int dy = data.Height, dx = data.Stride;
+            //int dy = data.Height, dx = data.Stride / 3;
 
-            int w = ((int)matrix.GetLongLength(0) - 1) / 2;
+            int wX = ((int)matrix.GetLongLength(0) - 1) / 2;
+            int wY = ((int)matrix.GetLongLength(1) - 1) / 2;
 
-            for (int i = w + 1; i < dx - w; i++)
+            float mL = 0;
+            for (int i = 0; i < matrix.GetLongLength(0); i++)
             {
-                for (int j = w + 1; j < dy - w; j++)
+                for (int j = 0; j < matrix.GetLongLength(1); j++)
                 {
-                    List<double> neighbours = new List<double>();
-                    float pixelValue = 0;
-                    // Extract the neighbourhood area
-                    for (int x = i - w; x < i + w; x++)
+                    mL += matrix[i, j];
+                }
+            }
+            if (mL == 0) mL = 1;
+            //for (int j = wY; j < dy - wY - 1; j++)
+            //{
+            //    for (int i = wX; i < dx - wX - 1; i++)
+            //    {
+            //        float r = 0;
+            //        float g = 0;
+            //        float b = 0;
+            //        for (int x = -wX; x <= wX; x++)
+            //        {
+            //            for (int y = -wY; y <= wY; y++)
+            //            {
+            //                int index = (i + x) * 3 + (j + y) * data.Stride;
+            //                int matrixIndexX = x + wX;
+            //                int matrixIndexY = y + wY;
+            //                r += bitmapDataIn[index] * matrix[matrixIndexX, matrixIndexY];
+            //                g += bitmapDataIn[index + 1] * matrix[matrixIndexX, matrixIndexY];
+            //                b += bitmapDataIn[index + 2] * matrix[matrixIndexX, matrixIndexY];
+            //            }
+            //        }
+
+            //        bitmapDataout[(i) * 3 + j * data.Stride] = (byte)(r / mL);
+            //        bitmapDataout[(i) * 3 + j * data.Stride + 1] = (byte)(g / mL);
+            //        bitmapDataout[(i) * 3 + j * data.Stride + 2] = (byte)(b / mL);
+
+            //        //bitmapDataout[(i + j * data.Stride) * 3] = bitmapDataIn[(i + j * data.Stride) * 3];
+            //        //bitmapDataout[(i + j * data.Stride) * 3 + 1] = bitmapDataIn[(i + j * data.Stride) * 3 + 1];
+            //        //bitmapDataout[(i + j * data.Stride) * 3 + 2] = bitmapDataIn[(i + j * data.Stride) * 3 + 2];
+            //    }
+            //}
+
+            //Marshal.Copy(bitmapDataout, 0, data.Scan0, bitmapDataout.Length);
+            //bitmap.UnlockBits(data);
+
+            Bitmap output = new Bitmap(bitmap.Width, bitmap.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            for (int x = wX; x < bitmap.Width - wX - 1; x++)
+            {
+                for (int y = wY; y < bitmap.Height - wY - 1; y++)
+                {
+                    float r = 0;
+                    float g = 0;
+                    float b = 0;
+                    for (int xi = -wX; xi <= wX; xi++)
                     {
-                        for (int y = j - w; y < j + w; y++)
+                        for (int yi = -wY; yi <= wY; yi++)
                         {
-                            float bbb = bitmapDataIn[x + y * data.Stride] + bitmapDataIn[x + y * data.Stride + 1] + bitmapDataIn[x + y * data.Stride + 2];
-                            bbb /= 3;
-                            int seevaluex = x - (i - w), seevaluey = y - (j - w);
-                            pixelValue += bbb * matrix[x - (i - w), y - (j - w)];
-                            //neighbours.Add(bbb);
+                            int matrixIndexX = xi + wX;
+                            int matrixIndexY = yi + wY;
+                            Color c = bitmap.GetPixel(x + xi, y + yi);
+                            r += c.R * matrix[matrixIndexX, matrixIndexY];
+                            g += c.G * matrix[matrixIndexX, matrixIndexY];
+                            b += c.B * matrix[matrixIndexX, matrixIndexY];
                         }
                     }
 
-                    bitmapDataout[i + j * data.Stride] =
-                        bitmapDataout[i + j * data.Stride + 1] =
-                        bitmapDataout[i + j * data.Stride + 2] =
-                        (byte)pixelValue;
+                    output.SetPixel(x, y, Color.FromArgb(255, (byte)(r / mL), (byte)(g / mL), (byte)(b / mL)));
                 }
             }
 
-            Marshal.Copy(bitmapDataout, 0, data.Scan0, bitmapDataout.Length);
-            bitmap.UnlockBits(data);
-
-            return bitmap;
+            return output;
         }
 
         private Bitmap RemoveColorPixels(Bitmap bitmap)
