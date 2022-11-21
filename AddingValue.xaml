@@ -44,7 +44,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Red:" Grid.Column="0"/>
-            <TextBox Name="Red_Value" Grid.Column="1"/>
+            <TextBox Name="Blue_Value" Grid.Column="1"/>
         </Grid>
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
@@ -60,7 +60,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Blue:" Grid.Column="0"/>
-            <TextBox Name="Blue_Value" Grid.Column="1"/>
+            <TextBox Name="Red_Value" Grid.Column="1"/>
         </Grid>
 
         <Grid Grid.Row="6">

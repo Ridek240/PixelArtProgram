@@ -65,7 +65,7 @@ namespace PixelArtProgram.Algorytms
             //Marshal.Copy(bitmapDataout, 0, data.Scan0, bitmapDataout.Length);
             //bitmap.UnlockBits(data);
 
-            Bitmap output = new Bitmap(bitmap.Width, bitmap.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            Bitmap output = new Bitmap(bitmap.Width, bitmap.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
             for (int x = wX; x < bitmap.Width - wX - 1; x++)
             {
@@ -86,8 +86,10 @@ namespace PixelArtProgram.Algorytms
                             b += c.B * matrix[matrixIndexX, matrixIndexY];
                         }
                     }
-
-                    output.SetPixel(x, y, Color.FromArgb(255, (byte)(r / mL), (byte)(g / mL), (byte)(b / mL)));
+                    r = Math.Clamp(r / mL, 0, 255);
+                    g = Math.Clamp(g / mL, 0, 255);
+                    b = Math.Clamp(b / mL, 0, 255);
+                    output.SetPixel(x, y, Color.FromArgb(255, (byte)r, (byte)g, (byte)b));
                 }
             }
 

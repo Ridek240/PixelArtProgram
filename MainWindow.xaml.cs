@@ -840,8 +840,8 @@ namespace PixelArtProgram
             {
                 int m;
                 if (!int.TryParse(sized.Input.Text, out m)) return;
-                BinaryTreshhold threshold = new BinaryTreshhold();
-                DB.Replace(threshold.BinaryThreshold(DB.GetActiveBitmapLayer().bitmap, (byte) m , true));
+                Sauvola threshold = new Sauvola();
+                DB.Replace(threshold.Function(DB.GetActiveBitmapLayer().bitmap));//,  (float)m/100));
             }
         }
 
@@ -1060,7 +1060,7 @@ namespace PixelArtProgram
         {
             float[,] matrix1 = new float[,]
             {
-                { 1,  1,  1},
+                { 1,  2,  1},
                 { 0,  0,  0},
                 {-1, -2, -1}
             };
