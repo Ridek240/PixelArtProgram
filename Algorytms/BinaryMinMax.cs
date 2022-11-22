@@ -11,7 +11,7 @@ namespace PixelArtProgram.Algorytms
 {
     class BinaryMinMax : AlgorytmBase
     {
-        public Bitmap Function(Bitmap bitmap, int width, int height)
+        public Bitmap Function(Bitmap bitmap, int width = 3, int height = 3)
         {
             System.Drawing.Imaging.BitmapData data = null;
             byte[] bitmapDataIn = LockBitmap24(bitmap, ref data);
