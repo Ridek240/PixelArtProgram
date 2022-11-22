@@ -53,9 +53,9 @@ namespace PixelArtProgram.Algorytms
                         }
                     }
 
-                    float thresholdR = (float)Math.Clamp(rMax - rMin, 0, 255) / (float)Math.Clamp(rMax + rMin, 0, 255);
-                    float thresholdG = (float)Math.Clamp(gMax - gMin, 0, 255) / (float)Math.Clamp(gMax + gMin, 0, 255);
-                    float thresholdB = (float)Math.Clamp(bMax - bMin, 0, 255) / (float)Math.Clamp(bMax + bMin, 0, 255);
+                    float thresholdR = (float)Math.Clamp(rMax - rMin, 0, 255) / (float)Math.Clamp(rMax + rMin, 1, 255);
+                    float thresholdG = (float)Math.Clamp(gMax - gMin, 0, 255) / (float)Math.Clamp(gMax + gMin, 1, 255);
+                    float thresholdB = (float)Math.Clamp(bMax - bMin, 0, 255) / (float)Math.Clamp(bMax + bMin, 1, 255);
 
                     int idx = i * 3 + j * data.Stride;
 
