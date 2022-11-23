@@ -11,7 +11,7 @@ namespace PixelArtProgram.Algorytms
 {
     public class MinErrorThreshold : BinaryTreshhold
     {
-        public Bitmap MinErrorThresholdMethod(Bitmap bitmap)
+        public Bitmap Function(Bitmap bitmap)
         {
             System.Drawing.Imaging.BitmapData data = null;
             byte[] bitmapData = LockBitmap24(bitmap, ref data);

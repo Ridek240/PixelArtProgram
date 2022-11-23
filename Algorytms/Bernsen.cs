@@ -10,7 +10,7 @@ namespace PixelArtProgram.Algorytms
 {
     class Bernsen : AlgorytmBase
     {
-        public Bitmap Fuction(Bitmap bitmap, int w = 2, int l = 15)
+        public Bitmap Function(Bitmap bitmap, int w = 2, int l = 15)
         {
             System.Drawing.Imaging.BitmapData data = null;
             byte[] bitmapDataIn = LockBitmap24(bitmap, ref data);

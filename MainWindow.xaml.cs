@@ -840,10 +840,32 @@ namespace PixelArtProgram
             {
                 int m;
                 if (!int.TryParse(sized.Input.Text, out m)) return;
-                Sauvola threshold = new Sauvola();
-                DB.Replace(threshold.Function(DB.GetActiveBitmapLayer().bitmap));//,  (float)m/100));
+                BinaryTreshhold threshold = new BinaryTreshhold();
+                DB.Replace(threshold.BinaryThreshold(DB.GetActiveBitmapLayer().bitmap, (byte)m, true));
             }
         }
+        private void ProcentThershold(object sender, RoutedEventArgs e)
+        {
+            Sized sized = new Sized();
+            if (sized.ShowDialog() == true)
+            {
+                int m;
+                if (!int.TryParse(sized.Input.Text, out m)) return;
+                PrecentTreshhold threshold = new PrecentTreshhold();
+                DB.Replace(threshold.Function(DB.GetActiveBitmapLayer().bitmap, (float)m/100));
+            }
+        }
+        private void MeanInteractive(object sender, RoutedEventArgs e)
+        {
+            MeanInteractiveSelection selection = new MeanInteractiveSelection();
+            DB.Replace(selection.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
+        private void MinError(object sender, RoutedEventArgs e)
+        {
+            MinErrorThreshold min = new MinErrorThreshold();
+            DB.Replace(min.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
+
 
         private void Otsu(object sender, RoutedEventArgs e)
         {
@@ -856,6 +878,98 @@ namespace PixelArtProgram
             NiBlack niBlack = new NiBlack();
             DB.Replace(niBlack.Function(DB.GetActiveBitmapLayer().bitmap));
         }
+
+        private void Bernsen(object sender, RoutedEventArgs e)
+        {
+            Bernsen niBlack = new Bernsen();
+            DB.Replace(niBlack.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
+
+        private void Sauvola(object sender, RoutedEventArgs e)
+        {
+            Sauvola niBlack = new Sauvola();
+            DB.Replace(niBlack.Function(DB.GetActiveBitmapLayer().bitmap));
+        }
+
+        private void Dylatation(object sender, RoutedEventArgs e)
+        {
+            Dilatation dyl = new Dilatation();
+            int[,] matrix1 = new int[,]
+            {
+                { 1,  1,  1},
+                { 1,  1,  1},
+                { 1,  1,  1}
+
+            };
+            DB.Replace(dyl.Function(DB.GetActiveBitmapLayer().bitmap,matrix1));
+
+        }
+
+        private void Erosion(object sender, RoutedEventArgs e)
+        {
+            Algorytms.Erosion dyl = new Algorytms.Erosion();
+            int[,] matrix1 = new int[,]
+            {
+                { 1,  1,  1},
+                { 1,  1,  1},
+                { 1,  1,  1}
+
+            };
+            DB.Replace(dyl.Function(DB.GetActiveBitmapLayer().bitmap, matrix1));
+        }
+
+        private void Opening(object sender, RoutedEventArgs e)
+        {
+            Algorytms.Erosion dyl = new Algorytms.Erosion();
+            int[,] matrix1 = new int[,]
+            {
+                { 1,  1,  1},
+                { 1,  1,  1},
+                { 1,  1,  1}
+
+            };
+            
+            Dilatation dyl2 = new Dilatation();
+            DB.Replace(dyl2.Function(dyl.Function(DB.GetActiveBitmapLayer().bitmap, matrix1), matrix1));
+        }
+
+        private void Closure(object sender, RoutedEventArgs e)
+        {
+            Algorytms.Erosion dyl = new Algorytms.Erosion();
+            Dilatation dyl2 = new Dilatation();
+            int[,] matrix1 = new int[,]
+            {
+                { 1,  1,  1},
+                { 1,  1,  1},
+                { 1,  1,  1}
+
+            };
+
+            DB.Replace(dyl.Function(dyl2.Function(DB.GetActiveBitmapLayer().bitmap, matrix1), matrix1));
+        }
+
+        private void HitorMiss(object sender, RoutedEventArgs e)
+        {
+            Hitandmisss dyl = new Hitandmisss();
+            int[,] matrix1 = new int[,]
+            {
+                { 1,  0,  0},
+                { 0,  0,  0},
+                { 0,  0,  0}
+
+            };
+            int[,] matrix2 = new int[,]
+            {
+                { 1,  0,  1},
+                { 0,  0,  0},
+                { 1,  0,  1}
+
+            };
+
+
+            DB.Replace(dyl.Function(DB.GetActiveBitmapLayer().bitmap, matrix1,matrix2));
+        }
+
 
         private void ReverseColors(object sender, RoutedEventArgs e)
         {
@@ -1121,6 +1235,8 @@ namespace PixelArtProgram
                 DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
             }
         }
+
+
     }
 
     public class Point

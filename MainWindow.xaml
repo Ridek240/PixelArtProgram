@@ -68,9 +68,22 @@
                     <MenuItem Header="Rozciąganie Histogramu" Click="Streching" />
                     <MenuItem Header="Wyrównanie Histogramu" Click="Equailization" />
                     <Separator />
-                    <MenuItem Header="Binaryzacja" Click="Threshold" />
-                    <MenuItem Header="Otsu" Click="Otsu" />
-                    <MenuItem Header="NiBlack" Click="NiBlack" />
+
+                    <MenuItem Header="Binaryzacja">
+                        <MenuItem Header="Ręczny Próg" Click="Threshold" />
+                        <MenuItem Header="Procent" Click="ProcentThershold" />
+                        <MenuItem Header="Selekcja iteratywna średniej" Click="MeanInteractive" />
+                        <MenuItem Header="Błąd minimalny" Click="MinError" />
+                        <MenuItem Header="Otsu" Click="Otsu" />
+                        <MenuItem Header="NiBlack" Click="NiBlack" />
+                        <MenuItem Header="Bernsen" Click="Bernsen" />
+                        <MenuItem Header="Sauvola" Click="Sauvola" />
+                        <MenuItem Header="Dylatacja" Click="Dylatation" />
+                        <MenuItem Header="Erozja" Click="Erosion" />
+                        <MenuItem Header="Otwarcie" Click="Opening" />
+                        <MenuItem Header="Zamknięcie" Click="Closure" />
+                        <MenuItem Header="Hit^Miss" Click="HitorMiss" />
+                    </MenuItem>
                     <MenuItem Header="Odwróć Kolory" Click="ReverseColors" />
                     <MenuItem Header="Zmień Kontrast" Click="Kontrast" />
                     <MenuItem Header="Zmień Jasność" Click="Jasnosc" />
