@@ -43,13 +43,20 @@
                     <Separator/>
                     <MenuItem Header="Wyekstraktuj Warstwę" Command="local:CustomCommands.ExtractLayer" InputGestureText="Ctrl + E"/>
                     <MenuItem Header="Wyekstraktuj Wszystko" Command="local:CustomCommands.ExtractAll" InputGestureText="Ctrl + R"/>
-                    <MenuItem Header="Wyekstraktuj Do P1" Command="local:CustomCommands.ExtractToP1" InputGestureText="Ctrl + L"/>
-                    <MenuItem Header="Wyekstraktuj Do P2" Command="local:CustomCommands.ExtractToP2" InputGestureText="Ctrl + L"/>
-                    <MenuItem Header="Wyekstraktuj Do P3" Command="local:CustomCommands.ExtractToP3" InputGestureText="Ctrl + L"/>
-                    <MenuItem Header="Wyekstraktuj Do P4" Command="local:CustomCommands.ExtractToP4" InputGestureText="Ctrl + L"/>
-                    <MenuItem Header="Wyekstraktuj Do P5" Command="local:CustomCommands.ExtractToP5" InputGestureText="Ctrl + L"/>
-                    <MenuItem Header="Wyekstraktuj Do P6" Command="local:CustomCommands.ExtractToP6" InputGestureText="Ctrl + L"/>
-                    <MenuItem Header="Otwórz Plik ppm" Command="local:CustomCommands.OpenNetpbm" InputGestureText="Ctrl + I"/>
+                    <MenuItem Header="Wyekstraktuj Do PPM">
+                        <MenuItem Header="Binarnie">
+                            <MenuItem Header="Wyekstraktuj Do P1" Command="local:CustomCommands.ExtractToP1"/>
+                            <MenuItem Header="Wyekstraktuj Do P2" Command="local:CustomCommands.ExtractToP2"/>
+                            <MenuItem Header="Wyekstraktuj Do P3" Command="local:CustomCommands.ExtractToP3"/>
+
+                        </MenuItem>
+                        <MenuItem Header="Tekstowo">
+                            <MenuItem Header="Wyekstraktuj Do P4" Command="local:CustomCommands.ExtractToP4"/>
+                            <MenuItem Header="Wyekstraktuj Do P5" Command="local:CustomCommands.ExtractToP5"/>
+                            <MenuItem Header="Wyekstraktuj Do P6" Command="local:CustomCommands.ExtractToP6"/>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Otwórz Plik PPM" Command="local:CustomCommands.OpenNetpbm"/>
                 </MenuItem>
                 <MenuItem Header="Edytuj">
                     <MenuItem Header="Cofnij" Command="Undo" InputGestureText="Ctrl + Z"/>
@@ -57,18 +64,23 @@
                     <Separator/>
                     <MenuItem Header="Kopiuj" Command="Copy" InputGestureText="Ctrl + C"/>
                     <MenuItem Header="Wklej" Command="Paste" InputGestureText="Ctrl + V"/>
-                    <Separator/>
-                    <MenuItem Header="Kolor Do Warstwy" Click="ExtractColor"/>
+
                     
                 </MenuItem>
-                <MenuItem Header="Filtry">
+                <MenuItem Header="Filtry" Name="Filters">
                     <MenuItem Header="Płaskie 3D" Click="flat3D" />
                     <MenuItem Header="Wypukłe 3D" Click="fat3D" />
                     <Separator />
                     <MenuItem Header="Rozciąganie Histogramu" Click="Streching" />
                     <MenuItem Header="Wyrównanie Histogramu" Click="Equailization" />
                     <Separator />
-
+                    <MenuItem Header="Filtry Morfologiczne">
+                        <MenuItem Header="Dylatacja" Click="Dylatation" />
+                        <MenuItem Header="Erozja" Click="Erosion" />
+                        <MenuItem Header="Otwarcie" Click="Opening" />
+                        <MenuItem Header="Zamknięcie" Click="Closure" />
+                        <MenuItem Header="Hit^Miss" Click="HitorMiss" />
+                    </MenuItem>
                     <MenuItem Header="Binaryzacja">
                         <MenuItem Header="Ręczny Próg" Click="Threshold" />
                         <MenuItem Header="Procent" Click="ProcentThershold" />
@@ -78,12 +90,17 @@
                         <MenuItem Header="NiBlack" Click="NiBlack" />
                         <MenuItem Header="Bernsen" Click="Bernsen" />
                         <MenuItem Header="Sauvola" Click="Sauvola" />
-                        <MenuItem Header="Dylatacja" Click="Dylatation" />
-                        <MenuItem Header="Erozja" Click="Erosion" />
-                        <MenuItem Header="Otwarcie" Click="Opening" />
-                        <MenuItem Header="Zamknięcie" Click="Closure" />
-                        <MenuItem Header="Hit^Miss" Click="HitorMiss" />
                     </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Filtr wygładzający" Click="Lowpass" />
+                    <MenuItem Header="Filtr medianowy" Click="Median" />
+                    <MenuItem Header="Filtr Sobela" Click="Sobel" />
+                    <MenuItem Header="Filtr górnoprzepustowy wyostrzający" Click="HighPass" />
+                    <MenuItem Header="Filtr rozmycie gaussowskie" Click="Gauss" />
+                    <MenuItem Header="Splot maski " Click="Maskweave" />
+
+                </MenuItem>
+                <MenuItem Header="Przekształcenia obrazu" Name="Grafix">
                     <MenuItem Header="Odwróć Kolory" Click="ReverseColors" />
                     <MenuItem Header="Zmień Kontrast" Click="Kontrast" />
                     <MenuItem Header="Zmień Jasność" Click="Jasnosc" />
@@ -95,13 +112,6 @@
                     <MenuItem Header="Pomnóż wartość" Click="MultiColor" />
                     <MenuItem Header="Podziel wartość" Click="DevideColor" />
                     <MenuItem Header="Skala Szarości" Click="GrayScale" />
-                    <Separator />
-                    <MenuItem Header="Filtr wygładzający" Click="Lowpass" />
-                    <MenuItem Header="Filtr medianowy" Click="Median" />
-                    <MenuItem Header="Filtr Sobela" Click="Sobel" />
-                    <MenuItem Header="Filtr górnoprzepustowy wyostrzający" Click="HighPass" />
-                    <MenuItem Header="Filtr rozmycie gaussowskie" Click="Gauss" />
-                    <MenuItem Header="Splot maski " Click="Maskweave" />
 
                 </MenuItem>
             </Menu>
@@ -136,40 +146,52 @@
 
                 <Button Width="20" x:Name="Pencil"   Height="20" Grid.Column="0" Grid.Row="0" Click="Change_Tool" >
                     <Image Source="Grafic/pencil.png"/>
-                </Button>
+                    <Button.ToolTip>Ołówek</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="Fill_Tool" Height="20" Grid.Column="0" Grid.Row="1" Click="Change_Tool" >
                     <Image Source="Grafic/Fill.png"/>
-                </Button>
+                        <Button.ToolTip>Wypełnij</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="FillAll_Tool" Height="20" Grid.Column="0" Grid.Row="2" Click="Change_Tool" >
                     <Image Source="Grafic/fillAll.png"/>
-                </Button>
+                    <Button.ToolTip>Zastąp kolor</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="DrawRect"  Height="20" Grid.Column="1" Grid.Row="2" Click="Change_Tool">
                     <Image Source="Grafic/Rect_Icon.png"/>
-                </Button>
+                        <Button.ToolTip>Rysuj: Prostokąt</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="DrawLine" Height="20" Grid.Column="1" Grid.Row="1" Click="Change_Tool" >
                     <Image Source="Grafic/Line_Icon.png"/>
-                </Button>
+                     <Button.ToolTip>Rysuj Linię</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="Eraser" Height="20" Grid.Column="1" Grid.Row="0" Click="Change_Tool" >
                     <Image Source="Grafic/Eraser.png"/>
-                </Button>
+                        <Button.ToolTip>Gumka</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="Brush" Height="20" Grid.Column="0" Grid.Row="3" Click="Change_Tool" >
                     <Image Source="Grafic/brush.png"/>
-                </Button>
+                    <Button.ToolTip>Pędzel</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="ColorBrake" Height="20" Grid.Column="1" Grid.Row="3" Click="Change_Tool" >
                     <Image Source="Grafic/Eraser.png"/>
-                </Button>
+                        <Button.ToolTip>Kolor do nowej warstwy</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="NiBlackBrush" Height="20" Grid.Column="0" Grid.Row="4" Click="Change_Tool" >
                     <Image Source="Grafic/niblack.png"/>
-                </Button>
+                        <Button.ToolTip>Pędzel Niblack</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="OtsuBrush" Height="20" Grid.Column="1" Grid.Row="4" Click="Change_Tool" >
                     <Image Source="Grafic/Otsu.png"/>
-                </Button>
+                    <Button.ToolTip>Pędzel Otsu</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="DrawEllipse"  Height="20" Grid.Column="0" Grid.Row="5" Click="Change_Tool">
-                    <Image Source="Grafic/Rect_Icon.png"/>
-                </Button>
+                        <Image Source="Grafic/kula.png"/>
+                        <Button.ToolTip>Rysuj Elipsę</Button.ToolTip>
+                    </Button>
                 <Button Width="20" x:Name="DrawPoly"  Height="20" Grid.Column="1" Grid.Row="5" Click="Change_Tool">
-                    <Image Source="Grafic/Rect_Icon.png"/>
-                </Button>
+                        <Image Source="Grafic/triangle.png"/>
+                        <Button.ToolTip>Rysuj Figurę</Button.ToolTip>
+                    </Button>
                 </Grid>
 
                 <Grid Grid.Row="1">
@@ -179,12 +201,9 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0">Wielkosć Pędzla</Label>
-                    <TextBox Name="size" Grid.Row="1"></TextBox>
+                    <TextBox Name="size" Grid.Row="1">5</TextBox>
                     <StackPanel Margin="3" Grid.Row="2" >
-                        <RadioButton Name="Grad1" Checked="ChangebrushSys">Kolor</RadioButton>
-                        <RadioButton Name="Grad2" Checked="ChangebrushSys" IsChecked="True">Threshold</RadioButton>
-                        <RadioButton Name="Grad3" Checked="ChangebrushSys" >Otsu</RadioButton>
-                        <RadioButton Name="Grad4" Checked="ChangebrushSys">Niblack</RadioButton>
+
                     </StackPanel>
                 </Grid>
                 

@@ -84,7 +84,7 @@ namespace PixelArtProgram
             bind.CanExecute += CanPasteExecute;
             this.CommandBindings.Add(bind);
 
-
+            BlockCrashing();
         }
 
         private void SaveImage(object sender, RoutedEventArgs e)
@@ -214,6 +214,21 @@ namespace PixelArtProgram
                 CreateHateSpace();
             else
                 EndHateSpace();
+            BlockCrashing();
+        }
+
+        private void BlockCrashing()
+        {
+            if(DB == null || DB.GetBitmapLayers().Count()<=0)
+            {
+                Filters.IsEnabled = false;
+                Grafix.IsEnabled = false;
+            }
+            else
+            {
+                Filters.IsEnabled = true;
+                Grafix.IsEnabled = true;
+            }
         }
 
         public BitmapImage ConvertToImage(Bitmap src)
@@ -325,16 +340,18 @@ namespace PixelArtProgram
                 }
                 else if(Tool==DrawingTools.PolyDraw)
                 {
-                    if(Keyboard.IsKeyDown(Key.LeftShift)||polypoints==null)
+                    if(Keyboard.IsKeyDown(Key.LeftCtrl)||polypoints==null)
                     {
                         if (polypoints == null)
                             polypoints = new List<Point>();
                         polypoints.Add(point);
+                        DB.StartDrawing(point, new Pencil(DB, TranstalteColor(BrushColor(Show_Color.Fill))));
 
                     }
                     else
                     {
                         DB.StartDrawing(point, new Tools.DrawPoly(DB, TranstalteColor(BrushColor(Show_Color.Fill)), point, polypoints));
+                        UpdateAllLayers();
                         polypoints = null;
                     }
                 }
@@ -747,10 +764,7 @@ namespace PixelArtProgram
             DB.Paste(copyPlaceholder);
         }
 
-        private void ExtractColor(object sender, RoutedEventArgs e)
-        {
 
-        }
         private void Undo(object sender, RoutedEventArgs e)
         {
             Undo();
