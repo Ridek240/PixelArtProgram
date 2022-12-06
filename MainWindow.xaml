@@ -113,6 +113,7 @@
                     <MenuItem Header="Podziel wartość" Click="DevideColor" />
                     <MenuItem Header="Skala Szarości" Click="GrayScale" />
                     <MenuItem Header="Wykryj Gęstość" Click="ShowHighestDensity" />
+                    <MenuItem Header="Procent" Click="CalculatePercent" />
 
                 </MenuItem>
             </Menu>

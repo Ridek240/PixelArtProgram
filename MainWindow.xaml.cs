@@ -1269,6 +1269,8 @@ namespace PixelArtProgram
 
                 CalculatePercent percent = new CalculatePercent();
                 float val = percent.Function(DB.GetActiveBitmapLayer().bitmap, input);
+
+                MessageBox.Show(val.ToString());
             }
         }
 
