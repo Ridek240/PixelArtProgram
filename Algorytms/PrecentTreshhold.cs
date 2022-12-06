@@ -13,7 +13,7 @@ namespace PixelArtProgram.Algorytms
         {
 
             System.Drawing.Imaging.BitmapData data = null;
-            byte[] bitmapData = LockBitmap24(bitmap, ref data);
+            byte[] bitmapData = LockBitmap32(bitmap, ref data);
             int[] histogramValues = GetHistogram(bitmapData);
             int total = data.Height * data.Width;
             int sumBefore = 0;

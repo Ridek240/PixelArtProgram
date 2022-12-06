@@ -9,7 +9,8 @@ namespace PixelArtProgram.Algorytms
     {
         public Bitmap Function(Bitmap bitmap, int[,] maskHit, int[,] maskMiss)
         {
-            byte[] r = NewLockBitmap24(bitmap, out var data);
+            System.Drawing.Imaging.BitmapData data = null;
+            byte[] r = LockBitmap32(bitmap,  ref data);
             byte[] w = new byte[data.Stride * data.Height];
             int stride = data.Stride;
             const int bpp = 3;
@@ -22,7 +23,7 @@ namespace PixelArtProgram.Algorytms
                 -stride - bpp, -stride, -stride + bpp
             };
 
-            for (int i = border; i < r.Length - border - bpp; i += bpp)
+            for (int i = border; i < r.Length - border - bpp; i += bpp+1)
             {
                 bool hit = true;
 

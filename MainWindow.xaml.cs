@@ -127,7 +127,7 @@ namespace PixelArtProgram
                 e.CanExecute = true;
             else
                 e.CanExecute = false;
-		
+
         }
         private void OpenImage()
         {
@@ -177,11 +177,11 @@ namespace PixelArtProgram
             HateSpace.Children.Clear();
             HateSpace.Children.Add(
                 new DirectionalLight(
-                    System.Windows.Media.Color.FromRgb(255, 255, 255), 
+                    System.Windows.Media.Color.FromRgb(255, 255, 255),
                     new Vector3D(-20, 20, 20)));
             for (int i = 0; i < DB.GetBitmapLayers().Count; i++)
             {
-                if(DB.GetBitmapLayer(i).IsVisible)
+                if (DB.GetBitmapLayer(i).IsVisible)
                     HowIHate3DInWPF.EndThisWorld(HateSpace, DB.GetBitmapLayer(i).bitmap, i);
                 else
                     HowIHate3DInWPF.EndThisWorld(HateSpace, EmptyLayer, i);
@@ -219,7 +219,7 @@ namespace PixelArtProgram
 
         private void BlockCrashing()
         {
-            if(DB == null || DB.GetBitmapLayers().Count()<=0)
+            if (DB == null || DB.GetBitmapLayers().Count() <= 0)
             {
                 Filters.IsEnabled = false;
                 Grafix.IsEnabled = false;
@@ -335,12 +335,12 @@ namespace PixelArtProgram
                 else if (Tool == DrawingTools.OtsuBrush)
                 {
                     draw = true;
-                    
+
                     DB.StartDrawing(point, new Tools.OtsuBrush(DB, CreateBrushMask()));
                 }
-                else if(Tool==DrawingTools.PolyDraw)
+                else if (Tool == DrawingTools.PolyDraw)
                 {
-                    if(Keyboard.IsKeyDown(Key.LeftCtrl)||polypoints==null)
+                    if (Keyboard.IsKeyDown(Key.LeftCtrl) || polypoints == null)
                     {
                         if (polypoints == null)
                             polypoints = new List<Point>();
@@ -451,11 +451,12 @@ namespace PixelArtProgram
             }
         }
 
+
         private void Change_Color(object sender, MouseButtonEventArgs e)
         {
-            
+
             System.Windows.Shapes.Rectangle rectangle = sender as System.Windows.Shapes.Rectangle;
-            
+
             if (rectangle != null)
             {
                 ChangeColor change = new ChangeColor();
@@ -464,13 +465,13 @@ namespace PixelArtProgram
                 bind.Path = new PropertyPath("Fill");
                 bind.Mode = BindingMode.OneWay;
 
-                
+
                 SolidColorBrush color = (SolidColorBrush)rectangle.Fill;
-                
+
                 change.Red_color.Text = color.Color.R.ToString();
                 change.Green_color.Text = color.Color.G.ToString();
                 change.Blue_color.Text = color.Color.B.ToString();
-                
+
                 rectangle.SetBinding(System.Windows.Shapes.Rectangle.FillProperty, bind);
                 if (change.ShowDialog() != true)
                 {
@@ -478,7 +479,7 @@ namespace PixelArtProgram
                 }
 
             }
-            
+
         }
 
         private void Set_Color(object sender, MouseButtonEventArgs e)
@@ -518,7 +519,7 @@ namespace PixelArtProgram
                 //Controll.Label label = new Controll.Label();
                 //label.Content = name.Input.Text;
                 Layers.Items.Add(listElement);
-                
+
                 DB.AddLayer(name.Input.Text);
                 AddLayerImage();
             }
@@ -651,7 +652,7 @@ namespace PixelArtProgram
         }
         private void CanExtractExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (DB != null&&DB.ActiveLayer>=0)
+            if (DB != null && DB.ActiveLayer >= 0)
                 e.CanExecute = true;
             else
                 e.CanExecute = false;
@@ -665,7 +666,7 @@ namespace PixelArtProgram
         private void ExtractAll(object sender, RoutedEventArgs e)
         {
             DB.ExtractAll();
-            
+
         }
         private void ExtractToP1(object sender, RoutedEventArgs e)
         {
@@ -707,8 +708,8 @@ namespace PixelArtProgram
         }
         private void ExtractToP4(object sender, RoutedEventArgs e)
         {
-          DB.SaveP4();  
-          
+            DB.SaveP4();
+
         }
         private void ExtractToP5(object sender, RoutedEventArgs e)
         {
@@ -805,7 +806,7 @@ namespace PixelArtProgram
         {
             if (Layers.SelectedIndex >= 1)
             {
-                DB.CombineBitmaps(DB.GetBitmapLayer(Layers.SelectedIndex-1).bitmap, DB.GetActiveBitmapLayer().bitmap);
+                DB.CombineBitmaps(DB.GetBitmapLayer(Layers.SelectedIndex - 1).bitmap, DB.GetActiveBitmapLayer().bitmap);
                 RemoveLayer(sender, e);
                 UpdateAllLayers();
             }
@@ -838,7 +839,7 @@ namespace PixelArtProgram
                 HistogramSteching steching = new HistogramSteching();
                 DB.Paste(steching.Function(DB.GetActiveBitmapLayer().bitmap, min, max));
             }
-            
+
         }
 
         private void Equailization(object sender, RoutedEventArgs e)
@@ -850,7 +851,7 @@ namespace PixelArtProgram
         private void Threshold(object sender, RoutedEventArgs e)
         {
             Sized sized = new Sized();
-            if(sized.ShowDialog()==true)
+            if (sized.ShowDialog() == true)
             {
                 int m;
                 if (!int.TryParse(sized.Input.Text, out m)) return;
@@ -866,7 +867,7 @@ namespace PixelArtProgram
                 int m;
                 if (!int.TryParse(sized.Input.Text, out m)) return;
                 PrecentTreshhold threshold = new PrecentTreshhold();
-                DB.Replace(threshold.Function(DB.GetActiveBitmapLayer().bitmap, (float)m/100));
+                DB.Replace(threshold.Function(DB.GetActiveBitmapLayer().bitmap, (float)m / 100));
             }
         }
         private void MeanInteractive(object sender, RoutedEventArgs e)
@@ -915,7 +916,7 @@ namespace PixelArtProgram
                 { 1,  1,  1}
 
             };
-            DB.Replace(dyl.Function(DB.GetActiveBitmapLayer().bitmap,matrix1));
+            DB.Replace(dyl.Function(DB.GetActiveBitmapLayer().bitmap, matrix1));
 
         }
 
@@ -942,7 +943,7 @@ namespace PixelArtProgram
                 { 1,  1,  1}
 
             };
-            
+
             Dilatation dyl2 = new Dilatation();
             DB.Replace(dyl2.Function(dyl.Function(DB.GetActiveBitmapLayer().bitmap, matrix1), matrix1));
         }
@@ -981,7 +982,7 @@ namespace PixelArtProgram
             };
 
 
-            DB.Replace(dyl.Function(DB.GetActiveBitmapLayer().bitmap, matrix1,matrix2));
+            DB.Replace(dyl.Function(DB.GetActiveBitmapLayer().bitmap, matrix1, matrix2));
         }
 
 
@@ -1001,7 +1002,7 @@ namespace PixelArtProgram
                 if (!float.TryParse(sized.Input.Text, out m)) return;
 
                 Kontrast kon = new Kontrast();
-                DB.Replace(kon.Function(DB.GetActiveBitmapLayer().bitmap,m));
+                DB.Replace(kon.Function(DB.GetActiveBitmapLayer().bitmap, m));
             }
         }
 
@@ -1046,13 +1047,13 @@ namespace PixelArtProgram
         private void AddColor(object sender, RoutedEventArgs e)
         {
             AddingValue val = new AddingValue();
-            if(val.ShowDialog()==true)
+            if (val.ShowDialog() == true)
             {
-                float value = 0, red = 0 , green = 0, blue = 0;
+                float value = 0, red = 0, green = 0, blue = 0;
                 bool chackbox;
 
                 chackbox = (bool)val.RGB.IsChecked;
-                if(chackbox)
+                if (chackbox)
                 {
                     if (!float.TryParse(val.Red_Value.Text, out red)) return;
                     if (!float.TryParse(val.Green_Value.Text, out green)) return;
@@ -1063,7 +1064,7 @@ namespace PixelArtProgram
                     if (!float.TryParse(val.Sum_Color.Text, out value)) return;
                 }
 
-            AddValue rev = new AddValue();
+                AddValue rev = new AddValue();
                 DB.Replace(rev.Function(DB.GetActiveBitmapLayer().bitmap, (int)value, chackbox, (int)red, (int)green, (int)blue));
             }
         }
@@ -1145,7 +1146,7 @@ namespace PixelArtProgram
         private void GrayScale(object sender, RoutedEventArgs e)
         {
             Greyscale grey = new Greyscale();
-            if(grey.ShowDialog()==true)
+            if (grey.ShowDialog() == true)
             {
                 bool red, green, blue;
                 red = (bool)grey.Red.IsChecked;
@@ -1249,8 +1250,52 @@ namespace PixelArtProgram
                 DB.Replace(matrixFilter.Function(DB.GetActiveBitmapLayer().bitmap, matrix));
             }
         }
+        private void CalculatePercent(object sender, RoutedEventArgs e)
+        {
+            ChangeColor change = new ChangeColor();
+
+            if (change.ShowDialog() == true)
+            {
+                byte[] input = new byte[3];
+                int red, green, blue;
+                if (!int.TryParse(change.Red_color.Text, out red)) return;
+                if (!int.TryParse(change.Blue_color.Text, out blue)) return;
+                if (!int.TryParse(change.Green_color.Text, out green)) return;
 
 
+                input[0] = (byte)red;
+                input[1] = (byte)green;
+                input[2] = (byte)blue;
+
+                CalculatePercent percent = new CalculatePercent();
+                float val = percent.Function(DB.GetActiveBitmapLayer().bitmap, input);
+            }
+        }
+
+        private void ShowHighestDensity(object sender, RoutedEventArgs e)
+        {
+            ChangeColor change = new ChangeColor();
+
+            if (change.ShowDialog() == true)
+            {
+                byte[] input = new byte[3];
+                int red, green, blue;
+                if (!int.TryParse(change.Red_color.Text, out red)) return;
+                if (!int.TryParse(change.Blue_color.Text, out blue)) return;
+                if (!int.TryParse(change.Green_color.Text, out green)) return;
+
+
+                input[0] = (byte)blue;
+                input[1] = (byte)green;
+                input[2] = (byte)red;
+
+                ShowHighestDensity highestDensity = new ShowHighestDensity();
+
+                DB.Replace(highestDensity.Function(DB.GetActiveBitmapLayer().bitmap, input));
+            }
+
+
+        }
     }
 
     public class Point

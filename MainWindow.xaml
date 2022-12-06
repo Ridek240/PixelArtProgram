@@ -112,6 +112,7 @@
                     <MenuItem Header="Pomnóż wartość" Click="MultiColor" />
                     <MenuItem Header="Podziel wartość" Click="DevideColor" />
                     <MenuItem Header="Skala Szarości" Click="GrayScale" />
+                    <MenuItem Header="Wykryj Gęstość" Click="ShowHighestDensity" />
 
                 </MenuItem>
             </Menu>

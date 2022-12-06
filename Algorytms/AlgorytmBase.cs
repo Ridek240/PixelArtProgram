@@ -33,7 +33,7 @@ namespace PixelArtProgram.Algorytms
                 System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
             var bitmapData = new byte[data.Stride * data.Height];
-
+            
             Marshal.Copy(data.Scan0, bitmapData, 0, bitmapData.Length);
 
             return bitmapData;
@@ -58,13 +58,13 @@ namespace PixelArtProgram.Algorytms
         {
             int[] histogramValues = new int[byte.MaxValue + 1];
 
-            {
-                for (int i = 0; i < bitmapData.Length; i += 3)
+            
+            for (int i=0; i < bitmapData.Length; i += 4)
                 {
                     int value = (bitmapData[i] + bitmapData[i + 1] + bitmapData[i + 2]) / 3;
                     histogramValues[value]++;
                 }
-            }
+            
             return histogramValues;
         }
     }
