@@ -1263,9 +1263,9 @@ namespace PixelArtProgram
                 if (!int.TryParse(change.Green_color.Text, out green)) return;
 
 
-                input[0] = (byte)red;
+                input[0] = (byte)blue;
                 input[1] = (byte)green;
-                input[2] = (byte)blue;
+                input[2] = (byte)red;
 
                 CalculatePercent percent = new CalculatePercent();
                 float val = percent.Function(DB.GetActiveBitmapLayer().bitmap, input);
