@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,30 +55,30 @@ namespace PixelArtProgram.Algorytms
 
                 List<int> pointsToCheck = new List<int>();
 
-                if (i % bitmap.Width == (i + 1) % bitmap.Width)
+                if (i / bitmap.Width == (i + 1) / bitmap.Width)
                     pointsToCheck.Add(i + 1);
-                if (i < bitmapData.Length - bitmap.Width)
+                if (i + bitmap.Width < bitmapData.Length / 4)
                     pointsToCheck.Add(i + bitmap.Width);
 
                 while (pointsToCheck.Count > 0)
-                 {
-                     int index = pointsToCheck[0];
-                     pointsToCheck.RemoveAt(0);
-                     if (isVisited[index]) continue;
-                     isVisited[index] = true;
-                     if (bitmapData[index * 4] != byte.MaxValue) continue;
+                {
+                    int index = pointsToCheck[0];
+                    pointsToCheck.RemoveAt(0);
+                    if (isVisited[index]) continue;
+                    isVisited[index] = true;
+                    if (bitmapData[index * 4] != byte.MaxValue) continue;
             
-                     points.Add(index);
+                    points.Add(index);
             
-                     if (index % bitmap.Width == (index - 1) % bitmap.Width)
-                         pointsToCheck.Add(index - 1);
-                     if (index % bitmap.Width == (index + 1) % bitmap.Width)
-                         pointsToCheck.Add(index + 1);
-                     if (index > bitmap.Width)
-                         pointsToCheck.Add(index - bitmap.Width);
-                     if (index < bitmapData.Length - bitmap.Width)
-                         pointsToCheck.Add(index + bitmap.Width);
-                 }
+                    if (index / bitmap.Width == (index - 1) / bitmap.Width)
+                        pointsToCheck.Add(index - 1);
+                    if (index / bitmap.Width == (index + 1) / bitmap.Width)
+                        pointsToCheck.Add(index + 1);
+                    if (index - bitmap.Width > 0)
+                        pointsToCheck.Add(index - bitmap.Width);
+                    if (index + bitmap.Width < bitmapData.Length / 4)
+                        pointsToCheck.Add(index + bitmap.Width);
+                }
              }
             
              // Find biggest group
@@ -91,19 +92,19 @@ namespace PixelArtProgram.Algorytms
                      indexOfMaxGroup = i;
                  }
              }
-            
-             // Remove smaller groups
-             for (int i = 0; i < groupsOfPoints.Count; i++)
-             {
-                 if (i == indexOfMaxGroup) continue;
-                 for (int j = 0; j < groupsOfPoints[i].Count; j++)
-                 {
-                     int index = groupsOfPoints[i][j] * 4;
-                     bitmapData[index + 0] = byte.MinValue;
-                     bitmapData[index + 1] = byte.MinValue;
-                     bitmapData[index + 2] = byte.MinValue;
-                 }
-             }
+
+            // Remove smaller groups
+            for (int i = 0; i < groupsOfPoints.Count; i++)
+            {
+                if (i == indexOfMaxGroup) continue;
+                for (int j = 0; j < groupsOfPoints[i].Count; j++)
+                {
+                    int index = groupsOfPoints[i][j] * 4;
+                    bitmapData[index + 0] = byte.MinValue;
+                    bitmapData[index + 1] = byte.MinValue;
+                    bitmapData[index + 2] = byte.MinValue;
+                }
+            }
 
             Marshal.Copy(bitmapData, 0, data.Scan0, bitmapData.Length);
             bitmap.UnlockBits(data);
